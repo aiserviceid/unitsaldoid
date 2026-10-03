@@ -848,8 +848,8 @@
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
           <span>Pengaturan</span>
         </button>
-        <button class="nav-btn" data-view="viewCalendar"><span>📅 Kalender</span></button>
-        <button class="nav-btn" data-view="viewAssistant"><span>✨ Asisten AI</span></button>
+        <button class="nav-btn" data-view="viewCalendar" style="display:none !important;"><span>📅 Kalender</span></button>
+        <button class="nav-btn" data-view="viewAssistant" style="display:none !important;"><span>✨ Asisten AI</span></button>
       </nav>
 
       <!-- Sidebar User Footer -->
@@ -1322,7 +1322,7 @@
         <div class="card" style="margin-bottom:16px"><div class="card-head-title">Pengingat tagihan Telegram</div><p class="report-explainer">Dikirim pukul 08.00 WIB ke Telegram nomor 1 dan 2: 3 hari sebelum jatuh tempo, pada hari jatuh tempo, lalu seminggu sekali jika terlambat. Nomor 3 tidak menerima rincian tagihan.</p><label style="display:flex;gap:10px;align-items:center"><input type="checkbox" id="telegramRemindersEnabled"> Aktifkan pengingat utang & piutang</label><p id="reminderSettingsNotice" role="status" style="font-size:12px;margin-top:8px"></p></div>
 
         <div class="card" style="margin-bottom:16px"><div class="card-head-title">Menu Lainnya</div><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
-          <button class="secondary" data-view-target="viewObligations">Utang & Piutang</button><button class="secondary" data-view-target="viewBudget">Anggaran</button><button class="secondary" data-view-target="viewCategories">Kategori</button><button class="secondary" data-view-target="viewTelegram">Bot Telegram</button><button class="secondary" data-view-target="viewCalendar">📅 Kalender</button><button class="secondary" data-view-target="viewAssistant">✨ Asisten AI</button><button class="secondary" id="btnMobileSignOut">Keluar Akun</button>
+          <button class="secondary" data-view-target="viewObligations">Utang & Piutang</button><button class="secondary" data-view-target="viewBudget">Anggaran</button><button class="secondary" data-view-target="viewCategories">Kategori</button><button class="secondary" data-view-target="viewTelegram">Bot Telegram</button><button class="secondary" data-view-target="viewCalendar" style="display:none !important;">📅 Kalender</button><button class="secondary" data-view-target="viewAssistant" style="display:none !important;">✨ Asisten AI</button><button class="secondary" id="btnMobileSignOut">Keluar Akun</button>
         </div></div>
         <div class="grid-main-2">
           <div class="card">
