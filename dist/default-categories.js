@@ -1,0 +1,570 @@
+// 81 Kategori Resmi UnitSaldo Pro dari Master Excel
+window.DEFAULT_CATEGORIES = [
+  {
+    "code": "CAT-EXP-001",
+    "type": "expense",
+    "group": "Kebutuhan Rumah Tangga",
+    "name": "Belanja bulanan",
+    "rule_50_30_20": "Kebutuhan"
+  },
+  {
+    "code": "CAT-EXP-002",
+    "type": "expense",
+    "group": "Kebutuhan Rumah Tangga",
+    "name": "Listrik",
+    "rule_50_30_20": "Kebutuhan"
+  },
+  {
+    "code": "CAT-EXP-003",
+    "type": "expense",
+    "group": "Kebutuhan Rumah Tangga",
+    "name": "Air",
+    "rule_50_30_20": "Kebutuhan"
+  },
+  {
+    "code": "CAT-EXP-004",
+    "type": "expense",
+    "group": "Kebutuhan Rumah Tangga",
+    "name": "Gas (LPG)",
+    "rule_50_30_20": "Kebutuhan"
+  },
+  {
+    "code": "CAT-EXP-005",
+    "type": "expense",
+    "group": "Kebutuhan Rumah Tangga",
+    "name": "Internet",
+    "rule_50_30_20": "Kebutuhan"
+  },
+  {
+    "code": "CAT-EXP-006",
+    "type": "expense",
+    "group": "Kebutuhan Rumah Tangga",
+    "name": "Paket Data",
+    "rule_50_30_20": "Kebutuhan"
+  },
+  {
+    "code": "CAT-EXP-007",
+    "type": "expense",
+    "group": "Kebutuhan Rumah Tangga",
+    "name": "TV Kabel / Streaming",
+    "rule_50_30_20": "Keinginan"
+  },
+  {
+    "code": "CAT-EXP-008",
+    "type": "expense",
+    "group": "Kebutuhan Rumah Tangga",
+    "name": "Sewa / Cicilan rumah",
+    "rule_50_30_20": "Kebutuhan"
+  },
+  {
+    "code": "CAT-EXP-009",
+    "type": "expense",
+    "group": "Kebutuhan Rumah Tangga",
+    "name": "Laundry",
+    "rule_50_30_20": "Kebutuhan"
+  },
+  {
+    "code": "CAT-EXP-010",
+    "type": "expense",
+    "group": "Kebutuhan Rumah Tangga",
+    "name": "Perawatan rumah",
+    "rule_50_30_20": "Kebutuhan"
+  },
+  {
+    "code": "CAT-EXP-011",
+    "type": "expense",
+    "group": "Kebutuhan Rumah Tangga",
+    "name": "Pajak PBB",
+    "rule_50_30_20": "Kebutuhan"
+  },
+  {
+    "code": "CAT-EXP-012",
+    "type": "expense",
+    "group": "Kebutuhan Rumah Tangga",
+    "name": "Iuran kebersihan",
+    "rule_50_30_20": "Kebutuhan"
+  },
+  {
+    "code": "CAT-EXP-013",
+    "type": "expense",
+    "group": "Transportasi",
+    "name": "Bensin/BBM",
+    "rule_50_30_20": "Kebutuhan"
+  },
+  {
+    "code": "CAT-EXP-014",
+    "type": "expense",
+    "group": "Transportasi",
+    "name": "Parkir",
+    "rule_50_30_20": "Kebutuhan"
+  },
+  {
+    "code": "CAT-EXP-015",
+    "type": "expense",
+    "group": "Transportasi",
+    "name": "Tol",
+    "rule_50_30_20": "Kebutuhan"
+  },
+  {
+    "code": "CAT-EXP-016",
+    "type": "expense",
+    "group": "Transportasi",
+    "name": "Servis kendaraan",
+    "rule_50_30_20": "Kebutuhan"
+  },
+  {
+    "code": "CAT-EXP-017",
+    "type": "expense",
+    "group": "Transportasi",
+    "name": "Angkutan umum (ojek, bus, kereta)",
+    "rule_50_30_20": "Kebutuhan"
+  },
+  {
+    "code": "CAT-EXP-018",
+    "type": "expense",
+    "group": "Transportasi",
+    "name": "Pajak kendaraan",
+    "rule_50_30_20": "Kebutuhan"
+  },
+  {
+    "code": "CAT-EXP-019",
+    "type": "expense",
+    "group": "Transportasi",
+    "name": "Asuransi kendaraan",
+    "rule_50_30_20": "Kebutuhan"
+  },
+  {
+    "code": "CAT-EXP-020",
+    "type": "expense",
+    "group": "Pendidikan",
+    "name": "Pembayaran SPP",
+    "rule_50_30_20": "Kebutuhan"
+  },
+  {
+    "code": "CAT-EXP-021",
+    "type": "expense",
+    "group": "Pendidikan",
+    "name": "Buku & alat tulis",
+    "rule_50_30_20": "Kebutuhan"
+  },
+  {
+    "code": "CAT-EXP-022",
+    "type": "expense",
+    "group": "Pendidikan",
+    "name": "Biaya kursus",
+    "rule_50_30_20": "Investasi"
+  },
+  {
+    "code": "CAT-EXP-023",
+    "type": "expense",
+    "group": "Pendidikan",
+    "name": "Perlengkapan belajar",
+    "rule_50_30_20": "Kebutuhan"
+  },
+  {
+    "code": "CAT-EXP-024",
+    "type": "expense",
+    "group": "Kesehatan",
+    "name": "Asuransi kesehatan",
+    "rule_50_30_20": "Kebutuhan"
+  },
+  {
+    "code": "CAT-EXP-025",
+    "type": "expense",
+    "group": "Kesehatan",
+    "name": "Obat-obatan",
+    "rule_50_30_20": "Kebutuhan"
+  },
+  {
+    "code": "CAT-EXP-026",
+    "type": "expense",
+    "group": "Kesehatan",
+    "name": "Biaya dokter / rumah sakit",
+    "rule_50_30_20": "Kebutuhan"
+  },
+  {
+    "code": "CAT-EXP-027",
+    "type": "expense",
+    "group": "Kesehatan",
+    "name": "Vitamin",
+    "rule_50_30_20": "Keinginan"
+  },
+  {
+    "code": "CAT-EXP-028",
+    "type": "expense",
+    "group": "Kesehatan",
+    "name": "Alat kesehatan",
+    "rule_50_30_20": "Kebutuhan"
+  },
+  {
+    "code": "CAT-EXP-029",
+    "type": "expense",
+    "group": "Kesehatan",
+    "name": "Membership gym",
+    "rule_50_30_20": "Keinginan"
+  },
+  {
+    "code": "CAT-EXP-030",
+    "type": "expense",
+    "group": "Anak & Bayi",
+    "name": "Popok",
+    "rule_50_30_20": "Kebutuhan"
+  },
+  {
+    "code": "CAT-EXP-031",
+    "type": "expense",
+    "group": "Anak & Bayi",
+    "name": "Susu formula",
+    "rule_50_30_20": "Kebutuhan"
+  },
+  {
+    "code": "CAT-EXP-032",
+    "type": "expense",
+    "group": "Anak & Bayi",
+    "name": "Mainan anak",
+    "rule_50_30_20": "Keinginan"
+  },
+  {
+    "code": "CAT-EXP-033",
+    "type": "expense",
+    "group": "Anak & Bayi",
+    "name": "Perlengkapan bayi",
+    "rule_50_30_20": "Kebutuhan"
+  },
+  {
+    "code": "CAT-EXP-034",
+    "type": "expense",
+    "group": "Anak & Bayi",
+    "name": "Pendidikan anak (PAUD)",
+    "rule_50_30_20": "Kebutuhan"
+  },
+  {
+    "code": "CAT-EXP-035",
+    "type": "expense",
+    "group": "Kebutuhan Pribadi",
+    "name": "Perawatan diri (salon, skincare, kosmetik)",
+    "rule_50_30_20": "Kebutuhan"
+  },
+  {
+    "code": "CAT-EXP-036",
+    "type": "expense",
+    "group": "Kebutuhan Pribadi",
+    "name": "Pakaian",
+    "rule_50_30_20": "Kebutuhan"
+  },
+  {
+    "code": "CAT-EXP-037",
+    "type": "expense",
+    "group": "Kebutuhan Pribadi",
+    "name": "Gadget",
+    "rule_50_30_20": "Kebutuhan"
+  },
+  {
+    "code": "CAT-EXP-038",
+    "type": "expense",
+    "group": "Kebutuhan Pribadi",
+    "name": "Alas kaki",
+    "rule_50_30_20": "Kebutuhan"
+  },
+  {
+    "code": "CAT-EXP-039",
+    "type": "expense",
+    "group": "Kebutuhan Pribadi",
+    "name": "Aksesoris diri",
+    "rule_50_30_20": "Keinginan"
+  },
+  {
+    "code": "CAT-EXP-040",
+    "type": "expense",
+    "group": "Kebutuhan Pribadi",
+    "name": "rokok",
+    "rule_50_30_20": "Keinginan"
+  },
+  {
+    "code": "CAT-EXP-041",
+    "type": "expense",
+    "group": "Hiburan & Lifestyle",
+    "name": "Nonton bioskop",
+    "rule_50_30_20": "Keinginan"
+  },
+  {
+    "code": "CAT-EXP-042",
+    "type": "expense",
+    "group": "Hiburan & Lifestyle",
+    "name": "Nonton konser",
+    "rule_50_30_20": "Keinginan"
+  },
+  {
+    "code": "CAT-EXP-043",
+    "type": "expense",
+    "group": "Hiburan & Lifestyle",
+    "name": "Jajan / Makan di luar",
+    "rule_50_30_20": "Keinginan"
+  },
+  {
+    "code": "CAT-EXP-044",
+    "type": "expense",
+    "group": "Hiburan & Lifestyle",
+    "name": "Wisata",
+    "rule_50_30_20": "Keinginan"
+  },
+  {
+    "code": "CAT-EXP-045",
+    "type": "expense",
+    "group": "Hiburan & Lifestyle",
+    "name": "Game",
+    "rule_50_30_20": "Keinginan"
+  },
+  {
+    "code": "CAT-EXP-046",
+    "type": "expense",
+    "group": "Hiburan & Lifestyle",
+    "name": "Hobi",
+    "rule_50_30_20": "Keinginan"
+  },
+  {
+    "code": "CAT-EXP-047",
+    "type": "expense",
+    "group": "Sosial",
+    "name": "Amplop pernikahan",
+    "rule_50_30_20": "Keinginan"
+  },
+  {
+    "code": "CAT-EXP-048",
+    "type": "expense",
+    "group": "Sosial",
+    "name": "Ulang tahun",
+    "rule_50_30_20": "Keinginan"
+  },
+  {
+    "code": "CAT-EXP-049",
+    "type": "expense",
+    "group": "Sosial",
+    "name": "Sumbangan",
+    "rule_50_30_20": "Kebutuhan"
+  },
+  {
+    "code": "CAT-EXP-050",
+    "type": "expense",
+    "group": "Sosial",
+    "name": "Zakat / infak",
+    "rule_50_30_20": "Kebutuhan"
+  },
+  {
+    "code": "CAT-EXP-051",
+    "type": "expense",
+    "group": "Sosial",
+    "name": "Sedekah",
+    "rule_50_30_20": "Kebutuhan"
+  },
+  {
+    "code": "CAT-EXP-052",
+    "type": "expense",
+    "group": "Investasi & Tabungan",
+    "name": "Tabungan rutin",
+    "rule_50_30_20": "Investasi"
+  },
+  {
+    "code": "CAT-EXP-053",
+    "type": "expense",
+    "group": "Investasi & Tabungan",
+    "name": "Dana darurat",
+    "rule_50_30_20": "Investasi"
+  },
+  {
+    "code": "CAT-EXP-054",
+    "type": "expense",
+    "group": "Investasi & Tabungan",
+    "name": "Saham",
+    "rule_50_30_20": "Investasi"
+  },
+  {
+    "code": "CAT-EXP-055",
+    "type": "expense",
+    "group": "Investasi & Tabungan",
+    "name": "Reksadana",
+    "rule_50_30_20": "Investasi"
+  },
+  {
+    "code": "CAT-EXP-056",
+    "type": "expense",
+    "group": "Investasi & Tabungan",
+    "name": "Emas",
+    "rule_50_30_20": "Investasi"
+  },
+  {
+    "code": "CAT-EXP-057",
+    "type": "expense",
+    "group": "Investasi & Tabungan",
+    "name": "Deposito",
+    "rule_50_30_20": "Investasi"
+  },
+  {
+    "code": "CAT-EXP-058",
+    "type": "expense",
+    "group": "Investasi & Tabungan",
+    "name": "Asuransi jiwa",
+    "rule_50_30_20": "Investasi"
+  },
+  {
+    "code": "CAT-EXP-059",
+    "type": "expense",
+    "group": "Investasi & Tabungan",
+    "name": "Properti",
+    "rule_50_30_20": "Investasi"
+  },
+  {
+    "code": "CAT-EXP-060",
+    "type": "expense",
+    "group": "Investasi & Tabungan",
+    "name": "Dana Pendidikan Anak",
+    "rule_50_30_20": "Investasi"
+  },
+  {
+    "code": "CAT-EXP-061",
+    "type": "expense",
+    "group": "Lain-lain",
+    "name": "Denda",
+    "rule_50_30_20": "Kebutuhan"
+  },
+  {
+    "code": "CAT-EXP-062",
+    "type": "expense",
+    "group": "Lain-lain",
+    "name": "Tilang",
+    "rule_50_30_20": "Kebutuhan"
+  },
+  {
+    "code": "CAT-EXP-063",
+    "type": "expense",
+    "group": "Lain-lain",
+    "name": "Biaya admin bank",
+    "rule_50_30_20": "Kebutuhan"
+  },
+  {
+    "code": "CAT-EXP-064",
+    "type": "expense",
+    "group": "Lain-lain",
+    "name": "Pengeluaran tak terduga",
+    "rule_50_30_20": "Kebutuhan"
+  },
+  {
+    "code": "CAT-EXP-065",
+    "type": "expense",
+    "group": "Biaya perangkat lunak (Software)",
+    "name": "beli perangkat lunak",
+    "rule_50_30_20": "Keinginan"
+  },
+  {
+    "code": "CAT-INC-066",
+    "type": "income",
+    "group": "Gaji & Pendapatan Tetap",
+    "name": "Gaji",
+    "rule_50_30_20": "Pemasukan"
+  },
+  {
+    "code": "CAT-INC-067",
+    "type": "income",
+    "group": "Gaji & Pendapatan Tetap",
+    "name": "Tunjangan",
+    "rule_50_30_20": "Pemasukan"
+  },
+  {
+    "code": "CAT-INC-068",
+    "type": "income",
+    "group": "Gaji & Pendapatan Tetap",
+    "name": "Bonus",
+    "rule_50_30_20": "Pemasukan"
+  },
+  {
+    "code": "CAT-INC-069",
+    "type": "income",
+    "group": "Gaji & Pendapatan Tetap",
+    "name": "THR",
+    "rule_50_30_20": "Pemasukan"
+  },
+  {
+    "code": "CAT-INC-070",
+    "type": "income",
+    "group": "Gaji & Pendapatan Tetap",
+    "name": "Komisi",
+    "rule_50_30_20": "Pemasukan"
+  },
+  {
+    "code": "CAT-INC-071",
+    "type": "income",
+    "group": "Usaha & Freelance",
+    "name": "Pendapatan usaha sendiri",
+    "rule_50_30_20": "Pemasukan"
+  },
+  {
+    "code": "CAT-INC-072",
+    "type": "income",
+    "group": "Usaha & Freelance",
+    "name": "Pendapatan dari freelance",
+    "rule_50_30_20": "Pemasukan"
+  },
+  {
+    "code": "CAT-INC-073",
+    "type": "income",
+    "group": "Usaha & Freelance",
+    "name": "Jasa",
+    "rule_50_30_20": "Pemasukan"
+  },
+  {
+    "code": "CAT-INC-074",
+    "type": "income",
+    "group": "Investasi",
+    "name": "Dividen saham",
+    "rule_50_30_20": "Pemasukan"
+  },
+  {
+    "code": "CAT-INC-075",
+    "type": "income",
+    "group": "Investasi",
+    "name": "Bunga deposito",
+    "rule_50_30_20": "Pemasukan"
+  },
+  {
+    "code": "CAT-INC-076",
+    "type": "income",
+    "group": "Investasi",
+    "name": "Pendapatan dari reksa dana",
+    "rule_50_30_20": "Pemasukan"
+  },
+  {
+    "code": "CAT-INC-077",
+    "type": "income",
+    "group": "Investasi",
+    "name": "Sewa properti",
+    "rule_50_30_20": "Pemasukan"
+  },
+  {
+    "code": "CAT-INC-078",
+    "type": "income",
+    "group": "Investasi",
+    "name": "Capital gain",
+    "rule_50_30_20": "Pemasukan"
+  },
+  {
+    "code": "CAT-INC-079",
+    "type": "income",
+    "group": "Pasif & Royalti",
+    "name": "Royalti (buku, musik, karya seni)",
+    "rule_50_30_20": "Pemasukan"
+  },
+  {
+    "code": "CAT-INC-080",
+    "type": "income",
+    "group": "Usaha & Freelance",
+    "name": "Afiliasi",
+    "rule_50_30_20": "Pemasukan"
+  },
+  {
+    "code": "CAT-INC-081",
+    "type": "income",
+    "group": "Pasif & Royalti",
+    "name": "Lisensi penggunaan produk/jasa",
+    "rule_50_30_20": "Pemasukan"
+  }
+];

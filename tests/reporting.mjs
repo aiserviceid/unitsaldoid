@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import {reportData,bounds,delta,csvText,changeLabel} from '../dist/reporting.js';
+const tx=(kind,amount,date='2026-10-10T05:00:00Z',extra={})=>({kind,amount,wallet_id:'cash',occurred_at:date,source:'web',...extra});
+const rows=[tx('income',1000),tx('expense',200),tx('debt_disbursement',5000),tx('debt_payment',100),tx('receivable_disbursement',300),tx('receivable_payment',50),tx('transfer',400,undefined,{destination_wallet_id:'bank'}),tx('income',500,'2026-09-01T05:00:00Z'),tx('expense',100,'2026-09-02T05:00:00Z'),tx('expense',50,undefined,{recorder_name:'Anak',recorder_telegram_id:'3',source:'telegram'}),tx('income',100,'2026-09-30T17:00:00Z'),tx('expense',10,'2026-10-31T17:00:00Z')];
+const obs=[{id:'ob',type:'debt',contact_name:'Nuno',principal:1000,issued_at:'2026-09-01T00:00:00Z',due_date:'2026-10-12',obligation_payments:[{amount:200,paid_at:'2026-09-10T00:00:00Z'},{amount:300,paid_at:'2026-10-10T00:00:00Z'},{amount:500,paid_at:'2026-11-10T00:00:00Z'}],status:'paid'}];
+const r=reportData(rows,obs,[],2026,9,'all','all',new Date('2026-12-01T00:00:00Z'));
+assert.equal(r.income,1100);assert.equal(r.expense,250);assert.equal(r.cashIn,6150);assert.equal(r.cashOut,650);assert.equal(r.opening,400);assert.equal(r.closing,5900);assert.equal(r.previousIncome,500);assert.equal(r.debt,500);assert.equal(r.periodPaid,300);assert.equal(r.overdue,500);assert.equal(r.categoryRows[0].name,'Tanpa kategori');assert.equal(r.categoryRows[0].pct,100);
+const bank=reportData(rows,[],[],2026,9,'bank');assert.equal(bank.cashIn,400);assert.equal(bank.income,0);assert.equal(bank.closing,400);
+const cash=reportData(rows,[],[],2026,9,'cash');assert.equal(cash.cashOut,1050);assert.equal(cash.closing,5500);
+const child=reportData(rows,[],[],2026,9,'all','tg:3');assert.equal(child.expense,50);assert.equal(child.income,0);assert.equal(child.savingsRate,null);assert.equal(child.closing,r.closing);
+const deficit=reportData([tx('income',100),tx('expense',200)],[],[],2026,9);assert.equal(deficit.savingsRate,-100);
+assert.equal(bounds(2026,0).start,Date.parse('2025-12-31T17:00:00Z'));assert.equal(delta(tx('transfer',100,undefined,{destination_wallet_id:'bank'}),'all'),0);
+const csv=csvText([['=CMD()', 'a;"b', '@unsafe', '正常'],[123,-50]]);assert.ok(csv.startsWith('\uFEFF'));assert.ok(csv.includes('"\'=CMD()"'));assert.ok(csv.includes('"a;""b"'));assert.ok(csv.includes('123;-50'));assert.equal(changeLabel(10,0),'Belum ada pembanding');
+console.log('PASS: borrowing never income, transfers wallet/family, WIB boundaries, opening/closing, prior month, recorder filter, historical payments, negative/no-income rate, category shares, Excel formula-safe CSV.');

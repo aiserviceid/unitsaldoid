@@ -1,0 +1,7 @@
+Lanjutkan proyek UnitSaldo ini; jangan membuat proyek baru. Baca README.md, FIX_UNITSALDO.sql dan tests sebelum mengubah kode. Pertahankan desain putih/hijau, sidebar hijau gelap, 4 kartu ringkasan, grafik harian/mingguan, dompet, transaksi, utang/piutang dan navigasi HP 5 menu. Gunakan screenshot verification sebagai acuan hasil render dengan data uji.
+
+Saldo hanya dihitung dari transaksi. Penerimaan utang menambah saldo; pencairan piutang mengurangi saldo. Transfer tidak mengubah total. Gunakan RPC record_obligation dan record_obligation_payment untuk mutasi tagihan atomik. Jangan menghapus transaksi pembayaran secara terpisah. Jangan membuat kode Telegram tetap atau memasangkan kode tidak dikenal ke akun terbaru. Token Telegram/service-role hanya di environment server.
+
+Reproduksi bug dahulu, lakukan perubahan terarah, lalu jalankan test:db dan test:web. Uji login dan bot nyata secara terpisah jika akses tersedia. Jangan klaim produksi sudah diuji/deploy sebelum terbukti. Pertahankan RLS dan validasi kepemilikan semua dompet/kategori. Hindari perubahan skema destruktif dan data palsu di dashboard pengguna.
+
+Prioritas lanjutan: verifikasi pada akun produksi, idempotensi update Telegram (update_id), ekspor laporan, anggaran yang benar-benar dapat dikonfigurasi, dan penegakan lisensi web di database bila produk dijual. Penilaian anggaran sekarang masih heuristik, bukan skor keuangan resmi.

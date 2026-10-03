@@ -1,0 +1,3394 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>UnitSaldo - Ringkasan Keuangan</title>
+  <link rel="icon" type="image/png" href="./unitsaldo-logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="./config.js"></script>
+  <script src="./default-categories.js"></script>
+  <style>
+    :root {
+      /* Tema Persis Gambar Referensi */
+      --sidebar-bg: #022c22;
+      --sidebar-hover: rgba(255, 255, 255, 0.05);
+      --sidebar-active: #064e3b;
+      --sidebar-text: #93b3a7;
+      --sidebar-text-active: #ffffff;
+      
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --border: #eef2f6;
+      --border-subtle: #f1f5f9;
+      
+      --primary: #00875a;
+      --primary-hover: #00704a;
+      --primary-light: #e6f7f2;
+      
+      --orange: #f97316;
+      --orange-light: #fff7ed;
+      --orange-border: #ffedd5;
+      
+      --danger: #e05243;
+      --danger-light: #feeeee;
+      
+      --info: #0284c7;
+      --info-light: #e0f2fe;
+
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --text-dim: #94a3b8;
+      
+      --font: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 13.5px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+
+    /* Inputs */
+    input, select, button, textarea {
+      font-family: inherit;
+      font-size: 13.5px;
+      border-radius: var(--radius-sm);
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      color: var(--text);
+      padding: 9px 12px;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(0, 135, 90, 0.12);
+    }
+
+    /* Buttons */
+    button {
+      cursor: pointer;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      user-select: none;
+    }
+    button.primary {
+      background: var(--primary);
+      color: #ffffff;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 9px 18px;
+    }
+    button.primary:hover { background: var(--primary-hover); }
+
+    button.secondary {
+      background: #ffffff;
+      color: var(--text);
+      border: 1px solid #cbd5e1;
+      border-radius: var(--radius-sm);
+      padding: 8px 14px;
+    }
+    button.secondary:hover { background: #f1f5f9; }
+
+    button.danger {
+      background: var(--danger-light);
+      color: var(--danger);
+      border: 1px solid #fecaca;
+      border-radius: var(--radius-sm);
+    }
+
+    button.link {
+      background: none;
+      border: none;
+      color: var(--primary);
+      padding: 0;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 13px;
+    }
+    button.link:hover { text-decoration: underline; }
+
+    /* Auth Screen */
+    .auth-wrap {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background: radial-gradient(circle at 50% 10%, #e6f7f2 0%, #f8fafc 70%);
+    }
+    .auth-box {
+      width: min(420px, 100%);
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 34px 30px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    }
+    .form-grid { display: grid; gap: 14px; }
+
+    /* Shell Layout */
+    .app-wrap { display: none; min-height: 100vh; }
+
+    /* SIDEBAR (FOREST DARK EMERALD, SLEEK & PROPORTIONAL) */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 220px;
+      background: var(--sidebar-bg);
+      padding: 24px 14px 18px;
+      display: flex;
+      flex-direction: column;
+      z-index: 100;
+    }
+    .sidebar-logo {
+      padding: 0 6px 26px;
+      display: flex;
+      align-items: center;
+    }
+    .sidebar-logo img {
+      height: 30px;
+      width: auto;
+      max-width: 175px;
+      object-fit: contain;
+    }
+
+    /* Navigation Links (Flex Column, Compact, No Stretching!) */
+    .nav-links {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex: 1;
+      overflow-y: auto;
+    }
+    .nav-btn {
+      height: 40px;
+      padding: 0 12px;
+      background: transparent;
+      border: none;
+      color: var(--sidebar-text);
+      border-radius: 9px;
+      text-align: left;
+      font-weight: 500;
+      font-size: 13.5px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.15s ease;
+      width: 100%;
+      flex-shrink: 0;
+    }
+    .nav-btn:hover {
+      color: #ffffff;
+      background: var(--sidebar-hover);
+    }
+    .nav-btn.active {
+      color: #ffffff;
+      background: var(--sidebar-active);
+      font-weight: 600;
+    }
+    .nav-btn svg {
+      stroke: currentColor;
+      flex-shrink: 0;
+    }
+
+    /* Sidebar Footer User */
+    .sidebar-user {
+      margin-top: auto;
+      padding-top: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #ffffff;
+      padding-left: 4px;
+      padding-right: 4px;
+    }
+    .user-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      overflow: hidden;
+    }
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #334155;
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 12px;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+    .user-name {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #ffffff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Main Content Body */
+    .main-body {
+      margin-left: 220px;
+      padding: 28px 34px 80px;
+      max-width: 1380px;
+    }
+
+    /* Top Bar Header */
+    .top-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .page-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.3px;
+    }
+    .page-subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .date-filter-chip {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: var(--radius-sm);
+      padding: 8px 14px;
+      font-weight: 600;
+      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    /* White Cards With Subtle Border & Radius */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px 22px;
+      box-shadow: var(--shadow-sm);
+    }
+    .card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .card-head-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Top 4 KPI Metrics */
+    .stat-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .kpi-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+      transition: border-color 0.15s ease;
+    }
+    .kpi-card:hover { border-color: #cbd5e1; }
+    .kpi-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .kpi-icon-wrap {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .kpi-icon-wrap.green { background: var(--primary-light); color: var(--primary); }
+    .kpi-icon-wrap.red { background: var(--danger-light); color: var(--danger); }
+    .kpi-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 500;
+      margin-bottom: 1px;
+    }
+    .kpi-val {
+      font-size: 18.5px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.3px;
+    }
+    .kpi-val.net { color: var(--primary); }
+    .kpi-chevron {
+      color: #94a3b8;
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    /* Grid 2 Kolom Utama */
+    .grid-main-2 {
+      display: grid;
+      grid-template-columns: 1.45fr 1fr;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    /* Bar Chart Custom Sesuai Gambar */
+    .chart-box {
+      margin-top: 12px;
+      position: relative;
+    }
+    .chart-grid-bg {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 150px;
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      pointer-events: none;
+    }
+    .grid-y-line {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-dim);
+      font-size: 10.5px;
+    }
+    .grid-y-line::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px dashed #e2e8f0;
+    }
+    .chart-bars-wrap {
+      height: 150px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding-left: 60px;
+      position: relative;
+      z-index: 2;
+    }
+    .chart-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      flex: 1;
+    }
+    .bars-pair {
+      display: flex;
+      align-items: flex-end;
+      gap: 3px;
+      height: 130px;
+    }
+    .bar {
+      width: 7px;
+      border-radius: 3px 3px 0 0;
+      transition: height 0.4s ease;
+    }
+    .bar.green { background: #00875a; }
+    .bar.orange { background: #f97316; }
+    .chart-day-label {
+      font-size: 11px;
+      color: var(--text-dim);
+      font-weight: 500;
+    }
+
+    /* Dompet List Item */
+    .wallet-list {
+      display: grid;
+      gap: 10px;
+    }
+    .wallet-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px;
+      background: #ffffff;
+      border-radius: 10px;
+      transition: background 0.15s ease;
+    }
+    .wallet-row:hover { background: #f8fafc; }
+    .wallet-row-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .wallet-icon-bullet {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      font-size: 15px;
+      color: #ffffff;
+    }
+    .wallet-row-name {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .wallet-row-bal {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    /* Transactions Clean Table */
+    .table-clean {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+    .table-clean th {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      padding: 8px 6px;
+      border-bottom: 1px solid var(--border);
+    }
+    .table-clean td {
+      padding: 11px 6px;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 13px;
+      color: var(--text);
+    }
+    .table-clean tr:last-child td { border-bottom: none; }
+    .tx-icon-desc {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 500;
+    }
+    .tx-cat-icon {
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      background: #f1f5f9;
+      display: grid;
+      place-items: center;
+      font-size: 13px;
+    }
+
+    /* Utang & Piutang Sesuai Gambar */
+    .ob-split-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .ob-pill-box {
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .ob-pill-box.orange {
+      background: var(--orange-light);
+      border: 1px solid var(--orange-border);
+    }
+    .ob-pill-box.green {
+      background: #ecfdf5;
+      border: 1px solid #d1fae5;
+    }
+    .ob-pill-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      font-size: 14px;
+      font-weight: 800;
+    }
+    .ob-pill-box.orange .ob-pill-icon { background: #fed7aa; color: #ea580c; }
+    .ob-pill-box.green .ob-pill-icon { background: #a7f3d0; color: #059669; }
+
+    /* Telegram Status Banner Sesuai Gambar */
+    .telegram-banner {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+    .tg-banner-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .tg-icon-circle {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #0284c7;
+      color: #ffffff;
+      display: grid;
+      place-items: center;
+      font-size: 18px;
+    }
+    .tg-status-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .dot-live-green {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #10b981;
+    }
+
+    /* Kategori Badges & Pills */
+    .badge-cat {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+    .badge-income {
+      background: #ecfdf5;
+      color: #047857;
+      border: 1px solid #a7f3d0;
+    }
+    .badge-expense {
+      background: #fef2f2;
+      color: #b91c1c;
+      border: 1px solid #fecaca;
+    }
+    .badge-needs {
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+    }
+    .badge-wants {
+      background: #fff7ed;
+      color: #c2410c;
+      border: 1px solid #fed7aa;
+    }
+    .badge-savings {
+      background: #f0fdf4;
+      color: #15803d;
+      border: 1px solid #bbf7d0;
+    }
+
+    /* Modal Form */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.5);
+      backdrop-filter: blur(4px);
+      z-index: 300;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-backdrop.show { display: flex; }
+    .modal-content {
+      background: #ffffff;
+      border-radius: 16px;
+      width: min(500px, 100%);
+      padding: 24px 26px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* Mobile Bottom Navigation (Preview HP) */
+    .mobile-bottom-nav {
+      visibility: hidden;
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 56px;
+      background: #ffffff;
+      border-top: 1px solid var(--border);
+      z-index: 120;
+      justify-content: space-around;
+      align-items: center;
+      padding: 4px;
+    }
+    .m-nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 10px;
+      color: var(--text-muted);
+      text-decoration: none;
+      gap: 3px;
+      background: none;
+      border: none;
+    }
+    .m-nav-item.active { color: var(--primary); font-weight: 700; }
+
+    /* Responsive Mobile */
+    @media (max-width: 900px) {
+      .stat-cards-grid { grid-template-columns: 1fr 1fr; }
+      .grid-main-2 { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main-body { margin-left: 0; padding: 18px 14px 75px; }
+      .stat-cards-grid { grid-template-columns: 1fr; gap: 10px; }
+      .top-header { flex-direction: column; align-items: stretch; gap: 12px; }
+      .header-actions { justify-content: space-between; }
+      .mobile-bottom-nav { display: flex; }
+      .telegram-banner { flex-direction: column; align-items: stretch; }
+      .telegram-banner button { width: 100%; }
+    }
+
+    /* UnitSaldo reference layout */
+    :root { --sidebar-bg:#003c32; --sidebar-active:#006b54; --bg:#f5f9f9; --text:#0a111d; --primary:#009e73; }
+    .sidebar {width:260px;padding:34px 16px 28px;background:linear-gradient(145deg,#00372f,#004439 70%,#00372f)}
+    .sidebar-logo {padding:0 12px 34px}.sidebar-logo img {height:56px;max-width:210px;width:210px;object-fit:contain}
+    .nav-btn {height:56px;font-size:16px;color:#e1f1ed;gap:20px;justify-content:flex-start;padding:0 18px}.nav-btn svg{width:24px;height:24px}
+    .sidebar-user {border-top:1px solid #ffffff22;padding-top:20px}.user-avatar{width:44px;height:44px;background:#ffffff40}.user-name{font-size:16px}
+    .main-body {margin-left:260px;max-width:none;padding:30px 30px 28px}.page-title{font-size:clamp(25px,2.5vw,40px);letter-spacing:-1px}.page-subtitle{font-size:18px}
+    .top-header{margin-bottom:26px}.date-filter-chip{padding:10px 14px}.date-filter-chip input{border:0;padding:0;width:148px;background:transparent;font-size:15px}
+    #btnQuickAddTx{padding:16px 22px;font-size:16px}.stat-cards-grid{gap:16px;margin-bottom:16px;grid-template-columns:repeat(4,minmax(0,1fr))}
+    .kpi-card{padding:18px 16px;min-height:110px;border-radius:12px}.kpi-icon-wrap{width:62px;height:62px;border-radius:50%}.kpi-icon-wrap svg{width:29px;height:29px}.kpi-label{font-size:14px}.kpi-val{font-size:clamp(18px,1.65vw,27px);white-space:nowrap;letter-spacing:-.7px}.kpi-left{gap:16px;min-width:0}.kpi-chevron{font-weight:400}
+    .grid-main-2{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:16px;margin-bottom:16px}.card{border-radius:12px;padding:20px 22px;min-width:0;box-shadow:0 4px 15px #003c3205}.card-head-title{font-size:20px}
+    .chart-box{margin-top:20px;margin-bottom:24px}.chart-grid-bg{height:204px}.chart-bars-wrap{height:230px;padding-left:68px;gap:1px}.bars-pair{height:204px;gap:3px;width:100%;justify-content:center}.chart-col{min-width:0}.bar{width:min(9px,40%);border-radius:2px 2px 0 0}.grid-y-line{font-size:12px}.grid-y-line::after{border-bottom:1px solid #edf1f4}.chart-day-label{font-size:11px;min-height:17px}.wallet-list{gap:0}.wallet-row{padding:8px 0;border-bottom:1px solid #edf1f4;border-radius:0;gap:12px}.wallet-icon-bullet{width:48px;height:40px;font-size:20px}.wallet-row-name{font-size:16px}.wallet-row-bal{font-size:16px;white-space:nowrap}.wallet-row-left{min-width:0}.wallet-row-name{overflow-wrap:anywhere}
+    .table-clean th{background:#f4f6f8;font-size:13px;padding:9px 10px}.table-clean td{padding:12px 10px;font-size:14px}.tx-cat-icon{background:transparent;font-size:20px}.ob-pill-box{padding:14px 12px;gap:12px}.ob-pill-icon{border-radius:50%;width:42px;height:42px;font-size:22px}.ob-pill-box b{font-size:18px!important}.telegram-banner{background:#f4fcfa;border-color:#c9eee5}.tg-icon-circle{width:50px;height:50px;min-width:50px;min-height:50px;flex:0 0 50px;aspect-ratio:1;border-radius:50%}.tg-icon-circle svg{display:block;width:24px;height:24px;flex-shrink:0}.tg-banner-left{min-width:0}.tg-banner-left>div:last-child{min-width:0;flex:1}.tg-status-indicator{font-size:15px}.mobile-brand{display:none}button:disabled{opacity:.5;cursor:wait}#dataNotice{padding:12px;margin-bottom:16px;background:#fff4df;border-radius:8px;color:#784c00}
+    @media(min-width:769px) and (max-width:1250px){.sidebar{width:220px}.main-body{margin-left:220px;padding:24px}.stat-cards-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.page-subtitle{font-size:14px}.top-header{flex-wrap:wrap}.kpi-val{font-size:24px}}
+    @media(max-width:1000px){.grid-main-2{grid-template-columns:minmax(0,1fr)}.top-header{flex-wrap:wrap}}
+    @media(max-width:768px){.sidebar{display:none}.main-body{margin-left:0;padding:0 14px 92px}.mobile-brand{display:flex;align-items:center;justify-content:space-between;background:#003c32;margin:0 -14px 18px;padding:16px 18px}.mobile-brand img{width:160px;height:44px;object-fit:contain}.mobile-brand button{color:white;font-size:23px}.top-header{position:relative;display:block;margin-bottom:14px}.page-title{font-size:20px;letter-spacing:-.5px;padding-right:0}.page-subtitle{font-size:12px;margin:5px 0 12px}.header-actions{gap:8px}.date-filter-chip{padding:8px;flex:1}.date-filter-chip input{width:100%;font-size:12px}#btnQuickAddTx{padding:11px 12px;font-size:12px}.stat-cards-grid{grid-template-columns:1fr;gap:9px;margin-bottom:14px}.kpi-card{min-height:76px;padding:12px 14px}.kpi-icon-wrap{width:46px;height:46px}.kpi-icon-wrap svg{width:24px;height:24px}.kpi-label{font-size:12px}.kpi-val{font-size:21px}.kpi-left{gap:12px}.card{padding:16px 14px}.card-head{gap:8px;flex-wrap:wrap}.card-head-title{font-size:17px}.card-head>div:last-child{gap:8px!important;flex-wrap:wrap}.card-head span{font-size:10px}.chart-bars-wrap{height:178px;padding-left:40px}.bars-pair,.chart-grid-bg{height:152px}.bar{width:4px}.bars-pair{gap:1px}.grid-y-line{font-size:10px}.chart-day-label{font-size:9px}.wallet-row-name,.wallet-row-bal{font-size:14px}.table-clean{min-width:480px}.ob-pill-box b{font-size:16px!important}.telegram-banner{padding:14px;gap:12px}.mobile-bottom-nav{height:68px;padding-bottom:env(safe-area-inset-bottom);box-shadow:0 -2px 10px #003c3208}.m-nav-item{padding:8px 10px;font-size:10px;min-width:54px}.modal-content{padding:20px 16px}.modal-backdrop{padding:12px}.form-grid input,.form-grid select{font-size:16px}#walletsManagementGrid{grid-template-columns:minmax(0,1fr)!important}}
+    .sidebar{padding-top:24px}.sidebar-logo{padding:0 0 17px}.sidebar-logo img{width:245px;max-width:none;height:82px;margin-left:-8px}.mobile-brand img{width:200px;height:44px;margin-left:-12px}
+    .ob-split-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.ob-pill-box{min-width:0}.ob-pill-box>div:last-child{min-width:0}.kpi-val{font-size:clamp(18px,1.5vw,26px)}
+    @media(max-width:768px){#btnQuickAddTx{white-space:nowrap;padding:11px 10px;flex:none}.date-filter-chip{min-width:0}.ob-pill-box{padding:12px 8px;gap:6px}.ob-pill-icon{width:34px;height:34px;flex-shrink:0}.ob-pill-box b{font-size:14px!important;white-space:nowrap}.chart-col:last-child .chart-day-label{font-size:0}}
+    .wallet-icon-bullet svg{width:24px;height:24px}.tx-cat-icon{color:#566172}
+  
+    [hidden]{display:none!important}.signup-field label{display:block;margin-bottom:6px;font-size:12px;font-weight:600;color:var(--text-muted)}
+    .sidebar{padding:24px 12px 22px}.sidebar-logo{padding:0 6px 18px;flex-direction:column;align-items:flex-start;flex-shrink:0}.sidebar-logo img{width:225px;max-width:100%;height:70px;object-position:left center;margin-left:-8px}.account-name{color:#d4ede4;font-size:12px;font-weight:600;margin:4px 0 0;max-width:210px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.sidebar-note{margin:16px 8px;padding:18px 14px;border:1px solid #ffffff20;border-radius:16px;background:linear-gradient(135deg,#ffffff0d,#b5f1cd09)}.sidebar-note span{font-size:9px;letter-spacing:1.6px;color:#9dd5bc}.sidebar-note p{font-size:14px;color:#fff;margin:10px 0}.sidebar-note button{color:#b6e9ce;font-size:11px}.family-label{font-size:10px;line-height:1.6;letter-spacing:.6px;color:#b9dccd;border-left:1px solid #ffffff29;padding-left:14px}
+    @media(max-width:768px){.mobile-brand{padding:12px 14px}.mobile-brand img{width:154px;height:40px;object-position:left center}.mobile-brand .account-name{margin-top:0;font-size:11px;max-width:190px}.mobile-bottom-nav{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));padding:8px 4px calc(8px + env(safe-area-inset-bottom))}.m-nav-item{min-width:0;padding:5px 0;font-size:9px}.m-nav-item span{font-size:9px;white-space:nowrap}}
+  
+    .report-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:14px 0}.report-metric{border:1px solid var(--border);border-radius:14px;padding:15px;background:#f8fbfa;min-width:0}.report-metric small{display:block;color:var(--text-muted);font-size:10px;line-height:1.6}.report-metric b{display:block;font-size:20px;margin:7px 0;overflow-wrap:anywhere}.report-section-title{font-size:16px;margin:26px 0 12px}.report-explainer{font-size:12px;line-height:1.7;color:var(--text-muted);margin:12px 0}.report-filters{display:flex;flex-wrap:wrap;gap:12px}.report-filters label{font-size:12px;display:grid;gap:6px;min-width:180px}.report-filters select{max-width:100%}.report-category{display:flex;justify-content:space-between;gap:12px;padding:12px;background:#f8fafc;border-radius:10px}.report-category small{display:block;color:var(--text-muted);font-size:11px;margin-top:4px}.report-table-wrap{overflow-x:auto;margin-top:14px}
+    @media(max-width:768px){.report-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.report-metric{padding:12px}.report-metric b{font-size:17px}.report-filters label{min-width:0;flex:1}.report-filters select{width:100%;font-size:14px}.report-category{font-size:12px}.report-controls button{font-size:12px;padding:9px}}
+    @media print{@page{size:A4;margin:14mm}body{background:white;font-size:11px}.sidebar,.mobile-brand,.top-header,.mobile-bottom-nav,#authScreen,#pendingScreen,.modal-backdrop,#dataNotice,.report-controls,.report-filters{display:none!important}#appScreen{display:block!important}.main-body{margin:0!important;padding:0!important}.page-view{display:none!important}#viewReports{display:block!important}#viewReports>.card{box-shadow:none;border:0;padding:0}.report-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.report-metric{padding:9px;break-inside:avoid}.report-metric b{font-size:14px}.report-table-wrap{overflow:visible}.table-clean{min-width:0!important;width:100%;font-size:10px}tr{break-inside:avoid}thead{display:table-header-group}.report-section-title{break-after:avoid}.report-explainer{font-size:10px}}
+  
+    .tx-search-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:14px 0}.tx-search-row label{font-size:12px;font-weight:600}.tx-search-row input{flex:1;min-width:180px}.history-entry{padding:14px 0;border-bottom:1px solid var(--border);overflow-wrap:anywhere}.history-entry small{display:block;color:var(--text-muted);margin:6px 0}.history-entry p,.history-entry li{font-size:12px;line-height:1.7}.history-entry ul{padding-left:18px;margin-top:8px}
+    @media(max-width:768px){.tx-search-row input{width:100%;flex-basis:100%;font-size:16px}.tx-search-row button{font-size:12px}}
+  
+    .special-user-badge{display:block;margin-top:5px;font-size:10px;color:#916c0e}.bigbos-theme{--primary:#af8414;--primary-hover:#916c0e;--primary-light:#faf2d8;--bg:#f7f5ee;--sidebar-bg:#181818}.bigbos-theme .auth-wrap{background:radial-gradient(circle at 50% 10%,#faf2d8 0%,#f7f5ee 70%)}.bigbos-theme button.primary:hover{background:linear-gradient(120deg,#e2bb38,#b98d20)}.bigbos-theme .sidebar{background:linear-gradient(160deg,#181818,#24211b)}.bigbos-theme .nav-btn.active{background:linear-gradient(120deg,#f2d563,#d5ac35);color:#171717}.bigbos-theme .nav-btn.active svg{stroke:#171717}.bigbos-theme .sidebar-logo{padding-bottom:18px}.bigbos-theme .sidebar-logo img{margin:0;width:100%;height:100px;border-radius:14px;background:#f8f3e5}.bigbos-theme .account-name{color:#eddaa0}.bigbos-theme .primary{background:linear-gradient(120deg,#f0cf57,#d2a632);color:#171717}.bigbos-theme .mobile-brand{background:#191919}.bigbos-theme .mobile-brand{gap:16px;align-items:center}.bigbos-theme .brand-stack{min-width:0}.bigbos-theme .mobile-brand img{display:block;background:transparent;border-radius:10px;margin:0 0 5px;height:58px;width:134px;max-width:100%;object-fit:contain;object-position:left center}.bigbos-theme .mobile-brand .account-name{max-width:160px;line-height:1.4}.bigbos-theme #authScreen img{height:86px!important;width:198px;object-fit:contain}.family-label{flex-shrink:0;text-transform:uppercase;font-size:9px;letter-spacing:1px}.bigbos-theme .family-label,.bigbos-theme .sidebar-note span,.bigbos-theme .sidebar-note button{color:#edd588}.bigbos-theme .m-nav-item.active{color:#a07912}.bigbos-theme .report-metric{background:#faf8f1}
+    .bigbos-theme .sidebar-logo{align-items:stretch}.bigbos-theme .sidebar-logo img{object-position:center}.bigbos-theme .sidebar-logo .account-name{width:100%;max-width:100%;text-align:center}.bigbos-theme .mobile-brand .brand-stack{width:134px;flex:0 1 134px}.bigbos-theme .mobile-brand .account-name{width:100%;max-width:100%;text-align:center}
+
+    @media(max-width:768px){#tgConfigBox{padding:12px!important}.tg-member-row{padding:10px!important}}
+  </style>
+</head>
+<body>
+
+  <!-- ===================================================================== -->
+  <!-- 1. AUTH SCREEN -->
+  <!-- ===================================================================== -->
+  <section class="auth-wrap" id="authScreen">
+    <div class="auth-box">
+      <div style="text-align:center;margin-bottom:16px;">
+        <img src="./unitsaldo-logo.png" alt="UnitSaldo" style="height:38px;max-width:100%;object-fit:contain;">
+      </div>
+      <p id="authBrandIntro" style="color:var(--text-muted);font-size:13px;margin-bottom:22px;text-align:center;">
+        Masuk ke akun UnitSaldo Anda untuk mengelola pembukuan dan memantau arus kas.
+      </p>
+
+      <form id="authForm" class="form-grid">
+        <div class="signup-field" hidden><label for="authName">Nama lengkap</label><input id="authName" minlength="2" maxlength="100" autocomplete="name" placeholder="Nama Anda" style="width:100%"></div>
+        <div class="signup-field" hidden><label for="authWhatsApp">Nomor WhatsApp</label><input id="authWhatsApp" type="tel" autocomplete="tel" placeholder="08xxxxxxxxxx" style="width:100%"></div>
+        <p class="signup-field" hidden style="font-size:12px;color:var(--text-muted)">Setelah daftar, konfirmasi email dan kirim permintaan aktivasi melalui WhatsApp admin.</p>
+        <div>
+          <label style="display:block;margin-bottom:6px;font-size:12px;color:var(--text-muted);font-weight:600;"><span id="authIdentityLabel">Email atau nomor HP</span></label>
+          <input required type="text" id="authEmail" autocomplete="username" placeholder="Email atau nomor HP" style="width:100%;">
+        </div>
+        <div>
+          <label style="display:block;margin-bottom:6px;font-size:12px;color:var(--text-muted);font-weight:600;">Kata Sandi</label>
+          <input required minlength="6" type="password" id="authPassword" placeholder="••••••••" style="width:100%;">
+        </div>
+        <button class="primary" id="btnSubmitAuth" style="padding:11px;margin-top:4px;">Masuk ke Akun</button>
+        <button type="button" class="secondary" id="btnToggleAuthMode">Belum punya akun? Daftar Baru</button>
+        <div id="authNotice" style="font-size:13px;text-align:center;color:var(--text-muted);margin-top:6px;"></div>
+      </form>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- 2. MAIN APP SHELL -->
+  <!-- ===================================================================== -->
+  <section id="pendingScreen" style="display:none;min-height:100dvh;place-items:center;padding:24px;background:var(--bg)"><div class="card" style="max-width:440px;text-align:center;padding:32px"><img src="./unitsaldo-logo.png" alt="UnitSaldo" style="width:180px"><h2 style="margin-top:24px">Menunggu aktivasi</h2><p id="pendingGreeting"></p><p id="pendingInstructions" style="color:var(--text-muted);line-height:1.7">Konfirmasi email Anda, lalu kirim permintaan verifikasi ke WhatsApp admin. Akun dapat digunakan setelah disetujui.</p><a id="pendingWhatsApp" class="primary" style="display:block;margin:20px 0;text-decoration:none;padding:12px">Hubungi admin melalui WhatsApp</a><button id="btnCheckActivation" class="secondary">Cek status aktivasi</button><button id="btnPendingSignOut" class="link" style="margin-left:12px">Keluar</button><p id="pendingNotice" role="status" style="font-size:12px"></p></div></section>
+  <section class="app-wrap" id="appScreen">
+    
+    <!-- SIDEBAR PERSIS GAMBAR REFERENSI (IKON SVG MONOKROM PUTIH/MINT) -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <img src="./unitsaldo-logo.png" alt="UnitSaldo"><div class="account-name">Pengguna</div>
+      </div>
+
+      <nav class="nav-links">
+        <!-- 1. Beranda -->
+        <button class="nav-btn active" data-view="viewHome">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          <span>Beranda</span>
+        </button>
+
+        <!-- 2. Transaksi -->
+        <button class="nav-btn" data-view="viewTx">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          <span>Transaksi</span>
+        </button>
+
+        <!-- 3. Dompet -->
+        <button class="nav-btn" data-view="viewWallets">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>
+          <span>Dompet</span>
+        </button>
+
+        <!-- 4. Kategori -->
+        <button class="nav-btn" data-view="viewCategories">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+          <span>Kategori</span>
+        </button>
+
+        <!-- 5. Utang & Piutang -->
+        <button class="nav-btn" data-view="viewObligations">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 5h18"/><polyline points="7 23 3 19 7 15"/><path d="M21 19H3"/></svg>
+          <span>Utang & Piutang</span>
+        </button>
+
+        <!-- 5. Laporan -->
+        <button class="nav-btn" data-view="viewReports">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          <span>Laporan</span>
+        </button>
+
+        <!-- 6. Anggaran -->
+        <button class="nav-btn" data-view="viewBudget">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+          <span>Anggaran</span>
+        </button>
+
+        <!-- 7. Bot Telegram -->
+        <button class="nav-btn" data-view="viewTelegram">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          <span>Bot Telegram</span>
+        </button>
+
+        <!-- 8. Pengaturan -->
+        <button class="nav-btn" data-view="viewSettings">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          <span>Pengaturan</span>
+        </button>
+        <button class="nav-btn" data-view="viewCalendar"><span>📅 Kalender</span></button>
+        <button class="nav-btn" data-view="viewAssistant"><span>✨ Asisten AI</span></button>
+      </nav>
+
+      <!-- Sidebar User Footer -->
+      <div class="sidebar-note"><span>FINANCE WEBAPP</span><p>Lebih rapi, lebih tenang.</p><button class="link" data-view-target="viewTelegram">Catat lewat Telegram ↗</button></div><div class="sidebar-user">
+        <div class="user-pill">
+          <div class="user-avatar" id="userAvatarChar">IP</div>
+          <div class="user-name" id="userEmailDisplay">Ipud</div>
+        </div>
+        <button class="link" id="btnSignOut" title="Keluar Akun" style="color:var(--sidebar-text);font-size:14px;padding:4px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN BODY CONTENT -->
+    <main class="main-body">
+      
+      <div class="mobile-brand"><div class="brand-stack"><img src="./unitsaldo-logo.png" alt="UnitSaldo"><div class="account-name">Pengguna</div></div><span class="family-label">Finance<br>WebApp</span></div>
+      <div id="dataNotice" role="alert" hidden></div>
+      <!-- TOP HEADER -->
+      <header class="top-header">
+        <div>
+          <h1 class="page-title" id="pageTitle">Ringkasan Keuangan</h1>
+          <p class="page-subtitle" id="pageSubtitle">Pantau semua dompet dan transaksi dalam satu tempat.</p>
+        </div>
+        <div class="header-actions">
+          <div class="date-filter-chip">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <input type="month" id="periodPicker" aria-label="Periode laporan">
+            <span style="font-size:11px;color:#94a3b8;">▾</span>
+          </div>
+          <button class="primary" id="btnQuickAddTx">
+            <span style="font-size:16px;line-height:1;">+</span> Catat Transaksi
+          </button>
+        </div>
+      </header>
+
+      <!-- ================================================================= -->
+      <!-- VIEW 1: BERANDA -->
+      <!-- ================================================================= -->
+      <section class="page-view active" id="viewHome">
+        <div class="feature-shortcuts"><button class="secondary" data-view-target="viewCalendar">📅 Kalender</button><button class="secondary" data-view-target="viewAssistant">✨ Chat & Rekap AI</button></div>
+
+        
+        <!-- 4 KPI CARDS -->
+        <div class="stat-cards-grid">
+          <!-- 1. Total Saldo -->
+          <div class="kpi-card" data-view-target="viewWallets">
+            <div class="kpi-left">
+              <div class="kpi-icon-wrap green">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>
+              </div>
+              <div>
+                <div class="kpi-label">Total Saldo</div>
+                <div class="kpi-val" id="homeTotalBal">Rp0</div>
+              </div>
+            </div>
+            <div class="kpi-chevron">&rsaquo;</div>
+          </div>
+
+          <!-- 2. Pemasukan -->
+          <div class="kpi-card" data-view-target="viewTx">
+            <div class="kpi-left">
+              <div class="kpi-icon-wrap green">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+              </div>
+              <div>
+                <div class="kpi-label">Pemasukan</div>
+                <div class="kpi-val" id="homeTotalInc">Rp0</div>
+              </div>
+            </div>
+            <div class="kpi-chevron">&rsaquo;</div>
+          </div>
+
+          <!-- 3. Pengeluaran -->
+          <div class="kpi-card" data-view-target="viewTx">
+            <div class="kpi-left">
+              <div class="kpi-icon-wrap red">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+              </div>
+              <div>
+                <div class="kpi-label">Pengeluaran</div>
+                <div class="kpi-val" id="homeTotalExp">Rp0</div>
+              </div>
+            </div>
+            <div class="kpi-chevron">&rsaquo;</div>
+          </div>
+
+          <!-- 4. Arus Kas Bersih -->
+          <div class="kpi-card" data-view-target="viewReports">
+            <div class="kpi-left">
+              <div class="kpi-icon-wrap green">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+              </div>
+              <div>
+                <div class="kpi-label">Arus Kas Bersih</div>
+                <div class="kpi-val net" id="homeNetCash">Rp0</div>
+              </div>
+            </div>
+            <div class="kpi-chevron">&rsaquo;</div>
+          </div>
+        </div>
+
+        <!-- BARIS 2: ARUS KAS GRAFIK & DOMPET SAYA -->
+        <div class="grid-main-2">
+          
+          <!-- Card Grafik Arus Kas -->
+          <div class="card">
+            <div class="card-head">
+              <div class="card-head-title">Arus Kas</div>
+              <div style="display:flex;align-items:center;gap:16px;">
+                <div style="display:flex;align-items:center;gap:12px;font-size:12px;color:var(--text-muted);">
+                  <span style="display:inline-flex;align-items:center;gap:5px;">
+                    <span style="width:7px;height:7px;border-radius:50%;background:#00875a;"></span> Pemasukan
+                  </span>
+                  <span style="display:inline-flex;align-items:center;gap:5px;">
+                    <span style="width:7px;height:7px;border-radius:50%;background:#f97316;"></span> Pengeluaran
+                  </span>
+                </div>
+                <select id="chartPeriod" style="padding:4px 8px;font-size:11.5px;border-radius:6px;border-color:#e2e8f0;">
+                  <option value="daily">Harian</option>
+                  <option value="weekly">Mingguan</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Visual Bar Chart -->
+            <div class="chart-box">
+              <div class="chart-grid-bg">
+                <div class="grid-y-line"><span>1.500.000</span></div>
+                <div class="grid-y-line"><span>1.000.000</span></div>
+                <div class="grid-y-line"><span>500.000</span></div>
+                <div class="grid-y-line"><span>0</span></div>
+              </div>
+              <div class="chart-bars-wrap" id="chartBarsArea">
+                <!-- Bar Chart Bars -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Card Dompet Saya -->
+          <div class="card">
+            <div class="card-head">
+              <div class="card-head-title">Dompet Saya</div>
+              <button class="link" data-view-target="viewWallets" style="font-size:18px;color:#94a3b8;">&rsaquo;</button>
+            </div>
+            <div class="wallet-list" id="homeWalletsList"></div>
+            <div style="margin-top:14px;">
+              <button class="link" data-view-target="viewWallets" style="font-weight:700;font-size:13px;">
+                Kelola Dompet &rsaquo;
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- BARIS 3: TRANSAKSI TERBARU & UTANG PIUTANG -->
+        <div class="grid-main-2">
+          
+          <!-- Card Transaksi Terbaru -->
+          <div class="card">
+            <div class="card-head">
+              <div class="card-head-title">Transaksi Terbaru</div>
+              <button class="link" data-view-target="viewTx" style="font-size:12.5px;">Lihat Semua</button>
+            </div>
+            <div style="overflow-x:auto;">
+              <table class="table-clean">
+                <thead>
+                  <tr>
+                    <th>Tanggal</th>
+                    <th>Keterangan</th>
+                    <th>Dompet</th>
+                    <th style="text-align:right;">Nominal</th>
+                  </tr>
+                </thead>
+                <tbody id="homeTxTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Card Utang & Piutang -->
+          <div class="card">
+            <div class="card-head">
+              <div class="card-head-title">Utang & Piutang</div>
+              <button class="link" data-view-target="viewObligations" style="font-size:18px;color:#94a3b8;">&rsaquo;</button>
+            </div>
+            
+            <div class="ob-split-grid">
+              <div class="ob-pill-box orange">
+                <div class="ob-pill-icon">↑</div>
+                <div>
+                  <div style="font-size:11px;color:#c2410c;font-weight:600;">Utang</div>
+                  <b style="font-size:15px;color:#ea580c;" id="homeTotalDebt">Rp0</b>
+                </div>
+              </div>
+
+              <div class="ob-pill-box green">
+                <div class="ob-pill-icon">↓</div>
+                <div>
+                  <div style="font-size:11px;color:#047857;font-weight:600;">Piutang</div>
+                  <b style="font-size:15px;color:#059669;" id="homeTotalReceivable">Rp0</b>
+                </div>
+              </div>
+            </div>
+
+            <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:8px;">
+              Tagihan Terdekat
+            </div>
+            <div id="homeUpcomingObligations"></div>
+          </div>
+
+        </div>
+
+        <!-- BARIS 4: BANNER TELEGRAM (PERSIS GAMBAR) -->
+        <div class="telegram-banner">
+          <div class="tg-banner-left">
+            <div class="tg-icon-circle">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </div>
+            <div>
+              <div class="tg-status-indicator">
+                <span class="dot-live-green" id="tgDotStatus"></span>
+                <span id="tgBannerTitle">Telegram terhubung</span>
+              </div>
+              <p style="font-size:12px;color:var(--text-muted);margin-top:2px;" id="tgBannerSub">
+                Catat transaksi langsung lewat chat.
+              </p>
+            </div>
+          </div>
+          <div>
+            <button class="secondary" data-view-target="viewTelegram" style="font-weight:600;font-size:13px;padding:8px 16px;">
+              Atur Bot Telegram &rsaquo;
+            </button>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- VIEW 2: TRANSAKSI LENGKAP -->
+      <!-- ================================================================= -->
+      <section class="page-view" id="viewTx" style="display:none;">
+        <div class="card">
+          <div class="card-head" style="flex-wrap:wrap;gap:12px;">
+            <div>
+              <div class="card-head-title">Semua Transaksi</div>
+              <p style="font-size:12px;color:var(--text-muted);margin-top:2px;">Riwayat transaksi pemasukan, pengeluaran, dan transfer.</p>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+              <select id="filterMonth" style="padding:6px 10px;font-size:12px;border-radius:6px;border:1px solid var(--border);">
+                <option value="all">Semua Bulan</option>
+                <option value="0">Januari</option><option value="1">Februari</option><option value="2">Maret</option>
+                <option value="3">April</option><option value="4">Mei</option><option value="5">Juni</option>
+                <option value="6">Juli</option><option value="7">Agustus</option><option value="8">September</option>
+                <option value="9">Oktober</option><option value="10">November</option><option value="11">Desember</option>
+              </select>
+              <select id="filterYear" style="padding:6px 10px;font-size:12px;border-radius:6px;border:1px solid var(--border);">
+                <option value="2025">2025</option>
+                <option value="2026" selected>2026</option>
+                <option value="2027">2027</option>
+              </select>
+              <button class="primary" id="btnOpenTxModalFromTxView" style="padding:6px 14px;font-size:12.5px;">
+                <span style="font-size:15px;line-height:1;">+</span> Catat Transaksi
+              </button>
+            </div>
+          </div>
+          <div class="tx-search-row"><label for="txSearch">Cari transaksi</label><input id="txSearch" type="search" placeholder="Keterangan, nominal, dompet, kategori, atau pencatat"><button class="secondary" id="btnAllHistory">Riwayat perubahan</button></div>
+          <div style="overflow-x:auto;">
+            <table class="table-clean">
+              <thead>
+                <tr>
+                  <th>Tanggal</th>
+                  <th>Keterangan</th>
+                  <th>Kategori</th>
+                  <th>Jenis</th>
+                  <th>Dompet</th>
+                  <th style="text-align:right;">Nominal</th>
+                  <th style="text-align:right;width:70px;">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="txFullTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- VIEW 3: DOMPET (BISA GANTI NAMA DOMPET) -->
+      <!-- ================================================================= -->
+      <section class="page-view" id="viewWallets" style="display:none;">
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <div class="card-head-title">Kelola Rekening & Dompet</div>
+              <p style="font-size:12px;color:var(--text-muted);margin-top:2px;">
+                Ubah nama rekening atau tambahkan akun kas baru.
+              </p>
+            </div>
+            <button class="primary" id="btnAddWallet">+ Tambah Dompet</button>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));gap:14px;" id="walletsManagementGrid"></div>
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- VIEW 4: KATEGORI KEUANGAN (81 POS MASTER UNITSALDO) -->
+      <!-- ================================================================= -->
+      <section class="page-view" id="viewCategories" style="display:none;">
+        <div class="card">
+          <div class="card-head" style="flex-wrap:wrap;gap:12px;">
+            <div>
+              <div class="card-head-title" style="display:flex;align-items:center;gap:8px;">
+                <span>📂 Kategori Keuangan (81 Pos Master)</span>
+                <span class="badge-cat badge-income" id="catCountBadge" style="font-size:11.5px;font-weight:700;">81 Kategori</span>
+              </div>
+              <p style="font-size:12px;color:var(--text-muted);margin-top:2px;">
+                Daftar standar akuntansi 81 pos keuangan keluarga & bisnis serta kaidah 50/30/20.
+              </p>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+              <button class="secondary" id="btnSyncMasterCategoriesPage" title="Tanamkan ulang 81 pos kategori bawaan">
+                ⚡ Tanamkan 81 Kategori Master
+              </button>
+              <button class="primary" id="btnAddCustomCategory">
+                <span style="font-size:15px;line-height:1;">+</span> Tambah Kategori
+              </button>
+            </div>
+          </div>
+
+          <!-- Filter & Search Toolbar -->
+          <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center;">
+            <div style="flex:1;min-width:220px;position:relative;">
+              <input type="text" id="catSearchInput" placeholder="🔍 Cari nama pos atau kelompok kategori..." style="width:100%;padding:8px 12px;font-size:13px;border-radius:8px;border:1px solid var(--border);">
+            </div>
+            <select id="catTypeFilter" style="padding:8px 12px;font-size:12.5px;border-radius:8px;border:1px solid var(--border);">
+              <option value="all">Semua Tipe (Pemasukan & Pengeluaran)</option>
+              <option value="expense">📤 Pengeluaran (Expense)</option>
+              <option value="income">📥 Pemasukan (Income)</option>
+            </select>
+            <select id="catRuleFilter" style="padding:8px 12px;font-size:12.5px;border-radius:8px;border:1px solid var(--border);">
+              <option value="all">Semua Kaidah 50/30/20</option>
+              <option value="Kebutuhan">Kebutuhan (Needs 50%)</option>
+              <option value="Keinginan">Keinginan (Wants 30%)</option>
+              <option value="Tabungan">Tabungan/Investasi (Savings 20%)</option>
+            </select>
+          </div>
+
+          <div style="overflow-x:auto;">
+            <table class="table-clean">
+              <thead>
+                <tr>
+                  <th style="width:40px;">No</th>
+                  <th style="width:130px;">Tipe</th>
+                  <th>Kelompok Pos</th>
+                  <th>Nama Kategori</th>
+                  <th>Kaidah 50/30/20</th>
+                  <th style="text-align:right;width:70px;">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="categoryTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- VIEW 4: UTANG & PIUTANG -->
+      <!-- ================================================================= -->
+      <section class="page-view" id="viewObligations" style="display:none;">
+        <div class="grid-main-2">
+          <div class="card">
+            <div class="card-head">
+              <div class="card-head-title" style="color:#059669;">📥 Piutang (Uang di Luar)</div>
+              <button class="primary" id="btnAddReceivable">+ Catat Piutang</button>
+            </div>
+            <div id="fullReceivableList"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-head">
+              <div class="card-head-title" style="color:#ea580c;">📤 Utang (Kewajiban)</div>
+              <button class="primary" id="btnAddDebt">+ Catat Utang</button>
+            </div>
+            <div id="fullDebtList"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- VIEW 5: LAPORAN -->
+      <!-- ================================================================= -->
+      <section class="page-view" id="viewReports" style="display:none;">
+        <div class="feature-shortcuts"><button class="secondary" data-view-target="viewCalendar">📅 Kalender</button><button class="secondary" data-view-target="viewAssistant">✨ Chat & Rekap AI</button></div>
+
+        <div class="card">
+          <div class="card-head"><div><div class="card-head-title">Laporan Keuangan Keluarga</div><p id="reportPeriodLabel" style="font-size:12px;color:var(--text-muted)"></p></div><div class="report-controls" style="display:flex;gap:8px;flex-wrap:wrap"><button class="secondary" id="btnExportCSV">Unduh CSV (Excel)</button><button class="primary" id="btnReportPDF">PDF / Cetak</button></div></div>
+          <div class="report-filters"><label>Dompet<select id="reportWallet"><option value="all">Semua dompet</option></select></label><label>Pencatat<select id="reportRecorder"><option value="all">Semua pencatat</option></select></label></div>
+          <p class="report-explainer">Pendapatan dan belanja rutin dipisahkan dari pinjaman serta cicilan. Transfer antar-dompet tidak menambah pendapatan keluarga.</p>
+          <div class="report-grid"><div class="report-metric"><small>PENDAPATAN</small><b id="repInc">Rp0</b></div><div class="report-metric"><small>BELANJA RUTIN</small><b id="repExp">Rp0</b></div><div class="report-metric"><small>SURPLUS / DEFISIT RUTIN</small><b id="repSurplus">Rp0</b></div><div class="report-metric"><small>PERSENTASE SISA PENDAPATAN</small><b id="repSavingsRate">—</b></div></div>
+          <p class="report-explainer">Persentase sisa pendapatan = (pendapatan − belanja rutin) ÷ pendapatan. Angka ini bukan jumlah yang sudah dipindahkan ke tabungan.</p>
+          <h3 class="report-section-title">Ringkasan arus kas bulanan</h3><div class="report-grid"><div class="report-metric"><small>SALDO AWAL</small><b id="repOpening">Rp0</b></div><div class="report-metric"><small>UANG MASUK</small><b id="repCashIn">Rp0</b></div><div class="report-metric"><small>UANG KELUAR</small><b id="repCashOut">Rp0</b></div><div class="report-metric"><small>SALDO AKHIR</small><b id="repClosing">Rp0</b></div></div><p id="reportBalanceNote" class="report-explainer"></p><p id="reportFinancing" class="report-explainer"></p><p>Arus kas bersih: <b id="repNet">Rp0</b></p>
+          <h3 class="report-section-title">Dibanding bulan sebelumnya</h3><div id="reportComparison" class="report-grid"></div>
+          <h3 class="report-section-title">Pengeluaran per kategori</h3><div id="repCategoryBreakdown" style="display:grid;gap:8px"></div>
+          <h3 class="report-section-title">Utang & Piutang</h3><p id="reportDebtNote" class="report-explainer"></p><div class="report-grid"><div class="report-metric"><small>SISA UTANG</small><b id="repDebt">Rp0</b></div><div class="report-metric"><small>SISA PIUTANG</small><b id="repReceivable">Rp0</b></div><div class="report-metric"><small>PEMBAYARAN PERIODE INI</small><b id="repPaid">Rp0</b></div><div class="report-metric"><small>LEWAT JATUH TEMPO</small><b id="repOverdue">Rp0</b></div></div><div class="report-table-wrap"><table class="table-clean"><thead><tr><th>Nama / Jenis</th><th>Jatuh tempo</th><th>Sisa</th><th>Status</th></tr></thead><tbody id="reportDebtRows"></tbody></table></div>
+          <h3 class="report-section-title">Rincian transaksi</h3><div class="report-table-wrap"><table class="table-clean"><thead><tr><th>Tanggal</th><th>Keterangan / Pencatat</th><th>Jenis / Dompet</th><th>Nominal</th></tr></thead><tbody id="reportTxRows"></tbody></table></div>
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- VIEW 6: ANGGARAN -->
+      <!-- ================================================================= -->
+      <section class="page-view" id="viewBudget" style="display:none;">
+        <div class="card">
+          <div class="card-head">
+            <div class="card-head-title">Evaluasi Alokasi 50/30/20 & Safe-to-Spend</div>
+          </div>
+
+          <div style="background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:18px;display:flex;justify-content:space-between;align-items:center;">
+            <div>
+              <small style="color:var(--text-muted);font-weight:700;">🛡️ UANG JAJAN AMAN HARI INI:</small>
+              <div style="font-size:20px;font-weight:800;color:var(--primary);margin-top:2px;" id="budgetSafeToSpend">Rp0 / hari</div>
+            </div>
+            <div style="text-align:right;">
+              <small style="color:var(--text-muted);font-weight:700;">SKOR FINANSIAL:</small>
+              <div style="font-size:20px;font-weight:800;color:var(--text);" id="budgetHealthScore">80/100</div>
+            </div>
+          </div>
+
+          <div style="height:10px;border-radius:9999px;background:#e2e8f0;overflow:hidden;display:flex;margin-bottom:14px;">
+            <div id="bBarNeeds" style="width:50%;background:#0284c7;"></div>
+            <div id="bBarWants" style="width:30%;background:#f97316;"></div>
+            <div id="bBarSavings" style="width:20%;background:#00875a;"></div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:12px;">
+            <div style="padding:12px;border-radius:10px;background:#f0f9ff;border-left:4px solid #0284c7;">
+              <small style="color:#0369a1;font-weight:700;">1. Kebutuhan (50%)</small>
+              <div style="font-size:15px;font-weight:800;margin-top:2px;" id="bValNeeds">Rp0</div>
+            </div>
+            <div style="padding:12px;border-radius:10px;background:#fff7ed;border-left:4px solid #f97316;">
+              <small style="color:#c2410c;font-weight:700;">2. Keinginan (30%)</small>
+              <div style="font-size:15px;font-weight:800;margin-top:2px;" id="bValWants">Rp0</div>
+            </div>
+            <div style="padding:12px;border-radius:10px;background:#ecfdf5;border-left:4px solid #00875a;">
+              <small style="color:#047857;font-weight:700;">3. Tabungan (20%)</small>
+              <div style="font-size:15px;font-weight:800;margin-top:2px;" id="bValSavings">Rp0</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- VIEW 7: BOT TELEGRAM -->
+      <!-- ================================================================= -->
+      <section class="page-view" id="viewTelegram" style="display:none;">
+        <div class="card">
+          <div class="card-head">
+            <div class="card-head-title">Pengaturan Bot Telegram</div>
+          </div>
+          <div id="tgConfigBox" style="background:#f8fafc;border:1px solid var(--border);border-radius:14px;padding:22px;text-align:center;margin-bottom:18px;"></div>
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- VIEW 8: PENGATURAN -->
+      <!-- ================================================================= -->
+      <section class="page-view" id="viewCalendar" style="display:none;"></section>
+      <section class="page-view" id="viewAssistant" style="display:none;"></section>
+      <section class="page-view" id="viewSettings" style="display:none;">
+        <div class="card" style="margin-bottom:16px"><div class="card-head-title">Pengingat tagihan Telegram</div><p class="report-explainer">Dikirim pukul 08.00 WIB ke Telegram nomor 1 dan 2: 3 hari sebelum jatuh tempo, pada hari jatuh tempo, lalu seminggu sekali jika terlambat. Nomor 3 tidak menerima rincian tagihan.</p><label style="display:flex;gap:10px;align-items:center"><input type="checkbox" id="telegramRemindersEnabled"> Aktifkan pengingat utang & piutang</label><p id="reminderSettingsNotice" role="status" style="font-size:12px;margin-top:8px"></p></div>
+
+        <div class="card" style="margin-bottom:16px"><div class="card-head-title">Menu Lainnya</div><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
+          <button class="secondary" data-view-target="viewObligations">Utang & Piutang</button><button class="secondary" data-view-target="viewBudget">Anggaran</button><button class="secondary" data-view-target="viewCategories">Kategori</button><button class="secondary" data-view-target="viewTelegram">Bot Telegram</button><button class="secondary" data-view-target="viewCalendar">📅 Kalender</button><button class="secondary" data-view-target="viewAssistant">✨ Asisten AI</button><button class="secondary" id="btnMobileSignOut">Keluar Akun</button>
+        </div></div>
+        <div class="grid-main-2">
+          <div class="card">
+            <div class="card-head">
+              <div class="card-head-title">Status Lisensi Pengguna</div>
+            </div>
+            <div style="padding:12px;border:1px solid var(--border);border-radius:10px;margin-bottom:14px;">
+              <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+                <span style="color:var(--text-muted)">Akun Email:</span>
+                <b id="settingsEmail">-</b>
+              </div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+                <span style="color:var(--text-muted)">Status:</span>
+                <b id="settingsLicenseStatus" style="color:var(--primary);">-</b>
+              </div>
+              <div style="display:flex;justify-content:space-between;">
+                <span style="color:var(--text-muted)">Masa Aktif s/d:</span>
+                <b id="settingsLicenseExpiry">-</b>
+              </div>
+            </div>
+            <button class="primary" id="btnRenewLicense" style="width:100%;">Perpanjang lewat WhatsApp</button>
+            <a id="renewEmailLink" href="mailto:ai.interiorid@gmail.com?subject=Perpanjangan%20Lisensi%20UnitSaldo" style="display:block;text-align:center;margin-top:10px;">Hubungi melalui email</a>
+          </div>
+
+          <div class="card">
+            <div class="card-head">
+              <div class="card-head-title">Tentang UnitSaldo</div>
+            </div>
+            <p style="color:var(--text-muted)">Kelola dompet, transaksi dan tagihan dalam satu akun. Hubungkan Telegram melalui menu Bot Telegram.</p>
+          </div>
+        </div>
+
+        <!-- PENGATURAN KEAMANAN: UBAH KATA SANDI & AUTENTIKASI 2-FAKTOR -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin-top:16px;">
+          <!-- KARTU 1: UBAH KATA SANDI -->
+          <div class="card">
+            <div class="card-head">
+              <div class="card-head-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                Ubah Kata Sandi
+              </div>
+            </div>
+            <p class="report-explainer" style="margin-bottom:12px;">Perbarui kata sandi akun Anda secara berkala untuk menjaga keamanan data keuangan.</p>
+            <form id="changePasswordForm" style="display:grid;gap:10px;">
+              <div>
+                <label style="display:block;margin-bottom:5px;font-size:12px;color:var(--text-muted);font-weight:600;">Kata Sandi Baru</label>
+                <input type="password" id="inputNewPassword" required minlength="6" autocomplete="new-password" placeholder="Minimal 6 karakter" style="width:100%;">
+              </div>
+              <div>
+                <label style="display:block;margin-bottom:5px;font-size:12px;color:var(--text-muted);font-weight:600;">Konfirmasi Kata Sandi Baru</label>
+                <input type="password" id="inputConfirmPassword" required minlength="6" autocomplete="new-password" placeholder="Ulangi kata sandi baru" style="width:100%;">
+              </div>
+              <button type="submit" class="primary" id="btnUpdatePassword" style="width:100%;margin-top:4px;">Simpan Kata Sandi Baru</button>
+            </form>
+            <p id="passwordChangeNotice" role="status" style="font-size:12px;margin-top:10px;"></p>
+          </div>
+
+          <!-- KARTU 2: 2-FACTOR AUTHENTICATION (2FA) -->
+          <div class="card">
+            <div class="card-head">
+              <div class="card-head-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                Autentikasi 2-Faktor (2FA)
+              </div>
+            </div>
+            <p class="report-explainer" style="margin-bottom:12px;">Tambahkan lapisan keamanan verifikasi TOTP (Google Authenticator, Microsoft Authenticator, Authy).</p>
+            
+            <div style="padding:12px;border:1px solid var(--border);border-radius:10px;margin-bottom:14px;background:var(--bg);">
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <span style="color:var(--text-muted);font-size:13px;">Status 2FA:</span>
+                <span id="mfaStatusBadge" style="font-weight:700;font-size:12px;padding:3px 8px;border-radius:6px;background:var(--border);color:var(--text-muted);">Memeriksa...</span>
+              </div>
+              <p id="mfaStatusDesc" style="font-size:11.5px;color:var(--text-dim);margin:6px 0 0 0;">Verifikasi ganda belum aktif pada akun ini.</p>
+            </div>
+
+            <div id="mfaActionsWrap" style="display:flex;flex-direction:column;gap:8px;">
+              <button type="button" class="primary" id="btnSetupMfa" style="width:100%;">Aktifkan 2FA Sekarang</button>
+              <button type="button" class="secondary" id="btnDisableMfa" style="width:100%;display:none;color:var(--danger);border-color:var(--danger);">Nonaktifkan 2FA</button>
+            </div>
+            <p id="mfaNotice" role="status" style="font-size:12px;margin-top:8px;"></p>
+          </div>
+        </div>
+
+        <!-- KARTU 3: RESET DATA (ZONA BAHAYA) -->
+        <div class="card" style="margin-top:16px;border:1px solid rgba(224, 82, 67, 0.25);background:linear-gradient(to bottom, #ffffff, #fffdfd);">
+          <div class="card-head" style="display:flex;justify-content:space-between;align-items:center;">
+            <div class="card-head-title" style="color:var(--danger);display:flex;align-items:center;gap:6px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              Zona Bahaya: Reset Data
+            </div>
+          </div>
+          <p class="report-explainer" style="color:var(--text-muted);margin:0 0 14px 0;">
+            Fitur reset digunakan jika Anda ingin membersihkan pencatatan keuangan dan memulai pembukuan dari nol. Data yang dihapus tidak dapat dipulihkan.
+          </p>
+          <div>
+            <button type="button" class="secondary" id="btnOpenResetModal" style="color:var(--danger);border-color:var(--danger);display:inline-flex;align-items:center;gap:6px;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+              Opsi Reset Data Keuangan...
+            </button>
+          </div>
+          <p id="resetDataNotice" role="status" style="font-size:12px;margin-top:8px;"></p>
+        </div>
+
+        <div class="card" id="adminPanelCard" style="display:none;margin-top:18px;">
+          <div class="card-head">
+            <div class="card-head-title" style="color:#d97706;">👑 Super Admin: Manajemen Lisensi Pengguna</div>
+            <button class="secondary" id="btnRefreshAdminUsers">🔄 Segarkan</button>
+          </div>
+          <div id="superAdminBotConfig"></div>
+          <div style="overflow-x:auto;">
+            <table class="table-clean">
+              <thead>
+                <tr>
+                  <th>Email</th>
+                  <th>Status</th>
+                  <th>Masa Berlaku</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="admUserTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </section>
+
+  <!-- MOBILE BOTTOM NAV -->
+  <nav class="mobile-bottom-nav">
+    <button class="m-nav-item active" data-view="viewHome">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+      <span>Beranda</span>
+    </button>
+    <button class="m-nav-item" data-view="viewTx">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
+      <span>Transaksi</span>
+    </button>
+    <button class="m-nav-item" data-view="viewWallets">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/></svg>
+      <span>Dompet</span>
+    </button>
+    <button class="m-nav-item" data-view="viewObligations" aria-label="Utang & Piutang"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16m-4-4 4 4-4 4M20 17H4m4-4-4 4 4 4"/></svg><span>Utang/Piutang</span></button>
+    <button class="m-nav-item" data-view="viewReports">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      <span>Laporan</span>
+    </button>
+    <button class="m-nav-item" data-view="viewSettings">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      <span>Lainnya</span>
+    </button>
+  </nav>
+
+  <!-- MODAL CONTAINER -->
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal-content">
+      <div class="modal-head">
+        <h3 id="modalTitle" style="font-size:16px;font-weight:800;color:var(--text);">Judul Modal</h3>
+        <button class="link" id="btnModalClose" style="font-size:22px;color:var(--text-muted);">&times;</button>
+      </div>
+      <form id="modalForm" class="form-grid"></form>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script type="module">
+    import {installEnhancements} from './enhancements.js';
+    import {reportData,recorderKey,recorderName,KIND_LABELS,changeLabel,csvText} from './reporting.js';
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.4';
+
+    const CFG = window.APP_CONFIG || {
+      SUPABASE_URL: "https://azpxkvwdmuoakipldtwa.supabase.co",
+      SUPABASE_ANON_KEY: "sb_publishable_Uw5v2QeGySb88oHnKz96SQ_IsglHwWz",
+      TELEGRAM_BOT_USERNAME: "unitsaldobot",
+      ADMIN_WHATSAPP: "6285382535050",
+      ADMIN_EMAIL: "ai.interiorid@gmail.com"
+    };
+
+    const supabase = createClient(CFG.SUPABASE_URL, CFG.SUPABASE_ANON_KEY);
+    let enhancements=null;
+    const $ = s => document.querySelector(s);
+    const $$ = s => document.querySelectorAll(s);
+
+    const formatIDR = n => new Intl.NumberFormat('id-ID', {
+      style: 'currency', currency: 'IDR', maximumFractionDigits: 0
+    }).format(+n || 0).replace(/\s/g, '');
+
+    const escapeHTML = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const CASH_IN = ['income','debt_disbursement','receivable_payment'];
+    const CASH_OUT = ['expense','debt_payment','receivable_disbursement'];
+    const today = new Date();
+    const initialWIB=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Jakarta',year:'numeric',month:'2-digit'}).formatToParts(today);
+    let selectedMonth = +initialWIB.find(p=>p.type==='month').value-1, selectedYear = +initialWIB.find(p=>p.type==='year').value;
+    const localParts = t => new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Jakarta',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date(t.occurred_at));
+    const part = (t,key) => +localParts(t).find(p => p.type === key).value;
+    const inSelectedPeriod = t => part(t,'month') === selectedMonth+1 && part(t,'year') === selectedYear;
+    const dayOf = t => part(t,'day');
+    const sumKinds = (rows,kinds) => rows.filter(t => kinds.includes(t.kind)).reduce((a,t) => a+Number(t.amount),0);
+    function showLoadError(error) {
+      $('#dataNotice').hidden = false;
+      $('#dataNotice').textContent = 'Data belum berhasil dimuat. Saldo terakhir dipertahankan. ' + (error.message || error);
+    }
+    $('#periodPicker').value = `${selectedYear}-${String(selectedMonth+1).padStart(2,'0')}`;
+    $('#periodPicker').onchange = e => {
+      if (!e.target.value) return;
+      const [y,m] = e.target.value.split('-').map(Number); selectedYear=y; selectedMonth=m-1;
+      renderAll();
+    };
+    $('#chartPeriod').onchange = renderChart;
+    function updateHeaderDate() {
+      const now = new Date();
+      const months = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+      if ($('#currentMonthYearDisplay')) {
+        $('#currentMonthYearDisplay').textContent = `${months[part({occurred_at:now},'month')-1]} ${part({occurred_at:now},'year')}`;
+      }
+    }
+    updateHeaderDate();
+
+    let currentUser = null;
+    let userProfile = null;
+    let isSignupMode = false;
+    let allWallets = [];
+    let wallets = [];
+    let transactions = [];
+    let obligations = [];
+    let categories = [];
+    let telegramLinks = [];
+    let telegramLink = null;
+    let adminUsers = [];
+
+    const isBigbosPortal = window.location.hostname === 'bigbossyudi.vercel.app';
+    function applyAccountBrand(profile){
+      const special=isBigbosPortal||(profile?.is_special===true&&profile.brand_theme==='bigbos-gold');
+      const name=special?'BIGBOS YUDI':'UnitSaldo';
+      const logo=special?'./bigbos-yudi-logo.svg':'./unitsaldo-logo.png';
+      document.body.classList.toggle('bigbos-theme',special);
+      $$('.sidebar-logo img,.mobile-brand img,#authScreen img,#pendingScreen img').forEach(img=>{img.src=logo;img.alt=name;});
+      $('#authBrandIntro').textContent=`Masuk ke akun ${name} Anda untuk mengelola pembukuan dan memantau arus kas.`;
+      document.title=special?'BIGBOS YUDI — Keuangan':'UnitSaldo — Keuangan Keluarga';
+      const favicon=document.querySelector('link[rel="icon"]');
+      favicon.href=logo;favicon.type=special?'image/svg+xml':'image/png';
+    }
+    applyAccountBrand(null);
+    function activeBrandName(){return document.body.classList.contains('bigbos-theme')?'BIGBOS YUDI':'UnitSaldo';}
+    function accountIdentity(){return currentUser?.email||currentUser?.phone||userProfile?.phone_number||userProfile?.whatsapp_number||userProfile?.full_name||'Pengguna';}
+    function normalizeWhatsApp(value) {
+      if (!/^[+\d\s()-]+$/.test(value.trim())) throw new Error('Nomor WhatsApp tidak valid. Gunakan nomor 08 atau +62.');
+      let number=value.replace(/\D/g,''); if(number.startsWith('0')) number='62'+number.slice(1);
+      if(!/^628\d{8,11}$/.test(number)) throw new Error('Nomor WhatsApp tidak valid. Gunakan nomor 08 atau +62.');
+      return number;
+    }
+    function activationURL(name,email,phone) {
+      return 'https://wa.me/6285382535050?text='+encodeURIComponent(`Halo Admin UnitSaldo, mohon verifikasi dan aktifkan akun saya.\nNama: ${name}\nEmail: ${email}\nWhatsApp: ${phone}`);
+    }
+    // Auth
+    $('#btnToggleAuthMode').onclick = () => {
+      isSignupMode = !isSignupMode;
+      $('#btnSubmitAuth').textContent = isSignupMode ? 'Daftar Akun Baru' : 'Masuk ke Akun';
+      $('#btnToggleAuthMode').textContent = isSignupMode ? 'Sudah punya akun? Masuk' : 'Belum punya akun? Daftar Baru';
+      $$('.signup-field').forEach(el=>el.hidden=!isSignupMode);
+      $('#authName').required=$('#authWhatsApp').required=isSignupMode;
+      $('#authEmail').type=isSignupMode?'email':'text';$('#authEmail').placeholder=isSignupMode?'nama@email.com':'Email atau nomor HP';$('#authIdentityLabel').textContent=isSignupMode?'Email Akun':'Email atau nomor HP';
+      $('#authNotice').textContent = '';
+    };
+
+    $('#authForm').onsubmit = async e => {
+      e.preventDefault();
+      const button = $('#btnSubmitAuth');
+      if (button.disabled) return;
+      button.disabled = true;
+      $('#authNotice').textContent = 'Memproses...';
+      try {
+        const identity=$('#authEmail').value.trim();
+        const credentials = !isSignupMode&&!identity.includes('@')?{phone:'+'+normalizeWhatsApp(identity),password:$('#authPassword').value}:{email:identity,password:$('#authPassword').value};
+        let name='',phone='';
+        if(isSignupMode){name=$('#authName').value.trim();if(name.length<2||name.length>100)throw new Error('Isi nama lengkap, minimal 2 karakter.');phone=normalizeWhatsApp($('#authWhatsApp').value);}
+        const { error } = isSignupMode ? await supabase.auth.signUp({...credentials,options:{emailRedirectTo:'https://unitsaldoid.vercel.app/',data:{full_name:name,whatsapp_number:phone}}}) : await supabase.auth.signInWithPassword(credentials);
+        if (error) throw error;
+        $('#authNotice').textContent = isSignupMode ? 'Pendaftaran berhasil. Konfirmasi email dan kirim pesan WhatsApp untuk aktivasi.' : '';
+        if(isSignupMode){const url=activationURL(name,credentials.email,phone);$('#authNotice').innerHTML+=' <a href="'+escapeHTML(url)+'">Buka WhatsApp admin</a>';window.location.assign(url);} 
+      } catch(error) { $('#authNotice').textContent = error.message; }
+      finally { button.disabled = false; }
+    };
+
+    $('#btnSignOut').onclick = $('#btnMobileSignOut').onclick = $('#btnPendingSignOut').onclick = async () => { const {error} = await supabase.auth.signOut(); if(error) alert(error.message); };
+
+    $('#btnCheckActivation').onclick=async()=>{await loadData();$('#pendingNotice').textContent=userProfile?.subscription_status==='pending'?'Akun masih menunggu persetujuan admin.':'';};
+    // Navigasi
+    function switchView(targetView, labelText = '') {
+      $$('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.view === targetView));
+      $$('.m-nav-item').forEach(b => b.classList.toggle('active', b.dataset.view === targetView));
+      $$('.page-view').forEach(p => p.style.display = 'none');
+      $('.date-filter-chip').style.display=['viewCalendar','viewAssistant'].includes(targetView)?'none':'';
+      const viewEl = $('#' + targetView);
+      if (viewEl) viewEl.style.display = 'block';
+
+      labelText = ({viewHome:'Ringkasan Keuangan',viewTx:'Transaksi',viewWallets:'Dompet',viewObligations:'Utang & Piutang',viewReports:'Laporan',viewBudget:'Anggaran',viewTelegram:'Bot Telegram',viewSettings:'Pengaturan',viewCategories:'Kategori',viewCalendar:'Kalender Terpadu',viewAssistant:'Asisten AI'})[targetView] || labelText;
+      if (labelText) {
+        $('#pageTitle').textContent = labelText;
+        $('#pageSubtitle').textContent = targetView === 'viewHome' ? 'Pantau semua dompet dan transaksi dalam satu tempat.' : 'Manajemen data keuangan ' + labelText.toLowerCase() + '.';
+      }
+    }
+
+    $$('.nav-btn[data-view]').forEach(btn => {
+      btn.onclick = () => switchView(btn.dataset.view, btn.querySelector('span')?.textContent || btn.textContent.trim());
+    });
+
+    $$('.m-nav-item[data-view]').forEach(btn => {
+      btn.onclick = () => switchView(btn.dataset.view, btn.querySelector('span')?.textContent || btn.textContent.trim());
+    });
+
+    $$('[data-view-target]').forEach(btn => {
+      btn.onclick = () => switchView(btn.dataset.viewTarget);
+    });
+
+    let loadingData = false;
+    // Load Data
+    async function loadData() {
+      if (loadingData) return;
+      loadingData = true;
+      try { await fetchData(); } finally { loadingData = false; }
+    }
+    async function readComplete(makeQuery){const rows=[];for(let offset=0;;offset+=1000){const result=await makeQuery().range(offset,offset+999);if(result.error)return result;rows.push(...(result.data||[]));if((result.data||[]).length<1000)return {data:rows};}}
+    async function fetchData() {
+      if (!currentUser) return;
+
+      const requestUserId = currentUser.id;
+      let pRes = { data: null }, wRes = { data: [] }, tRes = { data: [] }, oRes = { data: [] }, cRes = { data: [] }, tgRes = { data: null };
+
+      try {
+        [pRes, wRes, tRes, oRes, cRes, tgRes] = await Promise.all([
+          supabase.from('profiles').select('*').eq('id', requestUserId).single(),
+          readComplete(()=>supabase.from('wallets').select('*').eq('owner_id', requestUserId).order('id', { ascending: true })),
+          readComplete(()=>supabase.from('transactions').select('*').eq('owner_id', requestUserId).order('occurred_at', { ascending: false }).order('id',{ascending:true})),
+          readComplete(()=>supabase.from('obligations').select('*, obligation_payments(id,transaction_id,amount,paid_at,wallet_id,note,recorder_name,recorder_telegram_id)').eq('owner_id', requestUserId).order('id',{ascending:true})),
+          readComplete(()=>supabase.from('categories').select('*').eq('owner_id', requestUserId).order('id',{ascending:true})),
+          supabase.from('telegram_links').select('*').eq('owner_id', requestUserId)
+        ]);
+      } catch (err) {
+        showLoadError(err); return;
+      }
+
+      if (currentUser?.id !== requestUserId) return;
+      const failure = [pRes,wRes,tRes,oRes,cRes,tgRes].find(r => r.error);
+      if (failure) { showLoadError(failure.error); return; }
+      $('#dataNotice').hidden = true;
+      userProfile = pRes?.data || null;
+      applyAccountBrand(userProfile);
+      const displayName=userProfile?.full_name||currentUser.user_metadata?.full_name||(currentUser.email||'Pengguna').split('@')[0];
+      $$('.account-name').forEach(el=>el.textContent=displayName);$('#userEmailDisplay').textContent=displayName;$('#userAvatarChar').textContent=displayName.slice(0,2).toUpperCase();
+      const pending=userProfile?.subscription_status==='pending';
+      $('#pendingScreen').style.display=pending?'grid':'none';$('#appScreen').style.display=pending?'none':'block';$('.mobile-bottom-nav').style.visibility=pending?'hidden':'visible';
+      if(pending){$('#pendingInstructions').textContent=userProfile.phone_number?'Akun nomor HP ini menunggu aktivasi admin. Hubungi admin melalui WhatsApp untuk verifikasi dan pengaturan kata sandi.':'Konfirmasi email Anda, lalu kirim permintaan verifikasi ke WhatsApp admin. Akun dapat digunakan setelah disetujui.';$('#pendingGreeting').textContent=`Halo ${displayName}.`;$('#pendingWhatsApp').href=activationURL(displayName,currentUser.email||('HP '+(userProfile.phone_number||currentUser.phone||'')),userProfile.whatsapp_number||'');return;}
+
+      // Profile is created by the database signup trigger. Never overwrite licenses on read.
+      allWallets=wRes?.data||[];
+      wallets = (wRes?.data || []).filter(w => w.is_active !== false);
+      transactions = tRes?.data || [];
+      const years = [...new Set([part({occurred_at:new Date()},'year'),...transactions.map(t => part(t,'year'))])].sort((a,b)=>b-a);
+      const previousYear = $('#filterYear').value;
+      $('#filterYear').innerHTML = '<option value="all">Semua Tahun</option>' + years.map(y => `<option value="${y}">${y}</option>`).join('');
+      $('#filterYear').value = years.includes(+previousYear) ? previousYear : 'all';
+      obligations = oRes?.data || [];
+      
+      const dbCategories = (cRes?.data || []).filter(c => c.is_active !== false);
+      if (dbCategories.length > 0) {
+        categories = dbCategories.map(c => ({
+          ...c,
+          type: c.type || 'expense',
+          group_name: c.group_name || 'Umum',
+          rule_50_30_20: c.rule_50_30_20 || 'Kebutuhan'
+        }));
+      } else if (window.DEFAULT_CATEGORIES && window.DEFAULT_CATEGORIES.length > 0) {
+        // Fallback langsung ke 81 Master agar UI Kategori LANGSUNG TERLIHAT!
+        categories = window.DEFAULT_CATEGORIES.map((c, idx) => ({
+          id: 'master-' + (idx + 1),
+          name: c.name,
+          type: c.type,
+          group_name: c.group,
+          rule_50_30_20: c.rule_50_30_20,
+          is_active: true
+        }));
+      } else {
+        categories = [];
+      }
+
+      const rawTg = Array.isArray(tgRes?.data) ? tgRes.data : (tgRes?.data ? [tgRes.data] : []);
+      telegramLinks = rawTg.filter(l => l.is_active !== false).sort((a,b)=>Number(a.telegram_position)-Number(b.telegram_position));
+      telegramLink = telegramLinks[0] || null;
+
+      const isAdmin = isSuperAdmin();
+      renderSuperAdminBotConfig();
+      if ($('#adminPanelCard')) {
+        $('#adminPanelCard').style.display = isAdmin ? 'block' : 'none';
+        if (isAdmin) loadAdminUsers();
+      }
+
+      renderAll();
+    }
+
+    async function seedMasterCategories(showAlert = true) {
+      if (!currentUser || !window.DEFAULT_CATEGORIES) return;
+
+      // Selalu pastikan UI memuat 81 Master di memori
+      if (categories.length === 0) {
+        categories = window.DEFAULT_CATEGORIES.map((c, idx) => ({
+          id: 'master-' + (idx + 1),
+          name: c.name,
+          type: c.type,
+          group_name: c.group,
+          rule_50_30_20: c.rule_50_30_20,
+          is_active: true
+        }));
+        renderAll();
+      }
+
+      // Coba simpan ke database Supabase
+      try {
+        const batch = window.DEFAULT_CATEGORIES.filter(c => !categories.some(existing => !existing.id.startsWith('master-') && existing.name === c.name && existing.type === c.type)).map(c => ({
+          owner_id: currentUser.id,
+          name: c.name,
+          type: c.type,
+          group_name: c.group,
+          rule_50_30_20: c.rule_50_30_20,
+          is_active: true
+        }));
+
+        if (!batch.length) { if (showAlert) alert('Semua kategori sudah tersimpan.'); return; }
+        let insRes = await supabase.from('categories').insert(batch);
+        
+        if (insRes.error) {
+          // Coba tanpa kolom is_active
+          const simpleBatch = batch.map(c => ({
+            owner_id: currentUser.id,
+            name: c.name,
+            type: c.type,
+            group_name: c.group,
+            rule_50_30_20: c.rule_50_30_20
+          }));
+          insRes = await supabase.from('categories').insert(simpleBatch);
+        }
+
+        if (!insRes.error) {
+          const { data } = await supabase.from('categories').select('*').eq('owner_id', currentUser.id);
+          if (data && data.length > 0) categories = data;
+          renderAll();
+          if (showAlert) alert(`Berhasil menanamkan 81 Kategori Resmi UnitSaldo ke database! Total: ${categories.length} kategori.`);
+        } else {
+          // Jika Supabase menolak karena kolom belum ada
+          if (showAlert) {
+            alert(`81 Kategori Master telah aktif di antarmuka web.\n\nCatatan Database: ${insRes.error.message}\n(Silakan jalankan SQL perbaikan di Supabase SQL Editor agar tersimpan permanen di cloud).`);
+          }
+        }
+      } catch (err) {
+        if (showAlert) alert(`81 Kategori Master aktif di antarmuka web!`);
+      }
+    }
+    if ($('#btnSyncMasterCategories')) $('#btnSyncMasterCategories').onclick = () => seedMasterCategories(true);
+    if ($('#btnSyncMasterCategoriesPage')) $('#btnSyncMasterCategoriesPage').onclick = () => seedMasterCategories(true);
+
+    function getWalletBalance(wId) {
+      return transactions.reduce((sum, t) => {
+        let delta = 0;
+        if (t.wallet_id === wId) {
+          if (['income', 'debt_disbursement', 'receivable_payment'].includes(t.kind)) delta = +t.amount;
+          else if (t.kind === 'transfer') delta = -t.amount;
+          else delta = -(+t.amount);
+        } else if (t.destination_wallet_id === wId && t.kind === 'transfer') {
+          delta = +t.amount;
+        }
+        return sum + delta;
+      }, 0);
+    }
+
+    function renderAll() {
+      renderDashboardStats();
+      renderChart();
+      renderWallets();
+      renderRecentTransactions();
+      renderObligations();
+      renderTelegramStatus();
+      renderReports();
+      renderBudget();
+      renderSettings();
+      renderCategories();
+      enhancements?.refresh();
+    }
+
+    // 1. KPI Stats
+    function renderDashboardStats() {
+      const curMonth = selectedMonth;
+      const curYear = selectedYear;
+
+      const thisMonthTx = transactions.filter(t => {
+        return inSelectedPeriod(t);
+      });
+
+      const totalInc = thisMonthTx.filter(t => ['income', 'debt_disbursement', 'receivable_payment'].includes(t.kind)).reduce((a, t) => a + (+t.amount), 0);
+      const totalExp = thisMonthTx.filter(t => ['expense', 'debt_payment', 'receivable_disbursement'].includes(t.kind)).reduce((a, t) => a + (+t.amount), 0);
+      const totalAllBal = wallets.reduce((a, w) => a + getWalletBalance(w.id), 0);
+      const netCash = totalInc - totalExp;
+
+      $('#homeTotalBal').textContent = formatIDR(totalAllBal);
+      $('#homeTotalInc').textContent = formatIDR(totalInc);
+      $('#homeTotalExp').textContent = formatIDR(totalExp);
+      $('#homeNetCash').textContent = (netCash >= 0 ? '+' : '') + formatIDR(netCash);
+      $('#homeNetCash').style.color = netCash >= 0 ? 'var(--primary)' : 'var(--danger)';
+    }
+
+    // 2. Bar Chart Sesuai Gambar
+    function renderChart() {
+      const area = $('#chartBarsArea');
+      if (!area) return;
+      const count = new Date(selectedYear, selectedMonth + 1, 0).getDate();
+      const weekly = $('#chartPeriod').value === 'weekly';
+      const step = weekly ? 7 : 1;
+      const points = [];
+      for (let start = 1; start <= count; start += step) {
+        const end = Math.min(count, start + step - 1);
+        const rows = transactions.filter(t => inSelectedPeriod(t) && dayOf(t) >= start && dayOf(t) <= end);
+        points.push({label:weekly ? `${start}–${end}` : start,
+          inc:sumKinds(rows, CASH_IN),exp:sumKinds(rows,CASH_OUT)});
+      }
+      const peak = Math.max(1,...points.flatMap(p => [p.inc,p.exp]));
+      const magnitude = 10 ** Math.floor(Math.log10(peak));
+      const max = Math.ceil(peak / magnitude) * magnitude;
+      $$('.grid-y-line span').forEach((span,i) => span.textContent = new Intl.NumberFormat('id-ID',{notation:'compact',maximumFractionDigits:1}).format(max * (3-i)/3));
+      area.innerHTML = points.map(p => `<div class="chart-col"><div class="bars-pair">
+        <div class="bar green" style="height:${p.inc/max*100}%" title="${p.label}: Masuk ${formatIDR(p.inc)}"></div>
+        <div class="bar orange" style="height:${p.exp/max*100}%" title="${p.label}: Keluar ${formatIDR(p.exp)}"></div>
+        </div><div class="chart-day-label">${weekly || p.label === 1 || p.label % 5 === 0 || p.label === count ? p.label : '&nbsp;'}</div></div>`).join('');
+    }
+
+    // 3. Dompet Saya
+    function getWalletColor(name = '', kind = 'cash') {
+      const lower = name.toLowerCase();
+      if (lower.includes('bca') || lower.includes('mandiri') || kind === 'bank') return '#2563eb';
+      if (lower.includes('dana') || lower.includes('gopay') || kind === 'ewallet') return '#0284c7';
+      if (lower.includes('tabungan') || kind === 'savings') return '#8b5cf6';
+      return '#10b981';
+    }
+
+    function renderWallets() {
+      const homeList = $('#homeWalletsList');
+      if (homeList) {
+        homeList.innerHTML = wallets.slice(0, 4).map(w => {
+          const color = getWalletColor(w.name, w.kind);
+          return `
+            <div class="wallet-row">
+              <div class="wallet-row-left">
+                <div class="wallet-icon-bullet" style="background:${color};">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>
+                </div>
+                <div class="wallet-row-name">${escapeHTML(w.name)}</div>
+              </div>
+              <div class="wallet-row-bal">${formatIDR(getWalletBalance(w.id))}</div>
+            </div>
+          `;
+        }).join('') || '<p style="color:var(--text-muted);padding:8px 0;">Belum ada dompet.</p>';
+      }
+
+      const mgmtGrid = $('#walletsManagementGrid');
+      if (mgmtGrid) {
+        mgmtGrid.innerHTML = wallets.map(w => {
+          const color = getWalletColor(w.name, w.kind);
+          return `
+            <div class="card" style="padding:16px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                <div style="display:flex;align-items:center;gap:10px;">
+                  <div class="wallet-icon-bullet" style="background:${color};">💳</div>
+                  <div>
+                    <b style="font-size:14px;color:var(--text);">${escapeHTML(w.name)}</b>
+                    <small style="display:block;color:var(--text-muted);text-transform:capitalize;">${w.kind}</small>
+                  </div>
+                </div>
+                <button class="secondary btn-edit-wallet" data-id="${w.id}" data-name="${escapeHTML(w.name)}" style="padding:4px 8px;font-size:11.5px;">
+                  Ubah Nama
+                </button>
+              </div>
+              <div style="font-size:18px;font-weight:800;color:var(--text);margin-top:6px;">
+                ${formatIDR(getWalletBalance(w.id))}
+              </div>
+            </div>
+          `;
+        }).join('') || '<p style="color:var(--text-muted)">Belum ada dompet.</p>';
+
+        $$('.btn-edit-wallet').forEach(btn => {
+          btn.onclick = () => openEditWalletModal(btn.dataset.id, btn.dataset.name);
+        });
+      }
+    }
+
+    function openEditWalletModal(wId, currentName) {
+      const formHtml = `
+        <div>
+          <label style="display:block;margin-bottom:6px;font-size:12px;color:var(--text-muted);font-weight:600;">Nama Dompet / Rekening</label>
+          <input required name="name" value="${escapeHTML(currentName)}" style="width:100%;">
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:12px;">
+          <button type="button" class="secondary" data-modal-cancel>Batal</button>
+          <button class="primary">Simpan</button>
+        </div>
+      `;
+
+      showModal('Ubah Nama Dompet', formHtml, async (e) => {
+        e.preventDefault();
+        const v = Object.fromEntries(new FormData(e.target));
+        if ('amount' in v && (!Number.isFinite(+v.amount) || +v.amount <= 0)) return alert('Nominal harus lebih dari nol.');
+        if ('principal' in v && (!Number.isFinite(+v.principal) || +v.principal <= 0)) return alert('Nominal harus lebih dari nol.');
+        const newName = v.name.trim();
+        if (!newName) return;
+
+        const { error } = await supabase.from('wallets').update({ name: newName }).eq('id', wId);
+        if (error) return alert('Gagal: ' + error.message);
+
+        $('#modalBackdrop').classList.remove('show');
+        loadData();
+      });
+    }
+
+    // 4. Transaksi Terbaru
+    function renderRecentTransactions() {
+      const tbody = $('#homeTxTableBody');
+      if (tbody) {
+        tbody.innerHTML = transactions.filter(inSelectedPeriod).slice(0, 4).map(t => {
+          const isPlus = ['income', 'debt_disbursement', 'receivable_payment'].includes(t.kind);
+          const wName = wallets.find(w => w.id === t.wallet_id)?.name || '—';
+          const dateStr = `${String(dayOf(t)).padStart(2,'0')} ${['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'][part(t,'month')-1]}`;
+
+          let icon = '🛒';
+          const lDesc = (t.description || '').toLowerCase();
+          if (lDesc.includes('laptop') || lDesc.includes('servis')) icon = '💻';
+          else if (lDesc.includes('piutang') || lDesc.includes('utang')) icon = '👥';
+          else if (lDesc.includes('listrik') || lDesc.includes('air')) icon = '⚡';
+          else if (isPlus) icon = '💼';
+
+          icon = icon === '💻' ? '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="16" height="13" rx="1"/><path d="M2 20h20l-2-4H4z"/></svg>' : '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3h2l3 12h11l3-9H6"/><circle cx="9" cy="20" r="1"/><circle cx="19" cy="20" r="1"/></svg>';
+          return `
+            <tr>
+              <td style="color:var(--text-muted);">${dateStr}</td>
+              <td>
+                <div class="tx-icon-desc">
+                  <div class="tx-cat-icon">${icon}</div>
+                  <span>${escapeHTML(t.description)}${'<small style="display:block;color:var(--text-muted);font-size:11px;">Pencatat: '+escapeHTML(recorderName(t))+'</small>'}</span>
+                </div>
+              </td>
+              <td style="color:var(--text-muted);">${escapeHTML(wName)}</td>
+              <td style="text-align:right;font-weight:700;color:${isPlus ? 'var(--primary)' : 'var(--danger)'};">
+                ${isPlus ? '+' : '-'}${formatIDR(t.amount)}
+              </td>
+            </tr>
+          `;
+        }).join('') || '<tr><td colspan="4" style="text-align:center;padding:16px;color:var(--text-muted);">Belum ada transaksi.</td></tr>';
+      }
+
+      const fullTbody = $('#txFullTableBody');
+      if (fullTbody) {
+        const filterMonth = $('#filterMonth')?.value || 'all';
+        const filterYear = $('#filterYear')?.value || 'all';
+
+        let filteredTxs = [...transactions];
+        if (filterMonth !== 'all') {
+          filteredTxs = filteredTxs.filter(t => part(t,'month') === +filterMonth+1);
+        }
+        if (filterYear !== 'all') {
+          filteredTxs = filteredTxs.filter(t => part(t,'year') === +filterYear);
+        }
+
+        const query=($('#txSearch').value||'').trim().toLocaleLowerCase('id-ID');
+        if(query)filteredTxs=filteredTxs.filter(t=>[t.description,t.amount,recorderName(t),KIND_LABELS[t.kind],wallets.find(w=>w.id===t.wallet_id)?.name,wallets.find(w=>w.id===t.destination_wallet_id)?.name,categories.find(c=>c.id===t.category_id)?.name].join(' ').toLocaleLowerCase('id-ID').includes(query));
+        fullTbody.innerHTML = filteredTxs.map(t => {
+          const isPlus = ['income', 'debt_disbursement', 'receivable_payment'].includes(t.kind);
+          const wName = wallets.find(w => w.id === t.wallet_id)?.name || '—';
+          const catName = categories.find(c => c.id === t.category_id)?.name || 'Umum';
+          const d = new Date(t.occurred_at).toLocaleDateString('id-ID',{timeZone:'Asia/Jakarta'});
+
+          return `
+            <tr>
+              <td>${d}</td>
+              <td><b>${escapeHTML(t.description)}</b>${'<small style="display:block;color:var(--text-muted);font-size:11px;">Pencatat: '+escapeHTML(recorderName(t))+'</small>'}</td>
+              <td><span style="color:var(--text-muted);">${escapeHTML(catName)}</span></td>
+              <td><b>${({income:'Pemasukan',expense:'Pengeluaran',transfer:'Transfer',debt_disbursement:'Terima utang',debt_payment:'Bayar utang',receivable_disbursement:'Beri piutang',receivable_payment:'Terima piutang'})[t.kind] || t.kind}</b></td>
+              <td>${escapeHTML(wName)}</td>
+              <td style="text-align:right;font-weight:700;color:${isPlus ? 'var(--primary)' : 'var(--danger)'}">
+                ${isPlus ? '+' : '-'}${formatIDR(t.amount)}
+              </td>
+              <td style="text-align:right;">
+                <button class="link btn-history-tx" data-id="${escapeHTML(t.id)}" style="font-size:11px">Riwayat</button>
+                ${['income','expense','transfer'].includes(t.kind)?`<button class="link btn-edit-tx" data-id="${escapeHTML(t.id)}" style="font-size:11px;margin:0 6px">Ubah</button>`:''}
+                <button ${['debt_disbursement','debt_payment','receivable_disbursement','receivable_payment'].includes(t.kind) ? 'disabled title="Mutasi terhubung dengan utang/piutang"' : ''} class="link btn-del-tx" data-id="${t.id}" style="color:var(--danger);font-size:12px;font-weight:600;">Hapus</button>
+              </td>
+            </tr>
+          `;
+        }).join('') || '<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text-muted);">Tidak ada transaksi pada filter periode ini.</td></tr>';
+
+        $$('.btn-edit-tx').forEach(btn=>btn.onclick=()=>openTransactionModal(transactions.find(t=>t.id===btn.dataset.id)));
+        $$('.btn-history-tx').forEach(btn=>btn.onclick=()=>openTransactionHistory(btn.dataset.id));
+        $$('.btn-del-tx').forEach(btn => {
+          btn.onclick = async () => {
+            const linked = transactions.find(t => t.id === btn.dataset.id);
+            if (['debt_disbursement','debt_payment','receivable_disbursement','receivable_payment'].includes(linked?.kind)) return;
+            if (!confirm('Hapus transaksi ini? Saldo rekening/dompet akan dikembalikan secara otomatis.')) return;
+            const { error } = await supabase.from('transactions').delete().eq('id', btn.dataset.id);
+            if (error) alert('Gagal menghapus transaksi: ' + error.message);
+            else loadData();
+          };
+        });
+      }
+    }
+    $('#txSearch').oninput=renderRecentTransactions;
+    $('#btnAllHistory').onclick=()=>openTransactionHistory();
+    if ($('#filterMonth')) $('#filterMonth').onchange = renderRecentTransactions;
+    if ($('#filterYear')) $('#filterYear').onchange = renderRecentTransactions;
+    if ($('#btnOpenTxModalFromTxView')) $('#btnOpenTxModalFromTxView').onclick = () => $('#btnQuickAddTx').click();
+
+    async function openTransactionHistory(transactionId=null){
+      const requestUserId=currentUser?.id;if(!requestUserId)return;
+      let q=supabase.from('transaction_history').select('*').eq('owner_id',requestUserId).order('changed_at',{ascending:false}).limit(100);if(transactionId)q=q.eq('transaction_id',transactionId);
+      const {data,error}=await q;if(currentUser?.id!==requestUserId)return;
+      if(error)return alert('Riwayat belum dapat dimuat: '+error.message);
+      const names={amount:'Nominal',description:'Keterangan',kind:'Jenis',wallet_id:'Dompet',destination_wallet_id:'Dompet tujuan',category_id:'Kategori',occurred_at:'Tanggal'};
+      const display=(key,v)=>v==null?'—':key==='amount'?formatIDR(v):key==='kind'?KIND_LABELS[v]||v:key.includes('wallet')?wallets.find(w=>w.id===v)?.name||v:key==='category_id'?categories.find(c=>c.id===v)?.name||'Tanpa kategori':key==='occurred_at'?new Date(v).toLocaleString('id-ID',{timeZone:'Asia/Jakarta'}):v;
+      const html=(data||[]).map(h=>{const before=h.before_data||{},after=h.after_data||{},row=h.after_data||h.before_data||{};const changes=h.operation==='updated'?Object.entries(names).filter(([k])=>before[k]!==after[k]).map(([k,label])=>`<li>${label}: ${escapeHTML(display(k,before[k]))} → ${escapeHTML(display(k,after[k]))}</li>`).join(''):'';return `<article class="history-entry"><b>${escapeHTML(({created:'Dicatat',updated:'Diubah',deleted:'Dihapus'})[h.operation])} oleh ${escapeHTML(h.actor_name)}</b><small>${new Date(h.changed_at).toLocaleString('id-ID',{timeZone:'Asia/Jakarta'})} WIB</small><p>${escapeHTML(row.description)} · ${formatIDR(row.amount)}</p>${changes?'<ul>'+changes+'</ul>':''}</article>`;}).join('')||'<p>Belum ada riwayat. Pencatatan riwayat dimulai sejak fitur ini diaktifkan.</p>';
+      showModal('Riwayat perubahan transaksi',`<p class="report-explainer">100 perubahan terbaru. Riwayat tetap tersedia setelah transaksi dihapus; perubahan sebelum fitur aktif tidak direkonstruksi.</p><div>${html}</div><button type="button" class="secondary" data-modal-cancel>Tutup</button>`,async()=>{});
+    }
+
+    // 5. Utang & Piutang Sesuai Gambar
+    function renderObligations() {
+      const debts = obligations.filter(o => o.type === 'debt' && o.status !== 'paid');
+      const recvs = obligations.filter(o => o.type === 'receivable' && o.status !== 'paid');
+
+      const totalDebt = debts.reduce((a, o) => {
+        const paid = (o.obligation_payments || []).reduce((pA, p) => pA + (+p.amount), 0);
+        return a + Math.max(0, +o.principal - paid);
+      }, 0);
+
+      const totalRecv = recvs.reduce((a, o) => {
+        const paid = (o.obligation_payments || []).reduce((pA, p) => pA + (+p.amount), 0);
+        return a + Math.max(0, +o.principal - paid);
+      }, 0);
+
+      if ($('#homeTotalDebt')) $('#homeTotalDebt').textContent = formatIDR(totalDebt);
+      if ($('#homeTotalReceivable')) $('#homeTotalReceivable').textContent = formatIDR(totalRecv);
+
+      const upcoming = $('#homeUpcomingObligations');
+      if (upcoming) {
+        const nearest = [...debts, ...recvs].filter(o => o.due_date).sort((a,b) => a.due_date.localeCompare(b.due_date))[0];
+        if (nearest) {
+          const paid = (nearest.obligation_payments || []).reduce((pA, p) => pA + (+p.amount), 0);
+          const left = +nearest.principal - paid;
+          const dueStr = nearest.due_date ? new Date(nearest.due_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) : 'Belum ditentukan';
+
+          upcoming.innerHTML = `
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div style="width:30px;height:30px;border-radius:50%;background:#f1f5f9;display:grid;place-items:center;font-size:12px;"><svg viewBox="0 0 24 24" width="22" height="22" fill="#94a3b8"><circle cx="12" cy="7" r="4"/><path d="M4 22v-3a8 8 0 0 1 16 0v3z"/></svg></div>
+                <div>
+                  <b style="font-size:13px;color:var(--text);">${escapeHTML(nearest.contact_name)}</b>
+                  <small style="display:block;color:var(--text-muted);">Jatuh tempo ${dueStr} • ${nearest.type === 'debt' ? 'Utang' : 'Piutang'}</small>
+                </div>
+              </div>
+              <b style="font-size:13.5px;color:${nearest.type === 'debt' ? '#ea580c' : '#059669'};">${formatIDR(left)}</b>
+            </div>
+          `;
+        } else {
+          upcoming.innerHTML = '<p style="color:var(--text-muted);font-size:12px;">Tidak ada tagihan terdekat.</p>';
+        }
+      }
+
+      const recList = $('#fullReceivableList');
+      if (recList) {
+        recList.innerHTML = recvs.map(o => {
+          const paid = (o.obligation_payments || []).reduce((a, p) => a + (+p.amount), 0);
+          const rem = +o.principal - paid;
+          return `
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #f1f5f9;">
+              <div>
+                <b>${escapeHTML(o.contact_name)}</b>
+                <small style="display:block;color:var(--text-muted);">Pokok: ${formatIDR(o.principal)} • Dibayar: ${formatIDR(paid)}</small><small style="display:block;color:var(--text-muted);">Sisa: ${formatIDR(rem)}</small>
+              </div>
+              <button class="primary btn-pay-ob" data-id="${o.id}" data-type="receivable" data-left="${rem}" style="padding:5px 10px;font-size:11.5px;">Terima</button>
+            </div>
+          `;
+        }).join('') || '<p style="color:var(--text-muted);padding:8px 0;">Tidak ada piutang aktif.</p>';
+      }
+
+      const debtList = $('#fullDebtList');
+      if (debtList) {
+        debtList.innerHTML = debts.map(o => {
+          const paid = (o.obligation_payments || []).reduce((a, p) => a + (+p.amount), 0);
+          const rem = +o.principal - paid;
+          return `
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #f1f5f9;">
+              <div>
+                <b>${escapeHTML(o.contact_name)}</b>
+                <small style="display:block;color:var(--text-muted);">Pokok: ${formatIDR(o.principal)} • Dibayar: ${formatIDR(paid)}</small><small style="display:block;color:var(--text-muted);">Sisa: ${formatIDR(rem)}</small>
+              </div>
+              <button class="danger btn-pay-ob" data-id="${o.id}" data-type="debt" data-left="${rem}" style="padding:5px 10px;font-size:11.5px;">Bayar</button>
+            </div>
+          `;
+        }).join('') || '<p style="color:var(--text-muted);padding:8px 0;">Tidak ada utang aktif.</p>';
+      }
+
+      $$('.btn-pay-ob').forEach(btn => {
+        btn.onclick = () => openPayModal(btn.dataset.id, btn.dataset.type, btn.dataset.left);
+      });
+    }
+
+    // 6. Telegram Banner
+    // 6. Telegram Status (Dukungan Multi-Nomor HP / Multi-Device)
+    function renderTelegramStatus() {
+      const isConnected = telegramLinks.length > 0;
+      const dot = $('#tgDotStatus');
+      const title = $('#tgBannerTitle');
+      const sub = $('#tgBannerSub');
+      const configBox = $('#tgConfigBox');
+
+      const linkCode = userProfile?.telegram_link_code;
+      const botUrl = linkCode ? `https://t.me/${encodeURIComponent(CFG.TELEGRAM_BOT_USERNAME)}?start=${encodeURIComponent(linkCode)}` : '#';
+
+      if (isConnected) {
+        if (dot) dot.style.background = '#10b981';
+        if (title) title.textContent = `Telegram Terhubung (${telegramLinks.length} Nomor HP)`;
+        const names = telegramLinks.map(l => l.display_name || l.first_name || (l.username ? '@' + l.username : 'Pengguna')).join(', ');
+        if (sub) sub.textContent = `Tersambung: ${names} • Semua mutasi otomatis masuk ke dashboard ini.`;
+      } else {
+        if (dot) dot.style.background = '#f59e0b';
+        if (title) title.textContent = 'Telegram belum terhubung';
+        if (sub) sub.textContent = 'Hubungkan nomor HP Anda untuk kemudahan input mutasi kas lewat chat.';
+      }
+
+      if (!configBox) return;
+
+      let html = '';
+
+      if (telegramLinks.length > 0) {
+        html += `
+          <div style="background:#ffffff;border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:20px;text-align:left;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:8px;flex-wrap:wrap;">
+              <h4 style="font-size:14px;font-weight:700;margin:0;color:var(--text);">📱 Akun Telegram Keluarga Terhubung (${telegramLinks.length}):</h4>
+              <span style="font-size:11px;background:#ecfdf5;color:#047857;padding:3px 8px;border-radius:999px;font-weight:700;">🟢 Terhubung</span>
+            </div>
+            <div style="display:grid;gap:8px;">
+              ${telegramLinks.map(l => `
+                <div class="tg-member-row" style="display:flex;justify-content:space-between;align-items:center;background:#f8fafc;padding:10px 14px;border-radius:8px;border:1px solid var(--border);gap:10px;flex-wrap:wrap;">
+                  <div style="display:flex;align-items:center;gap:10px;min-width:0;flex:1 1 180px;overflow-wrap:anywhere;">
+                    <div style="flex-shrink:0;width:32px;height:32px;border-radius:50%;background:#0284c7;color:#fff;display:grid;place-items:center;font-weight:700;font-size:13px;">
+                      ${escapeHTML((l.display_name || l.first_name || 'U')[0].toUpperCase())}
+                    </div>
+                    <div>
+                      <b style="font-size:13px;color:var(--text);">${escapeHTML(l.display_name || l.first_name || 'Pengguna')}</b>
+                      <small style="display:block;color:var(--text-muted);font-size:11px;">${escapeHTML(l.username ? '@' + l.username : 'Chat ID: ' + l.chat_id)}</small>
+                      <small style="display:block;color:var(--text-muted);font-size:11px;">Telegram ${Number(l.telegram_position) || '—'} • ${[1,2].includes(Number(l.telegram_position)) ? 'Akses penuh: transaksi & cek keuangan' : 'Transaksi saja — saldo & laporan privat'}</small>
+                    </div>
+                  </div>
+                  <div style="display:flex;gap:6px;flex-shrink:0"><button class="secondary btn-edit-tg" data-id="${l.id}" style="padding:4px 10px;font-size:11.5px;">Edit</button><button class="danger btn-unlink-tg" data-id="${l.id}" style="padding:4px 10px;font-size:11.5px;">Putuskan</button></div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      // Box untuk menghubungkan nomor baru / pertama kali
+      if (linkCode) {
+        html += `
+          <div style="border:1.5px dashed #cbd5e1;background:#ffffff;border-radius:14px;padding:20px;">
+            <div style="font-size:12px;color:var(--text-muted);font-weight:600;margin-bottom:4px;">
+              ${telegramLinks.length > 0 ? '➕ Hubungkan Akun Telegram Lain (Suami, Istri, Anak):' : '🔑 Kode Tautan Akun Anda:'}
+            </div>
+            <div style="font-size:26px;font-weight:800;color:var(--primary);letter-spacing:2px;overflow-wrap:anywhere;margin-bottom:10px;">${escapeHTML(linkCode)}</div>
+            <p style="font-size:13px;color:var(--text-muted);max-width:480px;margin:0 auto 14px;">
+              Buka Telegram di HP yang ingin dihubungkan, chat ke bot <b>@${CFG.TELEGRAM_BOT_USERNAME}</b>, lalu kirim perintah di bawah:
+            </p>
+            <div style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:14px;">
+              <a href="${botUrl}" target="_blank" class="primary" style="display:inline-flex;align-items:center;gap:8px;text-decoration:none;padding:9px 18px;font-weight:700;font-size:13px;">
+                🚀 Buka Bot @${CFG.TELEGRAM_BOT_USERNAME}
+              </a>
+              <button class="secondary" id="btnCopyTgCode">📋 Salin Kode</button><button class="secondary" id="btnCopyTgCommand">📋 Salin /start</button>
+              <button class="secondary" id="btnRegenTgCode" style="padding:9px 14px;font-size:13px;">
+                🔄 Buat Kode Baru
+              </button>
+            </div>
+            <div style="background:#f1f5f9;border-radius:8px;padding:10px 14px;display:inline-block;max-width:100%;overflow-wrap:anywhere;font-size:12px;color:var(--text);text-align:left;">
+              💡 <b>Perintah Telegram:</b> <code>/start ${escapeHTML(linkCode)}</code>
+            </div>
+          </div>
+        `;
+      } else {
+        html += `
+          <div style="font-size:32px;margin-bottom:6px;">✈️</div>
+          <h4 style="font-size:15px;margin-bottom:4px;">Hubungkan Akun Telegram</h4>
+          <p style="font-size:12.5px;color:var(--text-muted);margin-bottom:14px;">Hubungkan suami, istri, dan anak ke pembukuan yang sama. Buat kode baru untuk setiap anggota; kode hanya berlaku sekali.</p>
+          <button class="primary" id="btnGenTgCode" style="padding:10px 22px;font-size:13.5px;">Buat Kode Tautan</button>
+        `;
+      }
+
+      configBox.innerHTML = html;
+      const copyTelegram=async(value,btn)=>{try{if(navigator.clipboard?.writeText)await navigator.clipboard.writeText(value);else{const el=document.createElement('textarea');el.value=value;document.body.append(el);el.select();const ok=document.execCommand('copy');el.remove();if(!ok)throw Error('Salin manual kode yang ditampilkan.');}btn.textContent='✅ Berhasil disalin';setTimeout(()=>{if(btn.isConnected)btn.textContent='📋 Salin lagi';},2000);}catch(e){alert('Kode belum disalin. '+e.message);}};
+      if($('#btnCopyTgCode'))$('#btnCopyTgCode').onclick=e=>copyTelegram(linkCode,e.currentTarget);
+      if($('#btnCopyTgCommand'))$('#btnCopyTgCommand').onclick=e=>copyTelegram('/start '+linkCode,e.currentTarget);
+
+
+      if ($('#btnGenTgCode')) $('#btnGenTgCode').onclick = generateTelegramCode;
+      if ($('#btnRegenTgCode')) $('#btnRegenTgCode').onclick = generateTelegramCode;
+
+      $$('.btn-edit-tg').forEach(btn=>btn.onclick=()=>editTelegramMember(btn.dataset.id));
+      $$('.btn-unlink-tg').forEach(btn => {
+        btn.onclick = async () => {
+          if (!confirm('Putuskan koneksi nomor Telegram ini?')) return;
+          btn.disabled=true;
+          try{const {error}=await supabase.from('telegram_links').update({is_active:false}).eq('id',btn.dataset.id).eq('owner_id',currentUser.id);if(error)throw error;await loadData();}catch(error){alert('Gagal memutuskan Telegram: '+error.message);}finally{btn.disabled=false;}
+        };
+      });
+    }
+
+    function editTelegramMember(id){
+      const member=telegramLinks.find(l=>l.id===id);if(!member)return;
+      const position=Number(member.telegram_position);
+      const choices=[1,2,3];if(position>3)choices.push(position);
+      showModal(`Edit Telegram ${position}`,`
+        <div><label>Nama panggilan</label><input name="display_name" required maxlength="80" value="${escapeHTML(member.display_name||member.first_name||'Pengguna')}" style="width:100%"></div>
+        <div><label>Posisi Telegram</label><select name="telegram_position" style="width:100%">${choices.map(n=>`<option value="${n}" ${n===position?'selected':''}>Telegram ${n} — ${n<=2?'Akses penuh':'Transaksi saja'}</option>`).join('')}</select></div>
+        <p class="report-explainer">Telegram 1 dan 2 bisa mencatat transaksi serta cek saldo, utang/piutang, dan laporan. Telegram 3 hanya mencatat transaksi. Jika posisi tujuan sudah terisi, kedua posisi akan ditukar.</p>
+        <p class="report-explainer">Akun asli: ${escapeHTML(member.username?'@'+member.username:member.first_name||'Telegram')} · Chat ID: ${escapeHTML(member.chat_id)}. Untuk mengganti akun Telegram, putuskan lalu hubungkan akun baru. Nama panggilan tidak mengubah pencatat transaksi lama.</p>
+        <button class="primary">Simpan perubahan</button><button type="button" class="secondary" data-modal-cancel>Batal</button>
+      `,async e=>{
+        const v=Object.fromEntries(new FormData(e.target)),next=Number(v.telegram_position),name=v.display_name.trim();
+        if(!name)return alert('Nama wajib diisi.');
+        if(next!==position&&!confirm(`Ubah dari Telegram ${position} ke Telegram ${next}? Hak akses mengikuti posisi baru. Jika posisi itu sudah terisi, kedua akun akan bertukar posisi.`))return;
+        const {error}=await supabase.rpc('edit_telegram_member',{p_link_id:id,p_display_name:name,p_position:next});
+        if(error)return alert('Gagal menyimpan Telegram: '+error.message);
+        $('#modalBackdrop').classList.remove('show');await loadData();
+      });
+    }
+
+    function isSuperAdmin() {
+      return currentUser?.email?.toLowerCase() === 'ai.interiorid@gmail.com' && !!currentUser?.email_confirmed_at && userProfile?.is_admin === true;
+    }
+    function renderSuperAdminBotConfig() {
+      const box = $('#superAdminBotConfig');
+      if (!box) return;
+      if (!isSuperAdmin()) { box.innerHTML = ''; return; }
+      // Preserve in-progress input during background data refresh.
+      if (box.querySelector('#superAdminBotForm')) return;
+      box.innerHTML = `<div style="padding:16px;background:#f8fafc;border:1px solid var(--border);border-radius:12px;margin-bottom:20px;">
+        <h4>Pengaturan Bot Telegram & Gemini</h4>
+        <p style="font-size:12px;color:var(--text-muted);margin:8px 0;">Khusus super admin. Nilai disimpan terenkripsi di server dan tidak ditampilkan kembali. Kosongkan kolom untuk mempertahankan nilai yang sudah tersimpan.</p>
+        <form id="superAdminBotForm" autocomplete="off" style="display:grid;gap:12px;">
+          <label>Token Bot Telegram<input type="password" name="TELEGRAM_BOT_TOKEN" autocomplete="new-password" placeholder="Token baru @unitsaldobot dari BotFather" style="display:block;width:100%;margin-top:5px;"></label>
+          <label>Secret Webhook Telegram<input type="password" name="TELEGRAM_WEBHOOK_SECRET" autocomplete="new-password" placeholder="Opsional; dibuat otomatis jika belum ada" style="display:block;width:100%;margin-top:5px;"></label>
+          <label>API Key Gemini<input type="password" name="GEMINI_API_KEY" autocomplete="new-password" placeholder="API key dari Google AI Studio (free tier)" style="display:block;width:100%;margin-top:5px;"></label>
+          <p style="font-size:12px;color:var(--text-muted);">Gemini menerima pesan yang memerlukan AI beserta nama dompet/kategori. Saldo dan riwayat transaksi tidak dikirim. Free tier memiliki kuota dan Google dapat menggunakan input untuk peningkatan produk.</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;"><button type="submit" class="primary" id="btnSaveTelegramConfig">Simpan & Aktifkan Bot</button><button type="button" class="secondary" id="btnActivateTelegram">Aktifkan / Perbaiki Bot</button><button type="button" class="secondary" id="btnCheckTelegram">Cek Status Bot</button></div>
+        </form>
+        <p id="telegramServerStatus" role="status" style="margin-top:10px;font-size:12px;white-space:pre-line;"></p>
+      </div>`;
+      $('#superAdminBotForm').onsubmit = event => { event.preventDefault(); configureTelegramBot('save'); };
+      $('#btnActivateTelegram').onclick = () => configureTelegramBot('setup');
+      $('#btnCheckTelegram').onclick = () => configureTelegramBot('status');
+    }
+    async function configureTelegramBot(action) {
+      if (!isSuperAdmin()) return;
+      const status = $('#telegramServerStatus');
+      const buttons = [$('#btnSaveTelegramConfig'), $('#btnActivateTelegram'), $('#btnCheckTelegram')].filter(Boolean);
+      if (buttons.some(b => b.disabled)) return;
+      buttons.forEach(b => b.disabled = true);
+      status.textContent = 'Memeriksa konfigurasi bot…';
+      try {
+        const { data, error } = await supabase.auth.getSession();
+        if (error || !data.session) throw new Error('Silakan login ulang.');
+        const values = action === 'save' ? Object.fromEntries(new FormData($('#superAdminBotForm'))) : undefined;
+        const result = await fetch(CFG.SUPABASE_URL + '/functions/v1/telegram-webhook/admin', {
+          method:'POST', headers:{'Content-Type':'application/json',Authorization:'Bearer ' + data.session.access_token},
+          body:JSON.stringify({action,values})
+        });
+        const info = await result.json();
+        if (!result.ok || info.error) throw new Error(info.error || 'Fungsi bot belum tersedia.');
+        if (info.missing?.length) status.textContent = 'Secrets belum tersedia: ' + info.missing.join(', ') + '. Isi kolom di panel ini lalu klik Simpan & Aktifkan Bot.';
+        else status.textContent = (info.ready ? 'Webhook bot aktif.' : 'Webhook belum aktif. Klik Aktifkan / Perbaiki Bot.') + '\nGemini: ' + (info.gemini_ready ? 'dikonfigurasi (' + info.model + ')' : 'belum tersedia — isi API Key Gemini di panel ini.') + (info.last_error ? '\nPesan Telegram terakhir: ' + info.last_error : '');
+      } catch (error) { status.textContent = 'Belum berhasil: ' + error.message; }
+      finally { $('#superAdminBotForm')?.reset(); buttons.forEach(b => b.disabled = false); }
+    }
+
+    async function generateTelegramCode() {
+      if (!currentUser) return;
+      const requestUserId = currentUser.id;
+      const button = $('#btnGenTgCode') || $('#btnRegenTgCode');
+      if (button?.disabled) return;
+      if (button) button.disabled = true;
+      try {
+      if (!userProfile) await loadData();
+      if (currentUser?.id !== requestUserId) return;
+      if (!userProfile) return alert('Profil belum berhasil dimuat. Muat ulang halaman lalu coba kembali.');
+      const code = 'UTS-' + crypto.randomUUID().replaceAll('-', '').toUpperCase();
+      const { data, error } = await supabase.from('profiles').update({
+        telegram_link_code: code, updated_at: new Date().toISOString()
+      }).eq('id', requestUserId).select('*').single();
+      if (error) return alert('Kode belum tersimpan: ' + error.message);
+      if (currentUser?.id !== requestUserId) return;
+      if (!data) return alert('Kode belum tersimpan. Muat ulang halaman lalu coba kembali.');
+      userProfile = data;
+      renderTelegramStatus();
+      } catch (error) {
+        alert('Kode belum tersimpan: ' + error.message);
+      } finally {
+        if (button?.isConnected) button.disabled = false;
+      }
+    }
+
+    // 7. Laporan & Budget
+    function updateReportFilters(){
+      const fill=(id,options)=>{const el=$(id),previous=el.value;el.innerHTML='<option value="all">Semua '+(id==='#reportWallet'?'dompet':'pencatat')+'</option>'+options.map(([key,name])=>`<option value="${escapeHTML(key)}">${escapeHTML(name)}</option>`).join('');el.value=options.some(([key])=>key===previous)?previous:'all';};
+      fill('#reportWallet',allWallets.map(w=>[w.id,w.name+(w.is_active===false?' (nonaktif)':'')]));
+      const recorders=new Map();transactions.forEach(t=>recorders.set(recorderKey(t),recorderName(t)));fill('#reportRecorder',[...recorders]);
+    }
+    function currentReport(){return reportData(transactions,obligations,categories,selectedYear,selectedMonth,$('#reportWallet').value,$('#reportRecorder').value);}
+    const reportDate=t=>new Date(t.occurred_at).toLocaleDateString('id-ID',{timeZone:'Asia/Jakarta'});
+    function renderReports() {
+      updateReportFilters();const r=currentReport(),period=`${selectedYear}-${String(selectedMonth+1).padStart(2,'0')}`;
+      $('#reportPeriodLabel').textContent=`Periode ${period} · WIB · ${$('#reportWallet').selectedOptions[0].textContent} · ${$('#reportRecorder').selectedOptions[0].textContent}`;
+      const fields={repInc:r.income,repExp:r.expense,repSurplus:r.surplus,repNet:r.net,repOpening:r.opening,repClosing:r.closing,repCashIn:r.cashIn,repCashOut:r.cashOut,repDebt:r.debt,repReceivable:r.receivable,repPaid:r.periodPaid,repOverdue:r.overdue};Object.entries(fields).forEach(([id,v])=>$('#'+id).textContent=formatIDR(v));
+      $('#repSavingsRate').textContent=r.savingsRate===null?'— (tanpa pendapatan)':r.savingsRate.toLocaleString('id-ID',{maximumFractionDigits:1})+'%';
+      $('#reportBalanceNote').textContent='Saldo awal/akhir mencakup seluruh pencatat di dompet terpilih, dihitung dari transaksi tersimpan. Filter pencatat berlaku pada aktivitas. '+($('#reportWallet').value==='all'?'Transfer antar-dompet dikeluarkan dari arus kas keluarga.':'Transfer masuk/keluar dompet terpilih termasuk arus kas, tetapi bukan pendapatan/belanja.');
+      $('#reportFinancing').textContent=`Pinjaman dan pelunasan piutang masuk: ${formatIDR(r.financingIn)} · Cicilan utang dan pemberian piutang keluar: ${formatIDR(r.financingOut)}`;
+      $('#reportComparison').innerHTML=[['Pendapatan',r.income,r.previousIncome],['Belanja rutin',r.expense,r.previousExpense]].map(([label,v,prev])=>`<div class="report-metric"><small>${label}</small><b>${escapeHTML(changeLabel(v,prev))}</b><small>Bulan sebelumnya ${formatIDR(prev)}</small></div>`).join('');
+      $('#repCategoryBreakdown').innerHTML=r.categoryRows.map(c=>`<div class="report-category"><div><b>${escapeHTML(c.name)}</b><small>${c.pct.toLocaleString('id-ID',{maximumFractionDigits:1})}% dari belanja rutin</small></div><b>${formatIDR(c.total)}</b></div>`).join('')||'<p class="report-explainer">Belum ada belanja rutin pada periode ini.</p>';
+      $('#reportDebtNote').textContent=`Posisi seluruh tagihan keluarga per ${r.cutoffDate}; tidak mengikuti filter dompet/pencatat. Pembayaran ditelusuri berdasarkan tanggal. Tagihan lama tanpa tanggal pembayaran tidak dapat direkonstruksi akurat untuk bulan lampau.`;
+      $('#reportDebtRows').innerHTML=r.tags.filter(o=>o.remaining>0).map(o=>`<tr><td>${escapeHTML(o.contact_name)}<small style="display:block">${o.type==='debt'?'Utang':'Piutang'}</small></td><td>${escapeHTML(o.due_date||'Belum ditentukan')}</td><td>${formatIDR(o.remaining)}</td><td>${o.overdue?'Lewat jatuh tempo':o.paid>0?'Dicicil':'Belum dibayar'}</td></tr>`).join('')||'<tr><td colspan="4">Tidak ada sisa tagihan pada tanggal laporan.</td></tr>';
+      $('#reportTxRows').innerHTML=r.rows.map(t=>`<tr><td>${reportDate(t)}</td><td>${escapeHTML(t.description)}<small style="display:block">${escapeHTML(recorderName(t))}</small></td><td>${escapeHTML(KIND_LABELS[t.kind]||t.kind)}<small style="display:block">${escapeHTML(allWallets.find(w=>w.id===t.wallet_id)?.name||'—')}${t.kind==='transfer'?' → '+escapeHTML(allWallets.find(w=>w.id===t.destination_wallet_id)?.name||'—'):''}</small></td><td>${formatIDR(t.amount)}</td></tr>`).join('')||'<tr><td colspan="4">Tidak ada transaksi sesuai filter.</td></tr>';
+    }
+    $('#reportWallet').onchange=$('#reportRecorder').onchange=renderReports;
+    $('#btnReportPDF').onclick=()=>{renderReports();window.print();};
+    $('#btnExportCSV').onclick=()=>{
+      const r=currentReport(),rows=[[activeBrandName()+' — Laporan Keuangan'],[$('#reportPeriodLabel').textContent],[$('#reportBalanceNote').textContent],[$('#reportDebtNote').textContent],['Ringkasan','Nominal Rp'],['Pendapatan',r.income],['Belanja rutin',r.expense],['Surplus/defisit rutin',r.surplus],['Pendapatan bulan sebelumnya',r.previousIncome],['Belanja rutin bulan sebelumnya',r.previousExpense],['Perubahan pendapatan',changeLabel(r.income,r.previousIncome)],['Perubahan belanja',changeLabel(r.expense,r.previousExpense)],['Pinjaman dan pelunasan piutang masuk',r.financingIn],['Cicilan utang dan pemberian piutang keluar',r.financingOut],['Persentase sisa pendapatan',r.savingsRate??'Tidak tersedia'],['Saldo awal seluruh pencatat',r.opening],['Uang masuk aktivitas terfilter',r.cashIn],['Uang keluar aktivitas terfilter',r.cashOut],['Arus kas bersih aktivitas',r.net],['Saldo akhir seluruh pencatat',r.closing],[],['Kategori','Nominal Rp','Persentase belanja rutin'],...r.categoryRows.map(c=>[c.name,c.total,c.pct]),[],['Tagihan keluarga per '+r.cutoffDate],['Nama','Jenis','Pokok','Dibayar s/d tanggal laporan','Sisa','Jatuh tempo','Pembayaran periode'],...r.tags.map(o=>[o.contact_name,o.type==='debt'?'Utang':'Piutang',Number(o.principal),o.paid,o.remaining,o.due_date||'',o.periodPaid]),[],['Tanggal WIB','Keterangan','Jenis','Dompet asal','Dompet tujuan','Kategori','Pencatat','Nominal Rp'],...r.rows.map(t=>[reportDate(t),t.description,KIND_LABELS[t.kind]||t.kind,allWallets.find(w=>w.id===t.wallet_id)?.name||'',allWallets.find(w=>w.id===t.destination_wallet_id)?.name||'',categories.find(c=>c.id===t.category_id)?.name||'Tanpa kategori',recorderName(t),Number(t.amount)])];
+      const url=URL.createObjectURL(new Blob([csvText(rows)],{type:'text/csv;charset=utf-8;'})),a=document.createElement('a');a.href=url;a.download=`${activeBrandName().replace(/ /g,'-')}-laporan-${selectedYear}-${String(selectedMonth+1).padStart(2,'0')}.csv`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+    };
+
+    function renderBudget() {
+      const now = new Date();
+      const m = selectedMonth;
+      const y = selectedYear;
+
+      const pTxs = transactions.filter(t => {
+        return inSelectedPeriod(t);
+      });
+
+      const inc = sumKinds(pTxs,['income']);
+      const exp = sumKinds(pTxs,['expense']);
+      const net = inc - exp;
+      const totalAllBal = wallets.reduce((a, w) => a + getWalletBalance(w.id), 0);
+
+      const daysInMonth = new Date(y, m + 1, 0).getDate();
+      const daysLeft = Math.max(1, daysInMonth - now.getDate() + 1);
+      const safeDaily = net > 0 ? Math.round(net / daysLeft) : Math.max(0, Math.round(totalAllBal / (daysLeft + 30)));
+      if ($('#budgetSafeToSpend')) $('#budgetSafeToSpend').textContent = formatIDR(safeDaily) + ' / hari';
+
+      let score = net > 0 ? 85 : 45;
+      if ($('#budgetHealthScore')) $('#budgetHealthScore').textContent = `${score}/100`;
+
+      let needs = 0, wants = 0, savings = 0;
+      pTxs.filter(t => t.kind === 'expense').forEach(t => {
+        const cat = categories.find(c => c.id === t.category_id);
+        const rule = cat?.rule_50_30_20 || 'Kebutuhan';
+        if (rule === 'Keinginan') wants += (+t.amount);
+        else if (rule === 'Investasi' || rule === 'Tabungan') savings += (+t.amount);
+        else needs += (+t.amount);
+      });
+
+      const total = needs + wants + savings;
+      const pN = total > 0 ? Math.round((needs / total) * 100) : 50;
+      const pW = total > 0 ? Math.round((wants / total) * 100) : 30;
+      const pS = total > 0 ? Math.max(0, 100 - pN - pW) : 20;
+
+      if ($('#bBarNeeds')) $('#bBarNeeds').style.width = pN + '%';
+      if ($('#bBarWants')) $('#bBarWants').style.width = pW + '%';
+      if ($('#bBarSavings')) $('#bBarSavings').style.width = pS + '%';
+
+      if ($('#bValNeeds')) $('#bValNeeds').textContent = `${formatIDR(needs)} (${pN}%)`;
+      if ($('#bValWants')) $('#bValWants').textContent = `${formatIDR(wants)} (${pW}%)`;
+      if ($('#bValSavings')) $('#bValSavings').textContent = `${formatIDR(savings)} (${pS}%)`;
+    }
+
+    function renderSettings() {
+      $('#telegramRemindersEnabled').checked=userProfile?.telegram_reminders_enabled!==false;
+      if (!userProfile) return;
+      if ($('#settingsEmail')) $('#settingsEmail').textContent = currentUser.email||currentUser.phone||userProfile.phone_number;
+      
+      const exp = userProfile.expires_at ? new Date(userProfile.expires_at) : null;
+      const isExp = exp && exp < new Date();
+      if ($('#settingsLicenseStatus')) {
+        $('#settingsLicenseStatus').textContent = isExp ? 'Kedaluwarsa' : (userProfile.subscription_status === 'active' ? '👑 Aktif Tahunan' : '⏱️ Masa Percobaan');
+      }
+      if ($('#settingsLicenseExpiry')) {
+        $('#settingsLicenseExpiry').textContent = exp ? exp.toLocaleDateString('id-ID', { dateStyle: 'long' }) : '-';
+      }
+      checkMfaStatus();
+    }
+
+    // =========================================================================
+    // FITUR PENGATURAN: UBAH KATA SANDI, 2-FAKTOR (2FA), & RESET DATA
+    // =========================================================================
+
+    // 1. Ubah Kata Sandi
+    const changePasswordForm = $('#changePasswordForm');
+    if (changePasswordForm) {
+      changePasswordForm.onsubmit = async (e) => {
+        e.preventDefault();
+        const notice = $('#passwordChangeNotice');
+        const btn = $('#btnUpdatePassword');
+        const newPass = $('#inputNewPassword').value;
+        const confirmPass = $('#inputConfirmPassword').value;
+
+        if (!newPass || newPass.length < 6) {
+          notice.style.color = 'var(--danger)';
+          notice.textContent = 'Kata sandi minimal 6 karakter.';
+          return;
+        }
+        if (newPass !== confirmPass) {
+          notice.style.color = 'var(--danger)';
+          notice.textContent = 'Konfirmasi kata sandi tidak cocok. Harap periksa kembali.';
+          return;
+        }
+
+        btn.disabled = true;
+        notice.style.color = 'var(--text-muted)';
+        notice.textContent = 'Menyimpan kata sandi baru…';
+
+        try {
+          const { error } = await supabase.auth.updateUser({ password: newPass });
+          if (error) throw error;
+          notice.style.color = 'var(--primary)';
+          notice.textContent = '✅ Kata sandi berhasil diperbarui!';
+          changePasswordForm.reset();
+          setTimeout(() => { if (notice) notice.textContent = ''; }, 6000);
+        } catch (err) {
+          notice.style.color = 'var(--danger)';
+          notice.textContent = 'Gagal mengubah kata sandi: ' + (err.message || err);
+        } finally {
+          btn.disabled = false;
+        }
+      };
+    }
+
+    // 2. Autentikasi 2-Faktor (2FA / TOTP)
+    let currentMfaFactor = null;
+    async function checkMfaStatus() {
+      const badge = $('#mfaStatusBadge');
+      const desc = $('#mfaStatusDesc');
+      const btnSetup = $('#btnSetupMfa');
+      const btnDisable = $('#btnDisableMfa');
+      if (!badge || !currentUser) return;
+
+      if (!supabase.auth?.mfa) {
+        badge.textContent = 'Tidak Didukung';
+        badge.style.background = 'var(--border)';
+        badge.style.color = 'var(--text-muted)';
+        if (desc) desc.textContent = 'Layanan 2FA belum aktif pada sistem ini.';
+        return;
+      }
+
+      try {
+        const { data, error } = await supabase.auth.mfa.listFactors();
+        if (error) throw error;
+        const verified = (data?.totp || []).find(f => f.status === 'verified');
+        currentMfaFactor = verified || null;
+
+        if (verified) {
+          badge.textContent = '🛡️ Aktif';
+          badge.style.background = 'var(--primary-light)';
+          badge.style.color = 'var(--primary)';
+          if (desc) desc.textContent = 'Autentikasi 2-Faktor aktif (' + (verified.friendly_name || 'TOTP') + '). Akun Anda terlindungi.';
+          if (btnSetup) btnSetup.style.display = 'none';
+          if (btnDisable) btnDisable.style.display = 'block';
+        } else {
+          badge.textContent = 'Belum Aktif';
+          badge.style.background = 'var(--border)';
+          badge.style.color = 'var(--text-muted)';
+          if (desc) desc.textContent = 'Verifikasi ganda belum aktif pada akun ini.';
+          if (btnSetup) btnSetup.style.display = 'block';
+          if (btnDisable) btnDisable.style.display = 'none';
+        }
+      } catch (e) {
+        badge.textContent = 'Belum Tersedia';
+        if (desc) desc.textContent = 'Pemeriksaan status 2FA: ' + (e.message || e);
+      }
+    }
+
+    if ($('#btnSetupMfa')) {
+      $('#btnSetupMfa').onclick = async () => {
+        const btn = $('#btnSetupMfa');
+        const notice = $('#mfaNotice');
+        btn.disabled = true;
+        notice.style.color = 'var(--text-muted)';
+        notice.textContent = 'Menyiapkan kode QR 2FA…';
+
+        try {
+          // Bersihkan faktor unverified sebelumnya agar tidak menumpuk
+          const { data: factors } = await supabase.auth.mfa.listFactors();
+          if (factors?.totp) {
+            for (const f of factors.totp) {
+              if (f.status === 'unverified') {
+                await supabase.auth.mfa.unenroll({ factorId: f.id });
+              }
+            }
+          }
+
+          const { data, error } = await supabase.auth.mfa.enroll({
+            factorType: 'totp',
+            friendlyName: 'UnitSaldo (' + accountIdentity() + ')'
+          });
+          if (error) throw error;
+
+          const factorId = data.id;
+          const qrCode = data.totp.qr_code;
+          const secret = data.totp.secret;
+
+          const modalHtml = `
+            <div style="text-align:center;">
+              <p class="report-explainer" style="margin-bottom:12px;">
+                1. Buka aplikasi autentikator (seperti <b>Google Authenticator</b>, <b>Microsoft Authenticator</b>, atau <b>Authy</b>), lalu pindai kode QR ini:
+              </p>
+              <div style="display:inline-block;padding:12px;background:#ffffff;border:1px solid var(--border);border-radius:12px;margin-bottom:12px;">
+                <img src="${qrCode}" alt="QR Code 2FA" style="width:200px;height:200px;display:block;margin:0 auto;">
+              </div>
+              <p class="report-explainer" style="font-size:11.5px;color:var(--text-muted);margin-bottom:6px;">
+                Atau masukkan kunci rahasia manual berikut jika tidak bisa memindai:
+              </p>
+              <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:16px;">
+                <code style="background:var(--bg);padding:6px 12px;border-radius:6px;border:1px solid var(--border);font-size:12px;font-weight:700;letter-spacing:1px;user-select:all;">${secret}</code>
+                <button type="button" class="secondary" id="btnCopySecretKey" style="padding:6px 10px;font-size:11px;">Salin</button>
+              </div>
+              <p class="report-explainer" style="margin-bottom:10px;">
+                2. Masukkan 6 digit kode yang tampil di aplikasi autentikator Anda:
+              </p>
+              <input type="text" id="mfaInputVerifyCode" required pattern="[0-9]{6}" maxlength="6" inputmode="numeric" placeholder="000000" style="text-align:center;font-size:22px;letter-spacing:6px;width:180px;padding:8px;margin-bottom:14px;font-weight:800;" autofocus>
+              <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:8px;">
+                <button type="button" class="secondary" data-modal-cancel>Batal</button>
+                <button type="button" class="primary" id="btnSubmitMfaActivation" style="padding:9px 18px;">Verifikasi & Aktifkan</button>
+              </div>
+              <p id="mfaSetupModalNotice" role="status" style="font-size:12px;margin-top:10px;"></p>
+            </div>
+          `;
+
+          showModal('🛡️ Setup Autentikasi 2-Faktor', modalHtml, async (e) => { e.preventDefault(); });
+
+          const copyBtn = $('#btnCopySecretKey');
+          if (copyBtn) {
+            copyBtn.onclick = () => {
+              navigator.clipboard.writeText(secret).then(() => {
+                copyBtn.textContent = 'Tersalin!';
+                setTimeout(() => { if (copyBtn) copyBtn.textContent = 'Salin'; }, 2000);
+              });
+            };
+          }
+
+          const verifyBtn = $('#btnSubmitMfaActivation');
+          const codeInput = $('#mfaInputVerifyCode');
+          const modalNotice = $('#mfaSetupModalNotice');
+
+          verifyBtn.onclick = async () => {
+            const code = codeInput.value.trim();
+            if (!/^\d{6}$/.test(code)) {
+              modalNotice.style.color = 'var(--danger)';
+              modalNotice.textContent = 'Masukkan 6 digit angka dari aplikasi autentikator.';
+              return;
+            }
+            verifyBtn.disabled = true;
+            modalNotice.style.color = 'var(--text-muted)';
+            modalNotice.textContent = 'Memverifikasi kode…';
+            try {
+              const { error: verifyErr } = await supabase.auth.mfa.challengeAndVerify({
+                factorId: factorId,
+                code: code
+              });
+              if (verifyErr) throw verifyErr;
+              closeModal();
+              alert('🎉 Autentikasi 2-Faktor (2FA) berhasil diaktifkan!');
+              await checkMfaStatus();
+            } catch (err) {
+              modalNotice.style.color = 'var(--danger)';
+              modalNotice.textContent = 'Verifikasi gagal: ' + (err.message || 'Kode OTP salah atau kedaluwarsa.');
+              verifyBtn.disabled = false;
+            }
+          };
+
+          notice.textContent = '';
+        } catch (err) {
+          notice.style.color = 'var(--danger)';
+          notice.textContent = 'Gagal setup 2FA: ' + (err.message || err);
+        } finally {
+          btn.disabled = false;
+        }
+      };
+    }
+
+    if ($('#btnDisableMfa')) {
+      $('#btnDisableMfa').onclick = async () => {
+        if (!currentMfaFactor) return;
+        if (!confirm('Apakah Anda yakin ingin menonaktifkan Autentikasi 2-Faktor? Keamanan akun akan berkurang.')) return;
+        const btn = $('#btnDisableMfa');
+        const notice = $('#mfaNotice');
+        btn.disabled = true;
+        notice.style.color = 'var(--text-muted)';
+        notice.textContent = 'Menonaktifkan 2FA…';
+        try {
+          const { error } = await supabase.auth.mfa.unenroll({ factorId: currentMfaFactor.id });
+          if (error) throw error;
+          alert('Autentikasi 2-Faktor telah dinonaktifkan.');
+          notice.textContent = '';
+          await checkMfaStatus();
+        } catch (err) {
+          notice.style.color = 'var(--danger)';
+          notice.textContent = 'Gagal menonaktifkan 2FA: ' + (err.message || err);
+        } finally {
+          btn.disabled = false;
+        }
+      };
+    }
+
+    // Modal tantangan 2FA saat login
+    async function promptLoginMfa(factorId) {
+      return new Promise((resolve, reject) => {
+        const modalHtml = `
+          <div style="text-align:center;">
+            <div style="font-size:36px;margin-bottom:8px;">🛡️</div>
+            <h4 style="margin:0 0 6px 0;font-size:16px;">Verifikasi Autentikasi 2-Faktor</h4>
+            <p class="report-explainer" style="margin-bottom:14px;">
+              Akun Anda dilindungi 2FA. Buka aplikasi autentikator (Google Authenticator / Authy) lalu masukkan 6 digit kode yang tampil.
+            </p>
+            <input type="text" id="loginMfaCode" required pattern="[0-9]{6}" maxlength="6" inputmode="numeric" placeholder="000000" style="text-align:center;font-size:22px;letter-spacing:6px;width:180px;padding:8px;margin-bottom:12px;font-weight:800;" autofocus>
+            <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:10px;">
+              <button type="button" class="secondary" id="btnCancelLoginMfa">Batal</button>
+              <button type="button" class="primary" id="btnVerifyLoginMfa" style="padding:9px 18px;">Masuk</button>
+            </div>
+            <p id="loginMfaNotice" role="status" style="font-size:12px;margin-top:10px;"></p>
+          </div>
+        `;
+
+        showModal('Verifikasi 2FA', modalHtml, async (e) => { e.preventDefault(); });
+
+        const input = $('#loginMfaCode');
+        const btnVerify = $('#btnVerifyLoginMfa');
+        const btnCancel = $('#btnCancelLoginMfa');
+        const notice = $('#loginMfaNotice');
+
+        btnCancel.onclick = async () => {
+          closeModal();
+          await supabase.auth.signOut();
+          reject(new Error('Login dibatalkan.'));
+        };
+
+        btnVerify.onclick = async () => {
+          const code = input.value.trim();
+          if (!/^\d{6}$/.test(code)) {
+            notice.style.color = 'var(--danger)';
+            notice.textContent = 'Masukkan 6 digit angka kode autentikator.';
+            return;
+          }
+          btnVerify.disabled = true;
+          notice.style.color = 'var(--text-muted)';
+          notice.textContent = 'Memverifikasi kode…';
+          try {
+            const { data, error } = await supabase.auth.mfa.challengeAndVerify({
+              factorId: factorId,
+              code: code
+            });
+            if (error) throw error;
+            closeModal();
+            resolve(data);
+          } catch (err) {
+            notice.style.color = 'var(--danger)';
+            notice.textContent = 'Kode salah atau kedaluwarsa. Silakan coba lagi.';
+            btnVerify.disabled = false;
+          }
+        };
+      });
+    }
+
+    // 3. Reset Data Keuangan
+    async function executeDataReset(scope) {
+      if (!currentUser) throw new Error('Pengguna belum login.');
+      const uid = currentUser.id;
+
+      if (scope === 'obligations') {
+        // Hapus cicilan/pembayaran utang piutang
+        try { await supabase.from('obligation_payments').delete().eq('owner_id', uid); } catch(e){}
+        // Hapus tagihan utang piutang
+        const { error: errOb } = await supabase.from('obligations').delete().eq('owner_id', uid);
+        if (errOb) throw errOb;
+        // Hapus juga transaksi kas yang bersumber dari pencatatan utang/piutang
+        await supabase.from('transactions').delete().eq('owner_id', uid).in('kind', [
+          'debt_disbursement', 'debt_payment', 'receivable_disbursement', 'receivable_payment'
+        ]);
+      } else if (scope === 'transactions') {
+        // Hapus data riwayat & mutasi
+        try { await supabase.from('transaction_cancellations').delete().eq('owner_id', uid); } catch(e){}
+        try { await supabase.from('transaction_history').delete().eq('owner_id', uid); } catch(e){}
+        try { await supabase.from('obligation_payments').delete().eq('owner_id', uid); } catch(e){}
+        try { await supabase.from('obligations').update({ status: 'active' }).eq('owner_id', uid); } catch(e){}
+        const { error: errTx } = await supabase.from('transactions').delete().eq('owner_id', uid);
+        if (errTx) throw errTx;
+      } else if (scope === 'all') {
+        // Reset Total: hapus seluruh transaksi, utang piutang, dan agenda
+        try { await supabase.from('transaction_cancellations').delete().eq('owner_id', uid); } catch(e){}
+        try { await supabase.from('transaction_history').delete().eq('owner_id', uid); } catch(e){}
+        try { await supabase.from('calendar_events').delete().eq('owner_id', uid); } catch(e){}
+        try { await supabase.from('telegram_drafts').delete().eq('owner_id', uid); } catch(e){}
+        try { await supabase.from('obligation_payments').delete().eq('owner_id', uid); } catch(e){}
+        
+        const { error: errTx } = await supabase.from('transactions').delete().eq('owner_id', uid);
+        if (errTx) throw errTx;
+
+        const { error: errOb } = await supabase.from('obligations').delete().eq('owner_id', uid);
+        if (errOb) throw errOb;
+      }
+    }
+
+    if ($('#btnOpenResetModal')) {
+      $('#btnOpenResetModal').onclick = () => {
+        const modalHtml = `
+          <p class="report-explainer" style="color:var(--danger);font-weight:600;margin-bottom:12px;">
+            ⚠️ Perhatian: Tindakan reset data bersifat permanen dan tidak dapat dibatalkan.
+          </p>
+          <div style="margin-bottom:14px;">
+            <label style="display:block;margin-bottom:8px;font-size:12px;color:var(--text-muted);font-weight:700;">PILIH JENIS DATA YANG AKAN DIRESET:</label>
+            
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <label style="display:flex;gap:10px;align-items:flex-start;padding:10px;border:1px solid var(--border);border-radius:8px;cursor:pointer;background:var(--bg);">
+                <input type="radio" name="resetScope" value="transactions" checked style="margin-top:3px;">
+                <div>
+                  <b style="display:block;font-size:13px;color:var(--text);">Hanya Transaksi & Mutasi Kas</b>
+                  <span style="font-size:11.5px;color:var(--text-muted);display:block;line-height:1.4;margin-top:2px;">
+                    Menghapus seluruh transaksi pemasukan, pengeluaran, dan transfer. Saldo semua dompet kembali ke Rp 0. Daftar dompet dan utang/piutang tetap aman.
+                  </span>
+                </div>
+              </label>
+
+              <label style="display:flex;gap:10px;align-items:flex-start;padding:10px;border:1px solid var(--border);border-radius:8px;cursor:pointer;background:var(--bg);">
+                <input type="radio" name="resetScope" value="obligations" style="margin-top:3px;">
+                <div>
+                  <b style="display:block;font-size:13px;color:var(--text);">Hanya Data Utang & Piutang</b>
+                  <span style="font-size:11.5px;color:var(--text-muted);display:block;line-height:1.4;margin-top:2px;">
+                    Menghapus seluruh daftar utang, piutang, dan riwayat pembayaran cicilannya. Transaksi non-tagihan tetap ada.
+                  </span>
+                </div>
+              </label>
+
+              <label style="display:flex;gap:10px;align-items:flex-start;padding:10px;border:1px solid rgba(224,82,67,0.3);border-radius:8px;cursor:pointer;background:var(--danger-light);">
+                <input type="radio" name="resetScope" value="all" style="margin-top:3px;">
+                <div>
+                  <b style="display:block;font-size:13px;color:var(--danger);">Reset Total Seluruh Pembukuan (Mulai dari Nol)</b>
+                  <span style="font-size:11.5px;color:var(--text-muted);display:block;line-height:1.4;margin-top:2px;">
+                    Menghapus seluruh transaksi, utang, piutang, cicilan, dan agenda kalender. Saldo semua dompet kembali bersih Rp 0.
+                  </span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <div style="margin-top:14px;padding:12px;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;">
+            <label style="display:block;font-size:12px;color:#991b1b;font-weight:700;margin-bottom:6px;">
+              Ketik kata <span style="background:#fee2e2;padding:2px 6px;border-radius:4px;letter-spacing:1px;">RESET</span> di bawah untuk mengaktifkan tombol:
+            </label>
+            <input type="text" id="inputResetConfirmText" autocomplete="off" placeholder="Ketik RESET" style="width:100%;text-transform:uppercase;font-weight:700;letter-spacing:2px;">
+          </div>
+
+          <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:16px;">
+            <button type="button" class="secondary" data-modal-cancel>Batal</button>
+            <button type="button" class="danger" id="btnConfirmExecuteReset" disabled style="padding:9px 18px;font-weight:700;">Hapus & Reset Sekarang</button>
+          </div>
+          <p id="resetModalNotice" role="status" style="font-size:12px;margin-top:10px;"></p>
+        `;
+
+        showModal('🗑️ Konfirmasi Reset Data Keuangan', modalHtml, async (e) => { e.preventDefault(); });
+
+        const inputConfirm = $('#inputResetConfirmText');
+        const btnExec = $('#btnConfirmExecuteReset');
+        const modalNotice = $('#resetModalNotice');
+
+        if (inputConfirm && btnExec) {
+          inputConfirm.oninput = () => {
+            btnExec.disabled = inputConfirm.value.trim().toUpperCase() !== 'RESET';
+          };
+
+          btnExec.onclick = async () => {
+            if (inputConfirm.value.trim().toUpperCase() !== 'RESET') return;
+            const scope = document.querySelector('input[name="resetScope"]:checked')?.value || 'transactions';
+            btnExec.disabled = true;
+            modalNotice.style.color = 'var(--text-muted)';
+            modalNotice.textContent = 'Sedang menghapus & mereset data…';
+
+            try {
+              await executeDataReset(scope);
+              closeModal();
+              alert('✅ Data pembukuan berhasil direset.');
+              await loadData();
+            } catch (err) {
+              modalNotice.style.color = 'var(--danger)';
+              modalNotice.textContent = 'Gagal mereset data: ' + (err.message || err);
+              btnExec.disabled = false;
+            }
+          };
+        }
+      };
+    }
+
+    async function loadAdminUsers() {
+      if (!isSuperAdmin()) return;
+      let users = [];
+      const res = await supabase.rpc('admin_get_all_users');
+      if (!res.error && Array.isArray(res.data)) users = res.data;
+      else {
+        const fb = await supabase.from('profiles').select('*').order('created_at', { ascending: false });
+        if (!fb.error) users = fb.data || [];
+      }
+      adminUsers = users;
+      renderAdminUsersTable();
+    }
+
+    function renderAdminUsersTable() {
+      const tbody = $('#admUserTableBody');
+      if (!tbody) return;
+
+      tbody.innerHTML = adminUsers.map(u => {
+        const exp = u.expires_at ? new Date(u.expires_at) : null;
+        const isExp = exp && exp < new Date();
+        const expStr = exp ? exp.toLocaleDateString('id-ID') : '-';
+
+        return `
+          <tr>
+            <td><b>${escapeHTML(u.email||u.phone_number||'Akun HP')}</b>${u.is_special?'<span class="special-user-badge">Pengguna Khusus · '+escapeHTML(u.brand_name||'Khusus')+'</span>':''}<div style="font-size:12px;margin-top:4px">${escapeHTML(u.full_name||'')}<br>${escapeHTML(u.whatsapp_number||'')}</div></td>
+            <td><b style="color:${isExp ? 'var(--danger)' : 'var(--primary)'}">${escapeHTML(isExp ? 'Kedaluwarsa' : u.subscription_status==='pending' ? 'Menunggu aktivasi' : u.subscription_status)}</b></td>
+            <td>${expStr}</td>
+            <td>
+              <div style="display:flex;gap:4px;flex-wrap:wrap;">
+                ${u.phone_number&&u.is_special?`<button class="secondary btn-phone-password" data-id="${u.id}" style="padding:4px 8px;font-size:11px">Atur Kata Sandi HP</button>`:''}
+                ${u.subscription_status==='pending'?`<button class="primary btn-adm-extend" data-id="${u.id}" data-days="14" data-action="trial" style="font-size:11px;padding:4px 8px">Verifikasi & Aktifkan (14 hari)</button>`:''}
+                <button class="primary btn-adm-extend" data-id="${u.id}" data-days="365" style="padding:4px 8px;font-size:11px;">+1 Thn</button>
+                <button class="secondary btn-adm-extend" data-id="${u.id}" data-days="30" style="padding:4px 8px;font-size:11px;">+30 Hr</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('') || '<tr><td colspan="4" style="text-align:center;padding:14px;">Belum ada user.</td></tr>';
+
+      $$('.btn-phone-password').forEach(btn=>btn.onclick=()=>{
+        showModal('Atur kata sandi akun HP','<p class="report-explainer">Tetapkan kata sandi untuk pengguna khusus. Bagikan langsung kepada pemilik akun melalui jalur pribadi. Minimal 12 karakter.</p><input type="password" name="password" required minlength="12" maxlength="128" autocomplete="new-password" placeholder="Kata sandi baru"><button class="primary">Simpan kata sandi</button><button type="button" class="secondary" data-modal-cancel>Batal</button>',async e=>{
+          const password=new FormData(e.target).get('password'),{data,error}=await supabase.auth.getSession();if(error||!data.session)throw new Error('Silakan login ulang.');
+          const res=await fetch(CFG.SUPABASE_URL+'/functions/v1/telegram-webhook/admin',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+data.session.access_token},body:JSON.stringify({action:'set_phone_password',user_id:btn.dataset.id,password})});const result=await res.json();if(!res.ok||!result.success)throw new Error(result.error||'Gagal mengatur kata sandi.');e.target.reset();$('#modalBackdrop').classList.remove('show');alert('Kata sandi akun HP berhasil diatur.');
+        });
+      });
+      $$('.btn-adm-extend').forEach(btn => {
+        btn.onclick = async () => {
+          const days = +btn.dataset.days;
+          const action=btn.dataset.action||'extend';
+          if (!confirm(action==='trial'?`Verifikasi dan aktifkan akun ini selama ${days} hari?`:`Perpanjang lisensi akun ini selama ${days} hari?`)) return;
+          const {error} = await supabase.rpc('admin_update_license', {
+            p_target_user_id: btn.dataset.id,
+            p_action: action,
+            p_days: days
+          });
+          if (error) return alert('Gagal memperpanjang: '+error.message);
+          alert(action==='trial'?'Akun berhasil diaktifkan!':'Lisensi berhasil diperpanjang!');
+          loadAdminUsers();
+        };
+      });
+    }
+    if ($('#btnRefreshAdminUsers')) $('#btnRefreshAdminUsers').onclick = loadAdminUsers;
+
+    // 8. Kategori Keuangan (81 Pos Master & Kustom)
+    function renderCategories() {
+      const search = ($('#catSearchInput')?.value || '').toLowerCase().trim();
+      const typeFilter = $('#catTypeFilter')?.value || 'all';
+      const ruleFilter = $('#catRuleFilter')?.value || 'all';
+
+      let list = [...categories];
+
+      if (typeFilter !== 'all') {
+        list = list.filter(c => c.type === typeFilter);
+      }
+      if (ruleFilter !== 'all') {
+        list = list.filter(c => c.rule_50_30_20 === ruleFilter);
+      }
+      if (search) {
+        list = list.filter(c => (c.name && c.name.toLowerCase().includes(search)) || (c.group_name && c.group_name.toLowerCase().includes(search)));
+      }
+
+      if ($('#catCountBadge')) {
+        $('#catCountBadge').textContent = `${list.length} dari ${categories.length} Kategori`;
+      }
+
+      const tbody = $('#categoryTableBody');
+      if (!tbody) return;
+
+      tbody.innerHTML = list.map((c, idx) => {
+        const isExp = c.type === 'expense';
+        const typeBadge = isExp 
+          ? `<span class="badge-cat badge-expense">📤 Pengeluaran</span>` 
+          : `<span class="badge-cat badge-income">📥 Pemasukan</span>`;
+
+        let ruleBadge = '<span style="color:var(--text-muted);font-size:12px;">—</span>';
+        if (c.rule_50_30_20 === 'Kebutuhan') ruleBadge = `<span class="badge-cat badge-needs">Kebutuhan (50%)</span>`;
+        else if (c.rule_50_30_20 === 'Keinginan') ruleBadge = `<span class="badge-cat badge-wants">Keinginan (30%)</span>`;
+        else if (c.rule_50_30_20 === 'Tabungan' || c.rule_50_30_20 === 'Investasi') ruleBadge = `<span class="badge-cat badge-savings">Tabungan (20%)</span>`;
+
+        return `
+          <tr>
+            <td style="color:var(--text-muted);font-size:12px;">#${idx + 1}</td>
+            <td>${typeBadge}</td>
+            <td><b style="color:var(--text);">${escapeHTML(c.group_name || 'Umum')}</b></td>
+            <td><span style="font-weight:600;color:var(--text);">${escapeHTML(c.name)}</span></td>
+            <td>${ruleBadge}</td>
+            <td style="text-align:right;">
+              <button class="link btn-del-cat" data-id="${c.id}" data-name="${escapeHTML(c.name)}" style="color:var(--danger);font-size:12px;font-weight:600;">Hapus</button>
+            </td>
+          </tr>
+        `;
+      }).join('') || '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text-muted);">Tidak ada kategori yang cocok dengan pencarian / filter.</td></tr>';
+
+      $$('.btn-del-cat').forEach(btn => {
+        btn.onclick = async () => {
+          if (!confirm(`Hapus pos kategori "${btn.dataset.name}"?`)) return;
+          btn.disabled=true;
+          try {
+            let {error}=await supabase.from('categories').delete().eq('id',btn.dataset.id);
+            if(error){
+              const fallback=await supabase.from('categories').update({is_active:false}).eq('id',btn.dataset.id);
+              if(fallback.error)throw fallback.error;
+            }
+            await loadData();
+          }catch(error){alert('Gagal menghapus kategori: '+error.message);}
+          finally{btn.disabled=false;}
+
+        };
+      });
+    }
+
+    if ($('#catSearchInput')) $('#catSearchInput').oninput = renderCategories;
+    if ($('#catTypeFilter')) $('#catTypeFilter').onchange = renderCategories;
+    if ($('#catRuleFilter')) $('#catRuleFilter').onchange = renderCategories;
+
+    function openAddCategoryModal() {
+      const existingGroups = Array.from(new Set(categories.map(c => c.group_name).filter(Boolean)));
+      const datalistOptions = existingGroups.map(g => `<option value="${escapeHTML(g)}">`).join('');
+
+      const formHtml = `
+        <div>
+          <label style="display:block;margin-bottom:6px;font-size:12px;color:var(--text-muted);font-weight:600;">Jenis Kategori</label>
+          <select name="type" id="newCatTypeSelect" style="width:100%;">
+            <option value="expense">Pengeluaran (Expense)</option>
+            <option value="income">Pemasukan (Income)</option>
+          </select>
+        </div>
+        <div>
+          <label style="display:block;margin-bottom:6px;font-size:12px;color:var(--text-muted);font-weight:600;">Kelompok Pos (Group)</label>
+          <input required name="group_name" list="groupSuggestions" placeholder="Misal: Makan & Minum, Transportasi, Gaji" style="width:100%;">
+          <datalist id="groupSuggestions">
+            ${datalistOptions}
+          </datalist>
+          <small style="display:block;color:var(--text-muted);font-size:11px;margin-top:4px;">Pilih dari kelompok yang sudah ada atau ketik kelompok baru.</small>
+        </div>
+        <div>
+          <label style="display:block;margin-bottom:6px;font-size:12px;color:var(--text-muted);font-weight:600;">Nama Pos Kategori</label>
+          <input required name="name" placeholder="Misal: Kopi & Cafe, Langganan Netflix, Bonus Proyek" style="width:100%;">
+        </div>
+        <div id="ruleSelectWrap">
+          <label style="display:block;margin-bottom:6px;font-size:12px;color:var(--text-muted);font-weight:600;">Kaidah Anggaran 50/30/20</label>
+          <select name="rule_50_30_20" style="width:100%;">
+            <option value="Kebutuhan">Kebutuhan Pokok (50% Needs)</option>
+            <option value="Keinginan">Keinginan & Hiburan (30% Wants)</option>
+            <option value="Tabungan">Tabungan & Dana Darurat (20% Savings)</option>
+            <option value="Investasi">Investasi Jangka Panjang</option>
+          </select>
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:14px;">
+          <button type="button" class="secondary" data-modal-cancel>Batal</button>
+          <button class="primary" style="padding:9px 18px;">Simpan Kategori</button>
+        </div>
+      `;
+
+      showModal('Tambah Kategori Baru', formHtml, async (e) => {
+        e.preventDefault();
+        const v = Object.fromEntries(new FormData(e.target));
+        if ('amount' in v && (!Number.isFinite(+v.amount) || +v.amount <= 0)) return alert('Nominal harus lebih dari nol.');
+        if ('principal' in v && (!Number.isFinite(+v.principal) || +v.principal <= 0)) return alert('Nominal harus lebih dari nol.');
+        const name = v.name.trim();
+        const group_name = v.group_name.trim();
+        if (!name) return alert('Nama kategori wajib diisi.');
+
+        let payload = {
+          owner_id: currentUser.id,
+          name: name,
+          group_name: group_name || 'Umum',
+          type: v.type,
+          rule_50_30_20: v.type === 'income' ? 'Tabungan' : (v.rule_50_30_20 || 'Kebutuhan'),
+          is_active: true
+        };
+
+        let { error } = await supabase.from('categories').insert(payload);
+        if (error && error.message.includes('is_active')) {
+          delete payload.is_active;
+          const retry = await supabase.from('categories').insert(payload);
+          error = retry.error;
+        }
+        if (error && (error.message.includes('group_name') || error.message.includes('rule_50_30_20'))) {
+          const minimalPayload = {
+            owner_id: currentUser.id,
+            name: name,
+            type: v.type
+          };
+          const retryMin = await supabase.from('categories').insert(minimalPayload);
+          error = retryMin.error;
+        }
+
+        if (error) return alert('Gagal menambah kategori: ' + error.message);
+
+        const { data } = await supabase.from('categories').select('*').eq('owner_id', currentUser.id);
+        categories = (data || []).filter(c => c.is_active !== false);
+        $('#modalBackdrop').classList.remove('show');
+        renderAll();
+        alert(`Kategori "${name}" berhasil ditambahkan ke daftar!`);
+      });
+
+      const typeSelect = $('#newCatTypeSelect');
+      if (typeSelect) {
+        typeSelect.onchange = (e) => {
+          if ($('#ruleSelectWrap')) {
+            $('#ruleSelectWrap').style.display = e.target.value === 'income' ? 'none' : 'block';
+          }
+        };
+      }
+    }
+    if ($('#btnAddCustomCategory')) $('#btnAddCustomCategory').onclick = openAddCategoryModal;
+
+    $('#telegramRemindersEnabled').onchange=async e=>{
+      const input=e.target,enabled=input.checked;input.disabled=true;$('#reminderSettingsNotice').textContent='Menyimpan...';
+      try{const {error}=await supabase.from('profiles').update({telegram_reminders_enabled:enabled}).eq('id',currentUser.id);if(error)throw error;userProfile.telegram_reminders_enabled=enabled;$('#reminderSettingsNotice').textContent=enabled?'Pengingat aktif.':'Pengingat dinonaktifkan.';}catch(error){input.checked=!enabled;$('#reminderSettingsNotice').textContent='Gagal menyimpan: '+error.message;}finally{input.disabled=false;}
+    };
+    // Modal Builder
+    function showModal(title, formHtml, submitHandler) {
+      $('#modalTitle').textContent = title;
+      $('#modalForm').innerHTML = formHtml;
+      $('#modalBackdrop').classList.add('show');
+      const form = $('#modalForm');
+      form.querySelectorAll('[data-modal-cancel]').forEach(btn => btn.onclick = closeModal);
+      form.onsubmit = async e => {
+        e.preventDefault();
+        if (form.dataset.busy === 'true') return;
+        form.dataset.busy = 'true';
+        const buttons = [...form.querySelectorAll('button')];
+        buttons.forEach(b => b.disabled = true);
+        try { await submitHandler(e); }
+        catch (error) { alert('Gagal menyimpan: ' + error.message); }
+        finally { form.dataset.busy = 'false'; buttons.forEach(b => b.disabled = false); }
+      };
+    }
+    function closeModal() { if ($('#modalForm').dataset.busy !== 'true') $('#modalBackdrop').classList.remove('show'); }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+    $('#btnModalClose').onclick = () => $('#modalBackdrop').classList.remove('show');
+    $('#modalBackdrop').onclick = (e) => {
+      if (e.target === $('#modalBackdrop')) $('#modalBackdrop').classList.remove('show');
+    };
+
+    function buildCategoryOptions(type = 'expense') {
+      const filtered = categories.filter(c => c.type === type);
+      const groups = {};
+      filtered.forEach(c => {
+        const g = c.group_name || 'Umum';
+        if (!groups[g]) groups[g] = [];
+        groups[g].push(c);
+      });
+
+      return Object.entries(groups).map(([g, items]) => `
+        <optgroup label="${escapeHTML(g)}">
+          ${items.map(i => `<option value="${i.id}">${escapeHTML(i.name)}</option>`).join('')}
+        </optgroup>
+      `).join('') || '<option value="">(Belum ada kategori)</option>';
+    }
+
+    // Modal Catat Transaksi Baru
+    function openTransactionModal(editTx=null) {
+      if(editTx&&!['income','expense','transfer'].includes(editTx.kind))return alert('Ubah tagihan melalui menu Utang & Piutang.');
+      if (wallets.length === 0) return alert('Buat minimal satu dompet terlebih dahulu.');
+
+      const walletOptions = wallets.map(w => `<option value="${w.id}">${escapeHTML(w.name)}</option>`).join('');
+      const expCatOpts = buildCategoryOptions('expense');
+      const incCatOpts = buildCategoryOptions('income');
+
+      const formHtml = `
+        <div>
+          <label style="display:block;margin-bottom:6px;font-size:12px;color:var(--text-muted);font-weight:600;">Jenis Transaksi</label>
+          <select name="kind" id="txKindSelect" style="width:100%;">
+            <option value="expense">Pengeluaran</option>
+            <option value="income">Pemasukan</option>
+            <option value="transfer">Transfer Antar-Dompet</option>
+          </select>
+        </div>
+        <div>
+          <label style="display:block;margin-bottom:6px;font-size:12px;color:var(--text-muted);font-weight:600;">Nominal (Rp)</label>
+          <input required type="number" min="1" name="amount" placeholder="Contoh: 25000" style="width:100%;">
+        </div>
+        <div><label>Tanggal Transaksi</label><input type="date" required name="occurred_at" value="${new Date().toLocaleDateString('en-CA', {timeZone:'Asia/Jakarta'})}" style="width:100%"></div>
+        <div id="sourceWalletWrap">
+          <label id="lblWallet" style="display:block;margin-bottom:6px;font-size:12px;color:var(--text-muted);font-weight:600;">Dompet</label>
+          <select name="wallet_id" style="width:100%;">${walletOptions}</select>
+        </div>
+        <div id="destWalletWrap" style="display:none;">
+          <label style="display:block;margin-bottom:6px;font-size:12px;color:var(--text-muted);font-weight:600;">Ke Dompet Tujuan</label>
+          <select name="destination_wallet_id" style="width:100%;">${walletOptions}</select>
+        </div>
+        <div id="categoryWrap">
+          <label style="display:block;margin-bottom:6px;font-size:12px;color:var(--text-muted);font-weight:600;">Kategori</label>
+          <select name="category_id" id="categorySelect" style="width:100%;">${expCatOpts}</select>
+        </div>
+        <div>
+          <label style="display:block;margin-bottom:6px;font-size:12px;color:var(--text-muted);font-weight:600;">Keterangan</label>
+          <input required name="description" placeholder="Misal: Makan siang, Gaji" style="width:100%;">
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:10px;">
+          <button type="button" class="secondary" data-modal-cancel>Batal</button>
+          <button class="primary" style="padding:9px 18px;">Simpan Transaksi</button>
+        </div>
+      `;
+
+      showModal(editTx?'Ubah Transaksi':'Catat Transaksi Baru', formHtml, async (e) => {
+        e.preventDefault();
+        const v = Object.fromEntries(new FormData(e.target));
+        if ('amount' in v && (!Number.isFinite(+v.amount) || +v.amount <= 0)) return alert('Nominal harus lebih dari nol.');
+        if ('principal' in v && (!Number.isFinite(+v.principal) || +v.principal <= 0)) return alert('Nominal harus lebih dari nol.');
+        const payload = {
+          owner_id: currentUser.id,
+          occurred_at: new Date(v.occurred_at + 'T12:00:00+07:00').toISOString(),
+          kind: v.kind,
+          amount: +v.amount,
+          description: v.description,
+          wallet_id: v.wallet_id,
+          source: 'web'
+        };
+
+        if (v.kind === 'transfer') {
+          if (v.wallet_id === v.destination_wallet_id) return alert('Dompet asal dan tujuan harus berbeda.');
+          payload.destination_wallet_id = v.destination_wallet_id;
+        } else {
+          payload.category_id = v.category_id || null;
+          if (v.category_id?.startsWith('master-')) {
+            const c = categories.find(c => c.id === v.category_id);
+            const { data, error } = await supabase.from('categories').insert({owner_id:currentUser.id,
+              name:c.name, type:c.type, group_name:c.group_name, rule_50_30_20:c.rule_50_30_20}).select('id').single();
+            if (error) return alert('Kategori gagal tersimpan: ' + error.message);
+            payload.category_id = data.id;
+          }
+        }
+
+        const { error } = editTx ? await supabase.from('transactions').update(payload).eq('id',editTx.id).eq('owner_id',currentUser.id) : await supabase.from('transactions').insert(payload);
+        if (error) return alert('Error: ' + error.message);
+
+        $('#modalBackdrop').classList.remove('show');
+        loadData();
+      });
+
+      $('#txKindSelect').onchange = (e) => {
+        const val = e.target.value;
+        if (val === 'transfer') {
+          $('#destWalletWrap').style.display = 'block';
+          $('#categoryWrap').style.display = 'none';
+          $('#lblWallet').textContent = 'Dari Dompet Asal';
+        } else {
+          $('#destWalletWrap').style.display = 'none';
+          $('#categoryWrap').style.display = 'block';
+          $('#lblWallet').textContent = 'Dompet';
+          $('#categorySelect').innerHTML = val === 'income' ? incCatOpts : expCatOpts;
+        }
+      };
+      if(editTx){
+        const form=$('#modalForm');form.querySelector('[name=kind]').value=editTx.kind;$('#txKindSelect').onchange({target:{value:editTx.kind}});
+        ['amount','description','wallet_id','destination_wallet_id','category_id'].forEach(k=>{const el=form.querySelector(`[name=${k}]`);if(el)el.value=editTx[k]||'';});
+        form.querySelector('[name=occurred_at]').value=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Jakarta',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(editTx.occurred_at));
+      }
+    }
+    $('#btnQuickAddTx').onclick=()=>openTransactionModal();
+
+    // Modal Tambah Dompet
+    $('#btnAddWallet').onclick = () => {
+      const formHtml = `
+        <div>
+          <label style="display:block;margin-bottom:6px;font-size:12px;color:var(--text-muted);font-weight:600;">Nama Rekening / Dompet</label>
+          <input required name="name" placeholder="Misal: BCA, DANA, Kas Toko" style="width:100%;">
+        </div>
+        <div>
+          <label style="display:block;margin-bottom:6px;font-size:12px;color:var(--text-muted);font-weight:600;">Jenis Akun</label>
+          <select name="kind" style="width:100%;">
+            <option value="bank">Rekening Bank</option>
+            <option value="cash">Uang Tunai</option>
+            <option value="ewallet">E-Wallet</option>
+            <option value="savings">Tabungan / Investasi</option>
+          </select>
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:10px;">
+          <button type="button" class="secondary" data-modal-cancel>Batal</button>
+          <button class="primary" style="padding:9px 18px;">Tambah Dompet</button>
+        </div>
+      `;
+
+      showModal('Tambah Dompet Baru', formHtml, async (e) => {
+        e.preventDefault();
+        const v = Object.fromEntries(new FormData(e.target));
+        if ('amount' in v && (!Number.isFinite(+v.amount) || +v.amount <= 0)) return alert('Nominal harus lebih dari nol.');
+        if ('principal' in v && (!Number.isFinite(+v.principal) || +v.principal <= 0)) return alert('Nominal harus lebih dari nol.');
+        const name = v.name.trim();
+        if (!name) return alert('Nama dompet wajib diisi.');
+        if (wallets.some(w => w.name.trim().toLocaleLowerCase('id-ID') === name.toLocaleLowerCase('id-ID'))) {
+          return alert('Nama dompet sudah digunakan. Pilih dompet yang sudah ada atau gunakan nama lain.');
+        }
+        const { error } = await supabase.from('wallets').insert({
+          owner_id: currentUser.id,
+          name,
+          kind: v.kind
+        });
+        if (error?.code === '23505') return alert('Nama dompet sudah digunakan, termasuk oleh dompet yang dinonaktifkan. Gunakan nama lain.');
+        if (error) return alert('Error: ' + error.message);
+        $('#modalBackdrop').classList.remove('show');
+        loadData();
+      });
+    };
+
+    // Modal Catat Utang/Piutang
+    function openAddObligationModal(type) {
+      const isDebt = type === 'debt';
+      const walletOptions = wallets.map(w => `<option value="${w.id}">${escapeHTML(w.name)}</option>`).join('');
+      const formHtml = `
+        <div>
+          <label style="display:block;margin-bottom:6px;font-size:12px;color:var(--text-muted);font-weight:600;">Nama Kontak</label>
+          <input required name="contact_name" placeholder="Misal: Wahyu, CV Sukses" style="width:100%;">
+        </div>
+        <div>
+          <label style="display:block;margin-bottom:6px;font-size:12px;color:var(--text-muted);font-weight:600;">Nominal Pokok (Rp)</label>
+          <input required type="number" min="1" name="principal" placeholder="Nominal" style="width:100%;">
+        </div>
+        <div>
+          <label style="display:block;margin-bottom:6px;font-size:12px;color:var(--text-muted);font-weight:600;">Jatuh Tempo (Opsional)</label>
+          <input type="date" name="due_date" style="width:100%;">
+        </div>
+        <div><label>${isDebt ? 'Uang utang masuk ke dompet' : 'Uang piutang keluar dari dompet'}</label>
+          <select name="wallet_id" style="width:100%"><option value="">Catat tagihan lama saja (tanpa mutasi kas)</option>${walletOptions}</select>
+          <small style="color:var(--text-muted)">Pilih dompet jika uang benar-benar berpindah saat ini.</small></div>
+        <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:10px;">
+          <button type="button" class="secondary" data-modal-cancel>Batal</button>
+          <button class="primary" style="padding:9px 18px;">Simpan</button>
+        </div>
+      `;
+
+      showModal(isDebt ? 'Catat Utang Baru' : 'Catat Piutang Baru', formHtml, async (e) => {
+        e.preventDefault();
+        const v = Object.fromEntries(new FormData(e.target));
+        if ('amount' in v && (!Number.isFinite(+v.amount) || +v.amount <= 0)) return alert('Nominal harus lebih dari nol.');
+        if ('principal' in v && (!Number.isFinite(+v.principal) || +v.principal <= 0)) return alert('Nominal harus lebih dari nol.');
+        const { error } = await supabase.rpc('record_obligation', {
+          p_type:type, p_contact_name:v.contact_name.trim(), p_principal:+v.principal,
+          p_wallet_id:v.wallet_id || null, p_due_date:v.due_date || null
+        });
+        if (error) return alert('Error: ' + error.message);
+        $('#modalBackdrop').classList.remove('show');
+        loadData();
+      });
+    }
+    $('#btnAddDebt').onclick = () => openAddObligationModal('debt');
+    $('#btnAddReceivable').onclick = () => openAddObligationModal('receivable');
+
+    function openPayModal(obId, type, maxAmount) {
+      if (!wallets.length) return alert('Tambahkan dompet sebelum mencatat pembayaran.');
+      const isDebt = type === 'debt';
+      const walletOptions = wallets.map(w => `<option value="${w.id}">${escapeHTML(w.name)}</option>`).join('');
+
+      const formHtml = `
+        <p style="font-size:12.5px;color:var(--text-muted);margin-bottom:12px;">
+          Sisa tagihan: <b style="color:var(--text);">${formatIDR(maxAmount)}</b>
+        </p>
+        <div>
+          <label style="display:block;margin-bottom:6px;font-size:12px;color:var(--text-muted);font-weight:600;">Nominal Pembayaran (Rp)</label>
+          <input required type="number" min="1" max="${maxAmount}" name="amount" value="${maxAmount}" style="width:100%;">
+        </div>
+        <div>
+          <label style="display:block;margin-bottom:6px;font-size:12px;color:var(--text-muted);font-weight:600;">
+            ${isDebt ? 'Bayar Memakai Dompet' : 'Masuk ke Dompet'}
+          </label>
+          <select name="wallet_id" style="width:100%;">${walletOptions}</select>
+        </div>
+        <label>Catatan cicilan<input name="note" maxlength="500" placeholder="Contoh: Cicilan pertama" style="width:100%"></label><div style="display:flex;justify-content:flex-end;gap:10px;margin-top:10px;">
+          <button type="button" class="secondary" data-modal-cancel>Batal</button>
+          <button class="primary" style="padding:9px 18px;">Konfirmasi</button>
+        </div>
+      `;
+
+      showModal(isDebt ? 'Cicilan / Pelunasan Utang' : 'Terima Cicilan / Pelunasan Piutang', formHtml, async (e) => {
+        e.preventDefault();
+        const v = Object.fromEntries(new FormData(e.target));
+        if ('amount' in v && (!Number.isFinite(+v.amount) || +v.amount <= 0)) return alert('Nominal harus lebih dari nol.');
+        if ('principal' in v && (!Number.isFinite(+v.principal) || +v.principal <= 0)) return alert('Nominal harus lebih dari nol.');
+        const res = await supabase.rpc('record_obligation_payment', {
+          p_obligation_id: obId,
+          p_wallet_id: v.wallet_id,
+          p_amount: +v.amount,
+          p_note: v.note || 'Cicilan via Web'
+        });
+        if (res.error) return alert('Error: ' + res.error.message);
+        $('#modalBackdrop').classList.remove('show');
+        loadData();
+      });
+    }
+
+    $('#btnRenewLicense').onclick = () => {
+      const text = encodeURIComponent(`Halo Admin UnitSaldo, saya ingin memperpanjang Lisensi Tahunan untuk akun: ${accountIdentity()}`);
+      window.open(`https://wa.me/6285382535050?text=${text}`, '_blank', 'noopener');
+    };
+
+    // Auth Listener
+    async function handleAuthState(session) {
+      if (!session) {
+        applyAccountBrand(null);
+        currentUser = null;
+        allWallets = []; wallets = []; transactions = []; obligations = []; categories = []; telegramLinks = []; userProfile = null;
+        $('#superAdminBotConfig').innerHTML = '';
+        $('#adminPanelCard').style.display = 'none';
+        closeModal();
+        $('#pendingScreen').style.display='none';
+        $('#authScreen').style.display = 'grid';
+        $('#appScreen').style.display = 'none';
+        $('.mobile-bottom-nav').style.visibility = 'hidden';
+      } else {
+        if (session && supabase.auth?.mfa) {
+          try {
+            const { data: aal } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+            if (aal && aal.nextLevel === 'aal2' && aal.currentLevel !== 'aal2') {
+              const { data: factors } = await supabase.auth.mfa.listFactors();
+              const totp = (factors?.totp || []).find(f => f.status === 'verified');
+              if (totp) {
+                await promptLoginMfa(totp.id);
+              }
+            }
+          } catch (mfaErr) {
+            console.warn('MFA check:', mfaErr);
+            return;
+          }
+        }
+        currentUser = session.user;
+        const namePart = (currentUser.email || 'Pengguna').split('@')[0];
+        $('#userEmailDisplay').textContent = namePart.charAt(0).toUpperCase() + namePart.slice(1);
+        if ($('#userAvatarChar')) {
+          $('#userAvatarChar').textContent = namePart.slice(0, 2).toUpperCase();
+        }
+        $('#authScreen').style.display = 'none';
+        $('#appScreen').style.display = 'block';
+        $('.mobile-bottom-nav').style.visibility = 'visible';
+        await loadData();
+      }
+    }
+
+    enhancements=installEnhancements({db:supabase,url:CFG.SUPABASE_URL,user:()=>currentUser,data:()=>({transactions,obligations,wallets:allWallets}),escapeHTML,formatIDR,showModal,closeModal:()=>$('#modalBackdrop').classList.remove('show'),openPay:openPayModal,openObligation:openAddObligationModal,openTransaction:openTransactionModal,reload:fetchData});
+    supabase.auth.onAuthStateChange((event, session) => {
+      // Leave the auth callback before making Supabase requests.
+      if (event === 'TOKEN_REFRESHED') return;
+      setTimeout(() => handleAuthState(session).catch(showLoadError), 0);
+    });
+    setInterval(() => { if (currentUser && !document.hidden && !$('#modalBackdrop').classList.contains('show')) loadData().catch(showLoadError); }, 30000);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden && currentUser) loadData().catch(showLoadError); });
+  </script>
+</body>
+</html>

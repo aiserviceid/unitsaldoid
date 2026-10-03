@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import {periodRange,buildRecap,recapRequest,wibDate} from '../supabase/functions/telegram-webhook/finance.ts';
+assert.equal(wibDate('2026-10-02T18:00:00Z'),'2026-10-03');
+assert.equal(periodRange('weekly','2026-10-03').start,'2026-09-28');assert.equal(periodRange('weekly','2026-10-03').end,'2026-10-04');
+assert.equal(periodRange('monthly','2024-03-10').previousEnd,'2024-02-29');
+assert.equal(periodRange('yearly','2026-10-03').previousStart,'2025-01-01');assert.throws(()=>periodRange('custom','2026-10-03','2026-12-31','2026-01-01'));
+assert.throws(()=>periodRange('daily','2026-02-30'));assert.throws(()=>periodRange('custom','2026-01-01','2024-01-01','2026-01-01'));
+assert.equal(recapRequest('rekap minggu lalu',new Date('2026-10-03T01:00:00Z')).start,'2026-09-21');assert.equal(recapRequest('rekap kemarin',new Date('2026-10-03T01:00:00Z')).start,'2026-10-02');
+const tx=[{kind:'income',amount:100,wallet_id:'cash',occurred_at:'2026-09-30T16:59:59Z'},{kind:'income',amount:200,wallet_id:'cash',occurred_at:'2026-09-30T17:00:00Z'},{kind:'expense',amount:50,wallet_id:'cash',category_id:'food',recorder_name:'Anak',occurred_at:'2026-10-03T01:00:00Z'},{kind:'debt_disbursement',amount:500,wallet_id:'bank',occurred_at:'2026-10-03T01:00:00Z'},{kind:'receivable_payment',amount:100,wallet_id:'cash',occurred_at:'2026-10-03T01:00:00Z'},{kind:'transfer',amount:150,wallet_id:'bank',destination_wallet_id:'cash',occurred_at:'2026-10-03T01:00:00Z'}];
+const obs=[{type:'receivable',contact_name:'Nuno',principal:400,issued_at:'2026-10-02T01:00:00Z',obligation_payments:[{amount:100,paid_at:'2026-10-03T01:00:00Z'},{amount:300,paid_at:'2026-11-02T01:00:00Z'}]}];
+const r=buildRecap(tx,[{id:'cash',name:'Tunai'},{id:'bank',name:'Bank'}],obs,[{id:'food',name:'Makan'}],periodRange('monthly','2026-10-03'));
+assert.equal(r.income,200);assert.equal(r.expense,50);assert.equal(r.cashIn,800);assert.equal(r.cashOut,50);assert.equal(r.net,750);assert.equal(r.opening,100);assert.equal(r.closing,850);assert.equal(r.wallets[0].closing,500);assert.equal(r.wallets[1].closing,350);assert.equal(r.pendingReceivable,300);assert.equal(r.categories[0].amount,50);assert.equal(r.previous.income,100);assert.equal(r.recorders.find(x=>x.name==='Anak').amount,50);
+console.log('PASS: WIB boundaries; daily/weekly/monthly/yearly/custom ranges; leap month; previous periods; normal income separate from debt/payment; transfer conservation; historical wallet balances and historical remaining receivable.');

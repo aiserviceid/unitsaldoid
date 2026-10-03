@@ -1,0 +1,5 @@
+node_modules/
+.env
+telegram_sessions.json
+.temp/
+*.log
