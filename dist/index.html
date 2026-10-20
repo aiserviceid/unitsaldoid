@@ -1,10 +1,10 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="id">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>UnitSaldo - Ringkasan Keuangan</title>
-  <link rel="icon" type="image/png" href="./unitsaldo-logo.png">
+  <title>BIGBOS YUDI — Keuangan</title>
+  <link rel="icon" type="image/svg+xml" href="./bigbos-yudi-logo.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -749,7 +749,7 @@
     @media(max-width:768px){#tgConfigBox{padding:12px!important}.tg-member-row{padding:10px!important}}
   </style>
 </head>
-<body>
+<body class="bigbos-theme">
 
   <!-- ===================================================================== -->
   <!-- 1. AUTH SCREEN -->
@@ -757,10 +757,10 @@
   <section class="auth-wrap" id="authScreen">
     <div class="auth-box">
       <div style="text-align:center;margin-bottom:16px;">
-        <img src="./unitsaldo-logo.png" alt="UnitSaldo" style="height:38px;max-width:100%;object-fit:contain;">
+        <img src="./bigbos-yudi-logo.svg" alt="BIGBOS YUDI" style="height:38px;max-width:100%;object-fit:contain;">
       </div>
       <p id="authBrandIntro" style="color:var(--text-muted);font-size:13px;margin-bottom:22px;text-align:center;">
-        Masuk ke akun UnitSaldo Anda untuk mengelola pembukuan dan memantau arus kas.
+        Masuk ke akun BIGBOS YUDI Anda untuk mengelola pembukuan dan memantau arus kas.
       </p>
 
       <form id="authForm" class="form-grid">
@@ -785,13 +785,13 @@
   <!-- ===================================================================== -->
   <!-- 2. MAIN APP SHELL -->
   <!-- ===================================================================== -->
-  <section id="pendingScreen" style="display:none;min-height:100dvh;place-items:center;padding:24px;background:var(--bg)"><div class="card" style="max-width:440px;text-align:center;padding:32px"><img src="./unitsaldo-logo.png" alt="UnitSaldo" style="width:180px"><h2 style="margin-top:24px">Menunggu aktivasi</h2><p id="pendingGreeting"></p><p id="pendingInstructions" style="color:var(--text-muted);line-height:1.7">Konfirmasi email Anda, lalu kirim permintaan verifikasi ke WhatsApp admin. Akun dapat digunakan setelah disetujui.</p><a id="pendingWhatsApp" class="primary" style="display:block;margin:20px 0;text-decoration:none;padding:12px">Hubungi admin melalui WhatsApp</a><button id="btnCheckActivation" class="secondary">Cek status aktivasi</button><button id="btnPendingSignOut" class="link" style="margin-left:12px">Keluar</button><p id="pendingNotice" role="status" style="font-size:12px"></p></div></section>
+  <section id="pendingScreen" style="display:none;min-height:100dvh;place-items:center;padding:24px;background:var(--bg)"><div class="card" style="max-width:440px;text-align:center;padding:32px"><img src="./bigbos-yudi-logo.svg" alt="BIGBOS YUDI" style="width:180px"><h2 style="margin-top:24px">Menunggu aktivasi</h2><p id="pendingGreeting"></p><p id="pendingInstructions" style="color:var(--text-muted);line-height:1.7">Konfirmasi email Anda, lalu kirim permintaan verifikasi ke WhatsApp admin. Akun dapat digunakan setelah disetujui.</p><a id="pendingWhatsApp" class="primary" style="display:block;margin:20px 0;text-decoration:none;padding:12px">Hubungi admin melalui WhatsApp</a><button id="btnCheckActivation" class="secondary">Cek status aktivasi</button><button id="btnPendingSignOut" class="link" style="margin-left:12px">Keluar</button><p id="pendingNotice" role="status" style="font-size:12px"></p></div></section>
   <section class="app-wrap" id="appScreen">
     
     <!-- SIDEBAR PERSIS GAMBAR REFERENSI (IKON SVG MONOKROM PUTIH/MINT) -->
     <aside class="sidebar">
       <div class="sidebar-logo">
-        <img src="./unitsaldo-logo.png" alt="UnitSaldo"><div class="account-name">Pengguna</div>
+        <img src="./bigbos-yudi-logo.svg" alt="BIGBOS YUDI"><div class="account-name">Pengguna</div>
       </div>
 
       <nav class="nav-links">
@@ -805,6 +805,12 @@
         <button class="nav-btn" data-view="viewTx">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
           <span>Transaksi</span>
+        </button>
+
+        <!-- 2b. Stok & Usaha BBM -->
+        <button class="nav-btn" data-view="viewFuel">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 22L15 22"/><path d="M4 9L14 9"/><path d="M14 22L14 4A2 2 0 0 0 12 2L6 2A2 2 0 0 0 4 4L4 22"/><path d="M14 13L16 13A2 2 0 0 1 18 15L18 19A2 2 0 0 0 20 21L20 21A2 2 0 0 0 22 19L22 9L18 5"/></svg>
+          <span>Stok & Usaha BBM</span>
         </button>
 
         <!-- 3. Dompet -->
@@ -867,7 +873,7 @@
     <!-- MAIN BODY CONTENT -->
     <main class="main-body">
       
-      <div class="mobile-brand"><div class="brand-stack"><img src="./unitsaldo-logo.png" alt="UnitSaldo"><div class="account-name">Pengguna</div></div><span class="family-label">Finance<br>WebApp</span></div>
+      <div class="mobile-brand"><div class="brand-stack"><img src="./bigbos-yudi-logo.svg" alt="BIGBOS YUDI"><div class="account-name">Pengguna</div></div><span class="family-label">Finance<br>WebApp</span></div>
       <div id="dataNotice" role="alert" hidden></div>
       <!-- TOP HEADER -->
       <header class="top-header">
@@ -891,7 +897,7 @@
       <!-- VIEW 1: BERANDA -->
       <!-- ================================================================= -->
       <section class="page-view active" id="viewHome">
-        <div class="feature-shortcuts"><button class="secondary" data-view-target="viewCalendar">📅 Kalender</button><button class="secondary" data-view-target="viewAssistant">✨ Chat & Rekap AI</button></div>
+        <div class="feature-shortcuts"><button class="primary" data-view-target="viewFuel">⛽ Stok & Usaha BBM (Solar/Bensin)</button><button class="secondary" data-view-target="viewCalendar">📅 Kalender</button><button class="secondary" data-view-target="viewAssistant">✨ Chat & Rekap AI</button></div>
 
         
         <!-- 4 KPI CARDS -->
@@ -1217,6 +1223,177 @@
       </section>
 
       <!-- ================================================================= -->
+      <!-- VIEW 3B: STOK & USAHA BBM (SOLAR & BENSIN) -->
+      <!-- ================================================================= -->
+      <section class="page-view" id="viewFuel" style="display:none;">
+        <!-- 4 KPI CARDS STOK & LABA SEBENARNYA -->
+        <div class="stat-cards-grid" style="margin-bottom:16px;">
+          <!-- 1. Stok Solar -->
+          <div class="kpi-card">
+            <div class="kpi-left">
+              <div class="kpi-icon-wrap orange">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+              </div>
+              <div>
+                <div class="kpi-label">Sisa Stok Solar</div>
+                <div class="kpi-val" id="fuelStockSolar">0 L</div>
+                <small id="fuelCostSolar" style="font-size:11px;color:var(--text-muted);display:block;margin-top:2px;">Nilai Stok Asli: Rp0</small>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. Stok Bensin -->
+          <div class="kpi-card">
+            <div class="kpi-left">
+              <div class="kpi-icon-wrap blue">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 22L15 22"/><path d="M4 9L14 9"/><path d="M14 22L14 4A2 2 0 0 0 12 2L6 2A2 2 0 0 0 4 4L4 22"/></svg>
+              </div>
+              <div>
+                <div class="kpi-label">Sisa Stok Bensin</div>
+                <div class="kpi-val" id="fuelStockBensin">0 L</div>
+                <small id="fuelCostBensin" style="font-size:11px;color:var(--text-muted);display:block;margin-top:2px;">Nilai Stok Asli: Rp0</small>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. Penjualan BBM -->
+          <div class="kpi-card">
+            <div class="kpi-left">
+              <div class="kpi-icon-wrap green">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+              </div>
+              <div>
+                <div class="kpi-label">Penjualan BBM (Periode Ini)</div>
+                <div class="kpi-val" id="fuelRevenuePeriod">Rp0</div>
+                <small id="fuelSoldVolumePeriod" style="font-size:11px;color:var(--text-muted);display:block;margin-top:2px;">Keluar: 0 L Solar • 0 L Bensin</small>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. Laba Sebenarnya (Data Nota Asli / FIFO) -->
+          <div class="kpi-card">
+            <div class="kpi-left">
+              <div class="kpi-icon-wrap green">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              </div>
+              <div>
+                <div class="kpi-label">Laba Sebenarnya (Data Asli)</div>
+                <div class="kpi-val" id="fuelProfitPeriod" style="color:var(--primary);">Rp0</div>
+                <small id="fuelCogsPeriod" style="font-size:11px;color:var(--text-muted);display:block;margin-top:2px;">Modal Stok Terjual: Rp0</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PANDUAN PERINTAH TELEGRAM BBM -->
+        <div class="card" style="margin-bottom:16px;background:var(--primary-light);border:1px solid rgba(175,132,20,0.3);">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+            <div>
+              <b style="font-size:13.5px;color:var(--text);">📲 Perintah Cepat via Bot Telegram (Otomatis Update Stok, Harga Modal, Saldo Dompet & Bon Pelanggan)</b>
+              <p style="font-size:12px;color:var(--text-muted);margin:4px 0 0 0;">
+                Ketik langsung di Bot Telegram atau gunakan tombol <b>+ BBM Masuk (Harga Modal)</b> / <b>+ BBM Keluar (Penjualan)</b> di kanan:
+              </p>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button class="secondary" id="btnAddFuelIn" style="padding:9px 14px;border-color:#2563eb;color:#1d4ed8;font-weight:700;">📥 + BBM Masuk (Input Harga Modal)</button>
+              <button class="primary" id="btnAddFuelTx" style="padding:9px 16px;">📤 + BBM Keluar (Penjualan / Bon)</button>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-top:12px;font-size:12px;">
+            <div style="background:#fff;padding:10px;border-radius:8px;border:1px solid var(--border);">
+              <b style="color:#059669;display:block;margin-bottom:4px;">📤 Jual BBM (Tunai / Rekening):</b>
+              <code>jual solar 200L @11500 ke Pak Budi tunai</code><br>
+              <code>jual solar 400L @harga11500 modal 10000 ke PT Maju</code>
+            </div>
+            <div style="background:#fff;padding:10px;border-radius:8px;border:1px solid var(--border);">
+              <b style="color:#d97706;display:block;margin-bottom:4px;">📝 Jual Bon / Bayar Sebagian (DP):</b>
+              <code>jual bensin 500L @11000 ke Pak Budi dp 3jt tunai</code><br>
+              <code>bon solar 300L @11500 ke Pak Hendra tunai</code>
+            </div>
+            <div style="background:#fff;padding:10px;border-radius:8px;border:1px solid var(--border);">
+              <b style="color:#2563eb;display:block;margin-bottom:4px;">📥 BBM Masuk / Input Harga Modal:</b>
+              <code>bbm masuk solar 1000L harga modal 10000 dari Agen</code><br>
+              <code>masuk bensin 500L @modal9500 dari Pertamina bca</code>
+            </div>
+            <div style="background:#fff;padding:10px;border-radius:8px;border:1px solid var(--border);">
+              <b style="color:#7c3aed;display:block;margin-bottom:4px;">📊 Cek Stok & Pelanggan di Telegram:</b>
+              <code>/stok</code> atau <code>cek stok bbm</code><br>
+              <code>rekap pelanggan</code> atau <code>Pak Hendra bayar 2jt bca</code>
+            </div>
+          </div>
+        </div>
+
+        <!-- TABEL 1: KELUAR MASUK MINYAK -->
+        <div class="card" style="margin-bottom:16px;">
+          <div class="card-head" style="flex-wrap:wrap;gap:10px;">
+            <div>
+              <div class="card-head-title">⛽ Buku Mutasi Keluar-Masuk Minyak (Solar & Bensin)</div>
+              <small style="color:var(--text-muted);font-size:12px;">Perhitungan laba menggunakan Data Sebenarnya (Harga Jual Asli dikurangi Harga Beli Batch Stok Asli / FIFO).</small>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <select id="fuelFilterType" style="padding:7px 10px;font-size:12.5px;">
+                <option value="all">Semua BBM (Solar & Bensin)</option>
+                <option value="solar">🛢️ Khusus Solar</option>
+                <option value="bensin">⛽ Khusus Bensin</option>
+              </select>
+              <select id="fuelFilterDir" style="padding:7px 10px;font-size:12.5px;">
+                <option value="all">Semua Mutasi (Masuk & Keluar)</option>
+                <option value="IN">📥 Minyak Masuk (Kulakan)</option>
+                <option value="OUT">📤 Minyak Keluar (Penjualan)</option>
+              </select>
+              <input type="search" id="fuelSearchPartner" placeholder="Cari nama pelanggan / supplier..." style="padding:7px 12px;font-size:12.5px;min-width:200px;">
+            </div>
+          </div>
+
+          <div style="overflow-x:auto;">
+            <table class="table-clean">
+              <thead>
+                <tr>
+                  <th>Tanggal</th>
+                  <th>BBM</th>
+                  <th>Mutasi</th>
+                  <th>Nama Pelanggan / Supplier</th>
+                  <th style="text-align:right;">Volume (Liter)</th>
+                  <th style="text-align:right;">Harga / Liter</th>
+                  <th style="text-align:right;">Total Nota Asli</th>
+                  <th style="text-align:right;">Modal & Laba Sebenarnya</th>
+                  <th>Metode / Dompet</th>
+                  <th style="text-align:right;">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="fuelMovementsTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TABEL 2: REKAP PELANGGAN & SUPPLIER -->
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <div class="card-head-title">👥 Rekap Pengambilan Liter & Bon per Pelanggan / Supplier</div>
+              <small style="color:var(--text-muted);font-size:12px;">Total akumulasi liter Solar & Bensin setiap pelanggan beserta sisa tagihan/bon aktif.</small>
+            </div>
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="table-clean">
+              <thead>
+                <tr>
+                  <th>Nama Pelanggan / Supplier</th>
+                  <th style="text-align:right;">Solar Diambil</th>
+                  <th style="text-align:right;">Bensin Diambil</th>
+                  <th style="text-align:right;">Masuk (Kulakan)</th>
+                  <th style="text-align:right;">Total Pembelian Pelanggan</th>
+                  <th style="text-align:right;">Laba Sebenarnya</th>
+                  <th style="text-align:right;">Sisa Bon / Utang Aktif</th>
+                </tr>
+              </thead>
+              <tbody id="fuelCustomersTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
       <!-- VIEW 4: UTANG & PIUTANG -->
       <!-- ================================================================= -->
       <section class="page-view" id="viewObligations" style="display:none;">
@@ -1323,37 +1500,19 @@
         <div class="card" style="margin-bottom:16px"><div class="card-head-title">Pengingat tagihan Telegram</div><p class="report-explainer">Dikirim pukul 08.00 WIB ke Telegram nomor 1 dan 2: 3 hari sebelum jatuh tempo, pada hari jatuh tempo, lalu seminggu sekali jika terlambat. Nomor 3 tidak menerima rincian tagihan.</p><label style="display:flex;gap:10px;align-items:center"><input type="checkbox" id="telegramRemindersEnabled"> Aktifkan pengingat utang & piutang</label><p id="reminderSettingsNotice" role="status" style="font-size:12px;margin-top:8px"></p></div>
 
         <div class="card" style="margin-bottom:16px"><div class="card-head-title">Menu Lainnya</div><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
-          <button class="secondary" data-view-target="viewObligations">Utang & Piutang</button><button class="secondary" data-view-target="viewBudget">Anggaran</button><button class="secondary" data-view-target="viewCategories">Kategori</button><button class="secondary" data-view-target="viewTelegram">Bot Telegram</button><button class="secondary" data-view-target="viewCalendar" style="display:none !important;">📅 Kalender</button><button class="secondary" data-view-target="viewAssistant" style="display:none !important;">✨ Asisten AI</button><button class="secondary" id="btnMobileSignOut">Keluar Akun</button>
+          <button class="primary" data-view-target="viewFuel">⛽ Stok & Usaha BBM</button><button class="secondary" data-view-target="viewObligations">Utang & Piutang</button><button class="secondary" data-view-target="viewBudget">Anggaran</button><button class="secondary" data-view-target="viewCategories">Kategori</button><button class="secondary" data-view-target="viewTelegram">Bot Telegram</button><button class="secondary" data-view-target="viewCalendar" style="display:none !important;">📅 Kalender</button><button class="secondary" data-view-target="viewAssistant" style="display:none !important;">✨ Asisten AI</button><button class="secondary" id="btnMobileSignOut">Keluar Akun</button>
         </div></div>
-        <div class="grid-main-2">
-          <div class="card">
-            <div class="card-head">
-              <div class="card-head-title">Status Lisensi Pengguna</div>
-            </div>
-            <div style="padding:12px;border:1px solid var(--border);border-radius:10px;margin-bottom:14px;">
-              <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
-                <span style="color:var(--text-muted)">Akun Email:</span>
-                <b id="settingsEmail">-</b>
-              </div>
-              <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
-                <span style="color:var(--text-muted)">Status:</span>
-                <b id="settingsLicenseStatus" style="color:var(--primary);">-</b>
-              </div>
-              <div style="display:flex;justify-content:space-between;">
-                <span style="color:var(--text-muted)">Masa Aktif s/d:</span>
-                <b id="settingsLicenseExpiry">-</b>
-              </div>
-            </div>
-            <button class="primary" id="btnRenewLicense" style="width:100%;">Perpanjang lewat WhatsApp</button>
-            <a id="renewEmailLink" href="mailto:ai.interiorid@gmail.com?subject=Perpanjangan%20Lisensi%20UnitSaldo" style="display:block;text-align:center;margin-top:10px;">Hubungi melalui email</a>
+        <div class="card">
+          <div class="card-head">
+            <div class="card-head-title">Informasi Akun & Aplikasi</div>
           </div>
-
-          <div class="card">
-            <div class="card-head">
-              <div class="card-head-title">Tentang UnitSaldo</div>
+          <div style="padding:12px;border:1px solid var(--border);border-radius:10px;margin-bottom:10px;">
+            <div style="display:flex;justify-content:space-between;">
+              <span style="color:var(--text-muted)">Identitas Akun:</span>
+              <b id="settingsEmail">-</b>
             </div>
-            <p style="color:var(--text-muted)">Kelola dompet, transaksi dan tagihan dalam satu akun. Hubungkan Telegram melalui menu Bot Telegram.</p>
           </div>
+          <p style="color:var(--text-muted);margin:0;">Kelola dompet, transaksi, dan tagihan dalam satu akun. Hubungkan Telegram melalui menu Bot Telegram.</p>
         </div>
 
         <!-- PENGATURAN KEAMANAN: UBAH KATA SANDI & AUTENTIKASI 2-FAKTOR -->
@@ -1554,7 +1713,7 @@
     let telegramLink = null;
     let adminUsers = [];
 
-    const isBigbosPortal = false;
+    const isBigbosPortal = true;
     function applyAccountBrand(profile){
       const special=isBigbosPortal||(profile?.is_special===true&&profile.brand_theme==='bigbos-gold');
       const name=special?'BIGBOS YUDI':'UnitSaldo';
@@ -1620,7 +1779,7 @@
       const viewEl = $('#' + targetView);
       if (viewEl) viewEl.style.display = 'block';
 
-      labelText = ({viewHome:'Ringkasan Keuangan',viewTx:'Transaksi',viewWallets:'Dompet',viewObligations:'Utang & Piutang',viewReports:'Laporan',viewBudget:'Anggaran',viewTelegram:'Bot Telegram',viewSettings:'Pengaturan',viewCategories:'Kategori',viewCalendar:'Kalender Terpadu',viewAssistant:'Asisten AI'})[targetView] || labelText;
+      labelText = ({viewHome:'Ringkasan Keuangan',viewTx:'Transaksi',viewFuel:'Stok & Usaha BBM (Solar & Bensin)',viewWallets:'Dompet',viewObligations:'Utang & Piutang',viewReports:'Laporan',viewBudget:'Anggaran',viewTelegram:'Bot Telegram',viewSettings:'Pengaturan',viewCategories:'Kategori',viewCalendar:'Kalender Terpadu',viewAssistant:'Asisten AI'})[targetView] || labelText;
       if (labelText) {
         $('#pageTitle').textContent = labelText;
         $('#pageSubtitle').textContent = targetView === 'viewHome' ? 'Pantau semua dompet dan transaksi dalam satu tempat.' : 'Manajemen data keuangan ' + labelText.toLowerCase() + '.';
@@ -1803,6 +1962,7 @@
       renderChart();
       renderWallets();
       renderRecentTransactions();
+      renderFuelManagement();
       renderObligations();
       renderTelegramStatus();
       renderReports();
@@ -1811,6 +1971,742 @@
       renderCategories();
       enhancements?.refresh();
     }
+
+    // =========================================================================
+    // MANAJEMEN STOK & USAHA BBM (SOLAR & BENSIN) - DATA SEBENARNYA (FIFO)
+    // =========================================================================
+    const formatLiter = n => new Intl.NumberFormat('id-ID', { maximumFractionDigits: 2 }).format(+n || 0) + ' L';
+
+    function parseFuelFromTx(tx) {
+      if (!tx || !tx.description) return null;
+      // Abaikan transaksi cicilan pembayaran bon agar tidak mengurangi/menambah stok fisik dua kali
+      if (tx.kind === 'debt_payment' || tx.kind === 'receivable_payment' || tx.kind === 'transfer') return null;
+
+      const rawDesc = String(tx.description).trim();
+      const linkedOb = tx.obligation_id ? obligations.find(o => o.id === tx.obligation_id) : null;
+
+      // 1. Cek Tag Terstruktur: [BBM:SOLAR|OUT|200|11500|Pak Budi] atau [BBM:BENSIN|OUT|500|11000|Pak Budi|PAID:3000000|REM:2500000|COST:10000]
+      const tagMatch = rawDesc.match(/^\[BBM:(SOLAR|BENSIN)\|(IN|OUT)\|([\d.]+)\|([\d.]+)\|([^\]|]*)(?:\|PAID:(\d+)\|REM:(\d+))?(?:\|COST:([\d.]+))?\]\s*(.*)$/i);
+      if (tagMatch) {
+        const fuelType = tagMatch[1].toLowerCase();
+        const direction = tagMatch[2].toUpperCase();
+        const liters = parseFloat(tagMatch[3]) || 0;
+        const unitPrice = parseFloat(tagMatch[4]) || (liters > 0 ? Math.round((+tx.amount || 0) / liters) : 0);
+        const partnerName = (tagMatch[5] || linkedOb?.contact_name || 'Umum').trim();
+        const paidNow = tagMatch[6] != null ? parseFloat(tagMatch[6]) : null;
+        const remCredit = tagMatch[7] != null ? parseFloat(tagMatch[7]) : 0;
+        const explicitUnitCost = tagMatch[8] != null ? parseFloat(tagMatch[8]) : 0;
+        const cleanNote = (tagMatch[9] || '').trim();
+        if (liters <= 0) return null;
+        const fullNotaAmount = (paidNow != null && remCredit > 0) ? (paidNow + remCredit) : (Math.round(liters * unitPrice) || +tx.amount || 0);
+        return {
+          tx,
+          id: tx.id,
+          occurred_at: tx.occurred_at,
+          fuelType,
+          direction,
+          liters,
+          unitPrice,
+          explicitUnitCost,
+          totalAmount: fullNotaAmount,
+          paidAmount: paidNow != null ? paidNow : (tx.kind === 'debt_disbursement' || tx.kind === 'receivable_disbursement' ? 0 : fullNotaAmount),
+          remAmount: remCredit || (tx.kind === 'debt_disbursement' || tx.kind === 'receivable_disbursement' ? fullNotaAmount : 0),
+          partnerName: partnerName || 'Umum',
+          cleanNote,
+          isCredit: remCredit > 0 || tx.kind === 'debt_disbursement' || tx.kind === 'receivable_disbursement' || !!tx.obligation_id,
+          isPartial: paidNow != null && paidNow > 0 && remCredit > 0,
+          walletId: tx.wallet_id,
+          obligationId: tx.obligation_id || null
+        };
+      }
+
+      // 2. Deteksi Otomatis Pesan Telegram Alami yang mengandung "solar" atau "bensin" + satuan Liter
+      const lower = rawDesc.toLowerCase();
+      const hasSolar = /\bsolar\b/i.test(lower);
+      const hasBensin = /\bbensin\b/i.test(lower);
+      if (!hasSolar && !hasBensin) return null;
+
+      // Cari angka liter: contoh "200L", "200 l", "200 liter", "200ltr"
+      const literMatch = rawDesc.match(/(?:^|\s)(\d+(?:[.,]\d+)?)\s*(?:l|ltr|liter)\b/i);
+      if (!literMatch) return null;
+
+      const liters = parseFloat(literMatch[1].replace(',', '.'));
+      if (!Number.isFinite(liters) || liters <= 0) return null;
+
+      const fuelType = hasSolar ? 'solar' : 'bensin';
+      const totalAmount = +tx.amount || 0;
+
+      // Cek apakah ada @harga (misal @11500 atau @ 11.500)
+      let unitPrice = 0;
+      const atPriceMatch = rawDesc.match(/@\s*(?:rp\s*)?(\d[\d.,]*)/i);
+      if (atPriceMatch) {
+        let pStr = atPriceMatch[1].replace(/\./g, '').replace(',', '.');
+        unitPrice = parseFloat(pStr) || 0;
+      }
+      if (!unitPrice && liters > 0 && totalAmount > 0) {
+        unitPrice = Math.round(totalAmount / liters);
+      }
+
+      // Tentukan arah Masuk (IN) atau Keluar (OUT)
+      let direction = 'OUT';
+      if (tx.kind === 'expense' || tx.kind === 'debt_disbursement') {
+        direction = 'IN';
+      } else if (tx.kind === 'income' || tx.kind === 'receivable_disbursement') {
+        direction = 'OUT';
+      }
+      if (/\b(kulakan|beli\s+stok|masuk\s+(?:solar|bensin)|stok\s+awal)\b/i.test(lower)) {
+        direction = 'IN';
+      } else if (/\b(jual|keluar\s+(?:solar|bensin)|bon\s+(?:solar|bensin))\b/i.test(lower)) {
+        direction = 'OUT';
+      }
+
+      // Ekstrak Nama Pelanggan / Supplier
+      let partnerName = linkedOb?.contact_name || '';
+      if (!partnerName) {
+        const partnerMatch = rawDesc.match(/\b(?:ke|kepada|dari|pelanggan|agen|supplier)\s+([A-Za-z0-9 ._-]{2,40}?)(?=\s+(?:tunai|cash|bca|bri|mandiri|bni|dana|ovo|gopay|tempo|bon|rp|\d)|$)/i);
+        if (partnerMatch) {
+          partnerName = partnerMatch[1].trim();
+        }
+      }
+      if (!partnerName) partnerName = direction === 'IN' ? 'Supplier BBM' : 'Pelanggan Umum';
+
+      return {
+        tx,
+        id: tx.id,
+        occurred_at: tx.occurred_at,
+        fuelType,
+        direction,
+        liters,
+        unitPrice,
+        totalAmount,
+        partnerName,
+        cleanNote: rawDesc,
+        isCredit: tx.kind === 'debt_disbursement' || tx.kind === 'receivable_disbursement' || !!tx.obligation_id,
+        walletId: tx.wallet_id,
+        obligationId: tx.obligation_id || null
+      };
+    }
+
+    function computeFuelLedger() {
+      // Ambil semua transaksi BBM dan urutkan dari paling lama ke paling baru (pada tanggal yang sama, utamakan BBM Masuk / IN dulu)
+      const parsedList = transactions
+        .map(t => parseFuelFromTx(t))
+        .filter(Boolean)
+        .sort((a, b) => {
+          const da = String(a.occurred_at || '').slice(0, 10);
+          const db = String(b.occurred_at || '').slice(0, 10);
+          if (da !== db) return da.localeCompare(db);
+          const aIn = a.direction === 'IN' ? 0 : 1;
+          const bIn = b.direction === 'IN' ? 0 : 1;
+          return aIn - bIn || new Date(a.occurred_at) - new Date(b.occurred_at) || String(a.id).localeCompare(String(b.id));
+        });
+
+      const fifoBatches = {
+        solar: [],
+        bensin: []
+      };
+      const lastKnownUnitCost = {
+        solar: 0,
+        bensin: 0
+      };
+      for (const it of parsedList) {
+        if (it.direction === 'IN' && it.unitPrice > 0) {
+          lastKnownUnitCost[it.fuelType] = it.unitPrice;
+        } else if (it.direction === 'OUT' && it.explicitUnitCost > 0 && !lastKnownUnitCost[it.fuelType]) {
+          lastKnownUnitCost[it.fuelType] = it.explicitUnitCost;
+        }
+      }
+
+      const enrichedAsc = parsedList.map(item => {
+        const ft = item.fuelType;
+        if (item.direction === 'IN') {
+          if (item.unitPrice > 0) lastKnownUnitCost[ft] = item.unitPrice;
+          fifoBatches[ft].push({
+            txId: item.id,
+            remainingLiters: item.liters,
+            unitCost: item.unitPrice,
+            occurred_at: item.occurred_at
+          });
+          return {
+            ...item,
+            actualCogs: item.totalAmount,
+            actualProfit: 0,
+            uncoveredLiters: 0
+          };
+        } else {
+          // OUT (Penjualan) -> Gunakan explicitUnitCost jika ada, atau ambil dari batch stok masuk sebenarnya (FIFO)
+          let needed = item.liters;
+          let cogs = 0;
+          const queue = fifoBatches[ft];
+
+          for (const batch of queue) {
+            if (needed <= 0) break;
+            if (batch.remainingLiters <= 0) continue;
+            const take = Math.min(batch.remainingLiters, needed);
+            cogs += take * batch.unitCost;
+            batch.remainingLiters -= take;
+            needed -= take;
+          }
+
+          let uncoveredLiters = 0;
+          if (item.explicitUnitCost > 0) {
+            cogs = item.liters * item.explicitUnitCost;
+          } else if (needed > 0) {
+            uncoveredLiters = needed;
+            if (lastKnownUnitCost[ft] > 0) {
+              cogs += needed * lastKnownUnitCost[ft];
+            }
+          }
+
+          const actualCogs = Math.round(cogs);
+          const actualProfit = item.totalAmount - actualCogs;
+
+          return {
+            ...item,
+            actualCogs,
+            actualProfit,
+            uncoveredLiters
+          };
+        }
+      });
+
+      // Hitung sisa stok fisik & nilai modal stok tersisa dari antrean batch asli
+      const solarStockLiters = parsedList.reduce((acc, i) => i.fuelType === 'solar' ? acc + (i.direction === 'IN' ? i.liters : -i.liters) : acc, 0);
+      const bensinStockLiters = parsedList.reduce((acc, i) => i.fuelType === 'bensin' ? acc + (i.direction === 'IN' ? i.liters : -i.liters) : acc, 0);
+
+      const solarStockValue = Math.round(fifoBatches.solar.reduce((s, b) => s + (b.remainingLiters * b.unitCost), 0));
+      const bensinStockValue = Math.round(fifoBatches.bensin.reduce((s, b) => s + (b.remainingLiters * b.unitCost), 0));
+
+      return {
+        movementsDesc: [...enrichedAsc].reverse(),
+        solarStockLiters,
+        bensinStockLiters,
+        solarStockValue,
+        bensinStockValue,
+        solarModalRate: lastKnownUnitCost.solar,
+        bensinModalRate: lastKnownUnitCost.bensin
+      };
+    }
+
+    function renderFuelManagement() {
+      const tbody = $('#fuelMovementsTableBody');
+      const custTbody = $('#fuelCustomersTableBody');
+      if (!tbody || !custTbody) return;
+
+      const ledger = computeFuelLedger();
+
+      // Update KPI Cards
+      if ($('#fuelStockSolar')) $('#fuelStockSolar').textContent = formatLiter(ledger.solarStockLiters);
+      if ($('#fuelCostSolar')) $('#fuelCostSolar').textContent = `Harga Modal: ${ledger.solarModalRate > 0 ? formatIDR(ledger.solarModalRate) + '/L' : 'Belum diinput'} • Nilai Stok: ${formatIDR(ledger.solarStockValue)}`;
+      if ($('#fuelStockBensin')) $('#fuelStockBensin').textContent = formatLiter(ledger.bensinStockLiters);
+      if ($('#fuelCostBensin')) $('#fuelCostBensin').textContent = `Harga Modal: ${ledger.bensinModalRate > 0 ? formatIDR(ledger.bensinModalRate) + '/L' : 'Belum diinput'} • Nilai Stok: ${formatIDR(ledger.bensinStockValue)}`;
+
+      // Filter periode terpilih untuk KPI Penjualan & Laba
+      const periodMoves = ledger.movementsDesc.filter(m => inSelectedPeriod(m.tx));
+      const periodOut = periodMoves.filter(m => m.direction === 'OUT');
+      const periodRevenue = periodOut.reduce((s, m) => s + m.totalAmount, 0);
+      const periodCogs = periodOut.reduce((s, m) => s + m.actualCogs, 0);
+      const periodProfit = periodOut.reduce((s, m) => s + m.actualProfit, 0);
+      const periodSolarOut = periodOut.filter(m => m.fuelType === 'solar').reduce((s, m) => s + m.liters, 0);
+      const periodBensinOut = periodOut.filter(m => m.fuelType === 'bensin').reduce((s, m) => s + m.liters, 0);
+
+      if ($('#fuelRevenuePeriod')) $('#fuelRevenuePeriod').textContent = formatIDR(periodRevenue);
+      if ($('#fuelSoldVolumePeriod')) $('#fuelSoldVolumePeriod').textContent = `Keluar: ${formatLiter(periodSolarOut)} Solar • ${formatLiter(periodBensinOut)} Bensin`;
+      if ($('#fuelProfitPeriod')) {
+        $('#fuelProfitPeriod').textContent = (periodProfit >= 0 ? '+' : '') + formatIDR(periodProfit);
+        $('#fuelProfitPeriod').style.color = periodProfit >= 0 ? 'var(--primary)' : 'var(--danger)';
+      }
+      if ($('#fuelCogsPeriod')) $('#fuelCogsPeriod').textContent = `Modal Stok Terjual: ${formatIDR(periodCogs)}`;
+
+      // Filter Tabel Mutasi
+      const filterType = $('#fuelFilterType')?.value || 'all';
+      const filterDir = $('#fuelFilterDir')?.value || 'all';
+      const searchPartner = ($('#fuelSearchPartner')?.value || '').toLowerCase().trim();
+
+      const filteredMoves = ledger.movementsDesc.filter(m => {
+        if (filterType !== 'all' && m.fuelType !== filterType) return false;
+        if (filterDir !== 'all' && m.direction !== filterDir) return false;
+        if (searchPartner && !m.partnerName.toLowerCase().includes(searchPartner) && !m.cleanNote.toLowerCase().includes(searchPartner)) return false;
+        return true;
+      });
+
+      tbody.innerHTML = filteredMoves.map(m => {
+        const dStr = new Date(m.occurred_at).toLocaleDateString('id-ID', { timeZone: 'Asia/Jakarta', day: '2-digit', month: 'short', year: 'numeric' });
+        const fuelBadge = m.fuelType === 'solar'
+          ? `<span style="background:#fef3c7;color:#92400e;padding:3px 8px;border-radius:6px;font-weight:700;font-size:11.5px;">🛢️ SOLAR</span>`
+          : `<span style="background:#dbeafe;color:#1e40af;padding:3px 8px;border-radius:6px;font-weight:700;font-size:11.5px;">⛽ BENSIN</span>`;
+        const dirBadge = m.direction === 'IN'
+          ? `<span style="color:#2563eb;font-weight:700;font-size:12px;">📥 Masuk (Kulakan)</span>`
+          : `<span style="color:#059669;font-weight:700;font-size:12px;">📤 Keluar (Jual)</span>`;
+
+        const wName = wallets.find(w => w.id === m.walletId)?.name || 'Dompet';
+        const payLabel = m.isPartial
+          ? `<span style="background:#fef3c7;color:#92400e;padding:2px 7px;border-radius:5px;font-size:11px;font-weight:700;display:inline-block;">🌓 DP ${formatIDR(m.paidAmount)} (${escapeHTML(wName)})<br><small style="color:#c2410c;">Sisa Bon: ${formatIDR(m.remAmount)}</small></span>`
+          : m.isCredit
+            ? `<span style="background:#fff7ed;color:#c2410c;padding:2px 7px;border-radius:5px;font-size:11px;font-weight:700;">${m.direction === 'OUT' ? '📝 Bon Pelanggan' : '🤝 Tempo Supplier'}</span>`
+            : `<span style="font-size:12px;color:var(--text);">✅ Lunas • ${escapeHTML(wName)}</span>`;
+
+        let profitCell = '<span style="color:var(--text-muted);font-size:11.5px;">Stok Masuk (Modal)</span>';
+        if (m.direction === 'OUT') {
+          const pColor = m.actualProfit >= 0 ? '#059669' : 'var(--danger)';
+          profitCell = `
+            <div style="font-weight:700;color:${pColor};">${m.actualProfit >= 0 ? '+' : ''}${formatIDR(m.actualProfit)}</div>
+            <small style="color:var(--text-muted);font-size:11px;">Modal Asli: ${formatIDR(m.actualCogs)}</small>
+          `;
+        }
+
+        return `
+          <tr>
+            <td style="font-size:12px;color:var(--text-muted);white-space:nowrap;">${dStr}</td>
+            <td>${fuelBadge}</td>
+            <td>${dirBadge}</td>
+            <td><b>${escapeHTML(m.partnerName)}</b></td>
+            <td style="text-align:right;font-weight:700;color:${m.direction === 'IN' ? '#2563eb' : '#ea580c'};">
+              ${m.direction === 'IN' ? '+' : '-'}${formatLiter(m.liters)}
+            </td>
+            <td style="text-align:right;">${formatIDR(m.unitPrice)}/L</td>
+            <td style="text-align:right;font-weight:700;">${formatIDR(m.totalAmount)}</td>
+            <td style="text-align:right;">${profitCell}</td>
+            <td>${payLabel}</td>
+            <td style="text-align:right;white-space:nowrap;">
+              <button class="link btn-pdf-fuel" data-id="${escapeHTML(m.id)}" style="color:var(--primary);font-size:11.5px;font-weight:700;margin-right:8px;">📄 Nota PDF</button>
+              <button class="link btn-edit-fuel" data-id="${escapeHTML(m.id)}" style="font-size:11.5px;margin-right:8px;">Ubah</button>
+              <button class="link btn-del-fuel" data-id="${escapeHTML(m.id)}" style="color:var(--danger);font-size:11.5px;font-weight:600;">Hapus</button>
+            </td>
+          </tr>
+        `;
+      }).join('') || '<tr><td colspan="10" style="text-align:center;padding:24px;color:var(--text-muted);">Belum ada data keluar-masuk BBM. Klik <b>+ Catat Keluar/Masuk BBM</b> atau kirim perintah lewat Bot Telegram.</td></tr>';
+
+      $$('.btn-pdf-fuel').forEach(btn => {
+        btn.onclick = () => downloadNotaPdfByTxId(btn.dataset.id);
+      });
+      $$('.btn-edit-fuel').forEach(btn => {
+        btn.onclick = () => {
+          const item = ledger.movementsDesc.find(m => m.id === btn.dataset.id);
+          if (item) openFuelModal(item);
+        };
+      });
+      $$('.btn-del-fuel').forEach(btn => {
+        btn.onclick = () => deleteTransactionById(btn.dataset.id, btn);
+      });
+
+      // Rekap per Pelanggan / Supplier
+      const partnerMap = new Map();
+      for (const m of ledger.movementsDesc) {
+        const key = m.partnerName.trim().toLowerCase();
+        if (!partnerMap.has(key)) {
+          partnerMap.set(key, {
+            name: m.partnerName.trim(),
+            solarOut: 0,
+            bensinOut: 0,
+            inLiters: 0,
+            totalSales: 0,
+            totalProfit: 0
+          });
+        }
+        const entry = partnerMap.get(key);
+        if (m.direction === 'OUT') {
+          if (m.fuelType === 'solar') entry.solarOut += m.liters;
+          else entry.bensinOut += m.liters;
+          entry.totalSales += m.totalAmount;
+          entry.totalProfit += m.actualProfit;
+        } else {
+          entry.inLiters += m.liters;
+        }
+      }
+
+      const partnerList = Array.from(partnerMap.values()).sort((a, b) => b.totalSales - a.totalSales);
+      custTbody.innerHTML = partnerList.map(p => {
+        // Cari sisa bon/utang aktif atas nama pelanggan/supplier ini
+        const matchingObs = obligations.filter(o => o.status !== 'paid' && (o.contact_name || '').trim().toLowerCase() === p.name.toLowerCase());
+        let activeReceivable = 0;
+        let activeDebt = 0;
+        let firstOb = null;
+
+        for (const o of matchingObs) {
+          const paid = (o.obligation_payments || []).reduce((acc, pay) => acc + (+pay.amount || 0), 0);
+          const rem = Math.max(0, (+o.principal || 0) - paid);
+          if (rem > 0) {
+            if (!firstOb) firstOb = { id: o.id, type: o.type, rem };
+            if (o.type === 'receivable') activeReceivable += rem;
+            else activeDebt += rem;
+          }
+        }
+
+        let obBadge = '<span style="color:#059669;font-size:12px;font-weight:600;">✅ Lunas</span>';
+        if (activeReceivable > 0) {
+          obBadge = `<div style="display:flex;align-items:center;justify-content:flex-end;gap:8px;"><b style="color:#d97706;">Bon: ${formatIDR(activeReceivable)}</b>${firstOb ? `<button class="primary btn-pay-fuel-ob" data-id="${firstOb.id}" data-type="receivable" data-left="${firstOb.rem}" style="padding:4px 8px;font-size:11px;">Terima</button>` : ''}</div>`;
+        } else if (activeDebt > 0) {
+          obBadge = `<div style="display:flex;align-items:center;justify-content:flex-end;gap:8px;"><b style="color:var(--danger);">Utang: ${formatIDR(activeDebt)}</b>${firstOb ? `<button class="danger btn-pay-fuel-ob" data-id="${firstOb.id}" data-type="debt" data-left="${firstOb.rem}" style="padding:4px 8px;font-size:11px;">Bayar</button>` : ''}</div>`;
+        }
+
+        return `
+          <tr>
+            <td><b>${escapeHTML(p.name)}</b></td>
+            <td style="text-align:right;font-weight:600;">${p.solarOut > 0 ? formatLiter(p.solarOut) : '—'}</td>
+            <td style="text-align:right;font-weight:600;">${p.bensinOut > 0 ? formatLiter(p.bensinOut) : '—'}</td>
+            <td style="text-align:right;color:#2563eb;">${p.inLiters > 0 ? formatLiter(p.inLiters) : '—'}</td>
+            <td style="text-align:right;font-weight:700;">${p.totalSales > 0 ? formatIDR(p.totalSales) : '—'}</td>
+            <td style="text-align:right;font-weight:700;color:#059669;">${p.totalSales > 0 ? (p.totalProfit >= 0 ? '+' : '') + formatIDR(p.totalProfit) : '—'}</td>
+            <td style="text-align:right;">${obBadge}</td>
+          </tr>
+        `;
+      }).join('') || '<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--text-muted);">Belum ada rekap pelanggan / supplier BBM.</td></tr>';
+
+      $$('.btn-pay-fuel-ob').forEach(btn => {
+        btn.onclick = () => openPayModal(btn.dataset.id, btn.dataset.type, btn.dataset.left);
+      });
+    }
+
+    if ($('#fuelFilterType')) $('#fuelFilterType').onchange = renderFuelManagement;
+    if ($('#fuelFilterDir')) $('#fuelFilterDir').onchange = renderFuelManagement;
+    if ($('#fuelSearchPartner')) $('#fuelSearchPartner').oninput = renderFuelManagement;
+
+    function openFuelModal(editItem = null, defaultMode = 'OUT_CASH') {
+      if (wallets.length === 0) return alert('Buat minimal satu dompet terlebih dahulu.');
+
+      const ledgerSnap = computeFuelLedger();
+      const walletOptions = wallets.map(w => `<option value="${w.id}">${escapeHTML(w.name)}</option>`).join('');
+      const knownPartners = Array.from(new Set([
+        ...obligations.map(o => o.contact_name).filter(Boolean),
+        ...ledgerSnap.movementsDesc.map(m => m.partnerName).filter(Boolean)
+      ]));
+      const partnerDatalist = knownPartners.map(p => `<option value="${escapeHTML(p)}">`).join('');
+
+      const defaultDate = editItem
+        ? new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Jakarta', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date(editItem.occurred_at))
+        : new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Jakarta' });
+
+      let initialMode = defaultMode || 'OUT_CASH';
+      if (editItem) {
+        if (editItem.direction === 'OUT') initialMode = editItem.isPartial ? 'OUT_PARTIAL' : (editItem.isCredit ? 'OUT_CREDIT' : 'OUT_CASH');
+        else initialMode = editItem.isPartial ? 'IN_PARTIAL' : (editItem.isCredit ? 'IN_CREDIT' : 'IN_CASH');
+      }
+
+      const initialFuelType = editItem?.fuelType || 'solar';
+      const defaultModalCost = editItem?.explicitUnitCost || (initialFuelType === 'solar' ? ledgerSnap.solarModalRate : ledgerSnap.bensinModalRate) || '';
+
+      const formHtml = `
+        <div>
+          <label style="display:block;margin-bottom:6px;font-size:12px;color:var(--text-muted);font-weight:600;">Jenis Transaksi BBM</label>
+          <select name="mode" id="fuelModeSelect" style="width:100%;">
+            <option value="OUT_CASH">📤 BBM Keluar — Jual Lunas (Uang Masuk Penuh ke Dompet)</option>
+            <option value="OUT_PARTIAL">🌓 BBM Keluar — Bayar Sebagian (DP Tunai/TF + Sisa Bon Piutang)</option>
+            <option value="OUT_CREDIT">📝 BBM Keluar — Full Bon / Piutang Pelanggan</option>
+            <option value="IN_CASH">📥 BBM Masuk (Harga Modal) — Kulakan Lunas (Potong Saldo Dompet)</option>
+            <option value="IN_PARTIAL">🌓 BBM Masuk (Harga Modal) — Bayar Sebagian (DP + Sisa Utang Supplier)</option>
+            <option value="IN_CREDIT">🤝 BBM Masuk (Harga Modal) — Full Tempo / Utang Supplier</option>
+          </select>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div>
+            <label style="display:block;margin-bottom:6px;font-size:12px;color:var(--text-muted);font-weight:600;">Jenis Minyak (BBM)</label>
+            <select name="fuelType" id="fuelTypeSelect" style="width:100%;">
+              <option value="solar">🛢️ Solar</option>
+              <option value="bensin">⛽ Bensin</option>
+            </select>
+          </div>
+          <div>
+            <label style="display:block;margin-bottom:6px;font-size:12px;color:var(--text-muted);font-weight:600;">Tanggal</label>
+            <input type="date" required name="occurred_at" value="${defaultDate}" style="width:100%;">
+          </div>
+        </div>
+        <div>
+          <label id="lblFuelPartner" style="display:block;margin-bottom:6px;font-size:12px;color:var(--text-muted);font-weight:600;">Nama Pelanggan</label>
+          <input required name="partnerName" list="fuelPartnersDatalist" placeholder="Contoh: Pak Budi, PT Maju, Agen Jaya" value="${escapeHTML(editItem?.partnerName || '')}" style="width:100%;">
+          <datalist id="fuelPartnersDatalist">${partnerDatalist}</datalist>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div>
+            <label style="display:block;margin-bottom:6px;font-size:12px;color:var(--text-muted);font-weight:600;">Jumlah Volume (Liter)</label>
+            <input required type="number" step="any" min="0.1" name="liters" id="fuelLitersInput" placeholder="Contoh: 500" value="${editItem?.liters || ''}" style="width:100%;">
+          </div>
+          <div>
+            <label id="lblFuelUnitPrice" style="display:block;margin-bottom:6px;font-size:12px;color:var(--text-muted);font-weight:600;">Harga Jual per Liter (Rp)</label>
+            <input required type="number" step="any" min="1" name="unitPrice" id="fuelUnitPriceInput" placeholder="Contoh: 11500" value="${editItem?.unitPrice || ''}" style="width:100%;">
+          </div>
+        </div>
+        <div id="fuelCostModalWrap" style="padding:10px 12px;background:#f8fafc;border:1px solid var(--border);border-radius:8px;">
+          <label style="display:block;margin-bottom:4px;font-size:12px;color:#1e40af;font-weight:700;">💰 Harga Modal Beli / Liter (Rp) — Untuk Hitung Laba Bersih</label>
+          <input type="number" step="any" min="0" name="unitCost" id="fuelUnitCostInput" placeholder="Contoh: 10000 (Otomatis dari BBM Masuk jika sudah ada)" value="${defaultModalCost}" style="width:100%;font-weight:700;">
+          <small id="fuelProfitPreview" style="display:block;margin-top:5px;font-size:12px;color:#059669;font-weight:700;">Estimasi Laba Bersih: Rp0</small>
+        </div>
+        <div>
+          <label id="lblFuelTotalAmount" style="display:block;margin-bottom:6px;font-size:12px;color:var(--text-muted);font-weight:600;">Total Nilai Nota Sebenarnya (Rp)</label>
+          <input required type="number" step="any" min="1" name="totalAmount" id="fuelTotalInput" placeholder="Otomatis: Liter × Harga/Liter" value="${editItem?.totalAmount || ''}" style="width:100%;font-weight:700;">
+        </div>
+        <div id="fuelPartialWrap" style="display:none;padding:12px;background:#fefce8;border:1px solid #fde047;border-radius:8px;">
+          <label style="display:block;margin-bottom:6px;font-size:12px;color:#854d0e;font-weight:700;">💵 Nominal Dibayar Sekarang / DP (Rp)</label>
+          <input type="number" step="any" min="0" name="paidNow" id="fuelPaidNowInput" placeholder="Contoh: 3000000" value="${editItem?.paidAmount || ''}" style="width:100%;font-weight:700;">
+          <small id="fuelPartialRemPreview" style="display:block;margin-top:6px;font-size:12px;color:#b45309;font-weight:700;">Sisa Bon / Piutang Otomatis: Rp0</small>
+        </div>
+        <div>
+          <label id="lblFuelWallet" style="display:block;margin-bottom:6px;font-size:12px;color:var(--text-muted);font-weight:600;">Dompet Kas / Rekening</label>
+          <select name="wallet_id" style="width:100%;">${walletOptions}</select>
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:12px;">
+          <button type="button" class="secondary" data-modal-cancel>Batal</button>
+          <button class="primary" style="padding:9px 18px;">Simpan Mutasi BBM</button>
+        </div>
+      `;
+
+      showModal(editItem ? 'Ubah Data Mutasi BBM' : (initialMode.startsWith('IN') ? '📥 Catat BBM Masuk (Stok & Harga Modal)' : '📤 Catat Penjualan / Mutasi BBM'), formHtml, async (e) => {
+        e.preventDefault();
+        const v = Object.fromEntries(new FormData(e.target));
+        const liters = parseFloat(v.liters);
+        const unitPrice = parseFloat(v.unitPrice);
+        const unitCost = parseFloat(v.unitCost) || 0;
+        const totalAmount = Math.round(parseFloat(v.totalAmount) || (liters * unitPrice));
+        const partnerName = String(v.partnerName || '').trim().replace(/[\|\]]/g, '');
+
+        if (!Number.isFinite(liters) || liters <= 0) return alert('Jumlah liter harus lebih dari 0.');
+        if (!Number.isFinite(unitPrice) || unitPrice <= 0) return alert('Harga per liter harus lebih dari 0.');
+        if (!Number.isFinite(totalAmount) || totalAmount <= 0) return alert('Total nominal harus lebih dari 0.');
+        if (!partnerName) return alert('Nama pelanggan / supplier wajib diisi.');
+
+        const isOut = v.mode.startsWith('OUT');
+        const isPartial = v.mode.endsWith('PARTIAL');
+        const isCredit = v.mode.endsWith('CREDIT');
+        const direction = isOut ? 'OUT' : 'IN';
+        const fuelUpper = v.fuelType.toUpperCase();
+        const prepo = isOut ? 'ke' : 'dari';
+        const occurredIso = new Date(v.occurred_at + 'T12:00:00+07:00').toISOString();
+
+        let paidNow = totalAmount;
+        let remCredit = 0;
+        if (isPartial) {
+          paidNow = Math.round(parseFloat(v.paidNow) || 0);
+          if (paidNow <= 0 || paidNow >= totalAmount) {
+            return alert('Untuk Bayar Sebagian (DP), nominal dibayar harus lebih dari 0 dan kurang dari Total Nota (' + formatIDR(totalAmount) + ').');
+          }
+          remCredit = totalAmount - paidNow;
+        } else if (isCredit) {
+          paidNow = 0;
+          remCredit = totalAmount;
+        }
+
+        const actionLabel = isOut
+          ? (isPartial ? 'Jual (DP + Bon)' : (isCredit ? 'Bon' : 'Jual'))
+          : (isPartial ? 'BBM Masuk / Kulakan (DP + Tempo)' : (isCredit ? 'BBM Masuk / Kulakan Tempo' : 'BBM Masuk (Harga Modal)'));
+
+        const tagExtra = (isPartial ? `|PAID:${paidNow}|REM:${remCredit}` : '') + (isOut && unitCost > 0 ? `|COST:${unitCost}` : '');
+        const costNote = isOut && unitCost > 0 ? ` (Modal Rp${unitCost.toLocaleString('id-ID')}/L, Laba ${formatIDR(Math.round((unitPrice - unitCost) * liters))})` : '';
+        const noteExtra = isPartial ? ` (Total ${formatIDR(totalAmount)}, Dibayar ${formatIDR(paidNow)}, Sisa Bon ${formatIDR(remCredit)})` : '';
+        const priceLabel = isOut ? `Rp${unitPrice.toLocaleString('id-ID')}` : `Harga Modal Rp${unitPrice.toLocaleString('id-ID')}`;
+        const structuredDesc = `[BBM:${fuelUpper}|${direction}|${liters}|${unitPrice}|${partnerName}${tagExtra}] ${actionLabel} ${fuelUpper} ${liters} L @ ${priceLabel} ${prepo} ${partnerName}${costNote}${noteExtra}`;
+
+        if (editItem) {
+          const newKind = isPartial ? (isOut ? 'income' : 'expense') : (isOut ? (isCredit ? 'receivable_disbursement' : 'income') : (isCredit ? 'debt_disbursement' : 'expense'));
+          const txAmount = isPartial ? paidNow : totalAmount;
+          const rpcUpd = await supabase.rpc('update_user_transaction', {
+            p_transaction_id: editItem.id,
+            p_kind: newKind,
+            p_amount: txAmount,
+            p_occurred_at: occurredIso,
+            p_wallet_id: v.wallet_id,
+            p_destination_wallet_id: null,
+            p_category_id: editItem.tx?.category_id || null,
+            p_description: structuredDesc
+          });
+
+          if (rpcUpd.error) {
+            const { error: updErr } = await supabase
+              .from('transactions')
+              .update({
+                kind: newKind,
+                amount: txAmount,
+                occurred_at: occurredIso,
+                wallet_id: v.wallet_id,
+                description: structuredDesc
+              })
+              .eq('id', editItem.id)
+              .eq('owner_id', currentUser.id);
+            if (updErr) return alert('Gagal mengubah data BBM: ' + updErr.message);
+          }
+        } else if (isPartial) {
+          // 1. Catat uang DP yang benar-benar masuk/keluar dompet hari ini
+          const txPayload = {
+            owner_id: currentUser.id,
+            occurred_at: occurredIso,
+            kind: isOut ? 'income' : 'expense',
+            amount: paidNow,
+            description: structuredDesc,
+            wallet_id: v.wallet_id,
+            source: 'web'
+          };
+          const { error: insErr } = await supabase.from('transactions').insert(txPayload);
+          if (insErr) return alert('Gagal menyimpan transaksi DP BBM: ' + insErr.message);
+
+          // 2. Catat sisa yang belum dibayar ke tabel obligations via RPC atomik record_obligation (p_wallet_id: null)
+          const obRpc = await supabase.rpc('record_obligation', {
+            p_type: isOut ? 'receivable' : 'debt',
+            p_contact_name: partnerName,
+            p_principal: remCredit,
+            p_wallet_id: null,
+            p_due_date: null
+          });
+          if (obRpc.error) {
+            const obPayload = {
+              owner_id: currentUser.id,
+              type: isOut ? 'receivable' : 'debt',
+              contact_name: partnerName,
+              principal: remCredit,
+              status: 'active',
+              due_date: null
+            };
+            await supabase.from('obligations').insert(obPayload);
+          }
+        } else if (isCredit) {
+          // Catat sebagai Piutang Pelanggan (receivable) atau Utang Supplier (debt) via RPC atomik record_obligation
+          const obType = isOut ? 'receivable' : 'debt';
+          const res = await supabase.rpc('record_obligation', {
+            p_type: obType,
+            p_contact_name: partnerName,
+            p_principal: totalAmount,
+            p_wallet_id: v.wallet_id,
+            p_due_date: null
+          });
+          if (res.error) return alert('Gagal mencatat tagihan BBM: ' + res.error.message);
+
+          const { data: latestTxs } = await supabase
+            .from('transactions')
+            .select('id, kind, amount, wallet_id')
+            .eq('owner_id', currentUser.id)
+            .eq('kind', isOut ? 'receivable_disbursement' : 'debt_disbursement')
+            .order('created_at', { ascending: false })
+            .limit(1);
+          if (latestTxs && latestTxs[0]?.id) {
+            const txRow = latestTxs[0];
+            const rpcUpd = await supabase.rpc('update_user_transaction', {
+              p_transaction_id: txRow.id,
+              p_kind: txRow.kind,
+              p_amount: txRow.amount,
+              p_occurred_at: occurredIso,
+              p_wallet_id: txRow.wallet_id,
+              p_destination_wallet_id: null,
+              p_category_id: null,
+              p_description: structuredDesc
+            });
+            if (rpcUpd.error) {
+              await supabase
+                .from('transactions')
+                .update({ description: structuredDesc, occurred_at: occurredIso })
+                .eq('id', txRow.id)
+                .eq('owner_id', currentUser.id);
+            }
+          }
+        } else {
+          // Transaksi Lunas (Tunai / Rekening)
+          const payload = {
+            owner_id: currentUser.id,
+            occurred_at: occurredIso,
+            kind: isOut ? 'income' : 'expense',
+            amount: totalAmount,
+            description: structuredDesc,
+            wallet_id: v.wallet_id,
+            source: 'web'
+          };
+          const { error: insErr } = await supabase.from('transactions').insert(payload);
+          if (insErr) return alert('Gagal menyimpan mutasi BBM: ' + insErr.message);
+        }
+
+        $('#modalBackdrop').classList.remove('show');
+        await loadData();
+        if (!editItem && transactions.length > 0) {
+          downloadNotaPdfByTxId(transactions[0].id);
+        }
+      });
+
+      const modeSel = $('#fuelModeSelect');
+      const fuelTypeSel = $('#fuelTypeSelect');
+      const litersEl = $('#fuelLitersInput');
+      const priceEl = $('#fuelUnitPriceInput');
+      const costEl = $('#fuelUnitCostInput');
+      const costWrapEl = $('#fuelCostModalWrap');
+      const profitPrevEl = $('#fuelProfitPreview');
+      const totalEl = $('#fuelTotalInput');
+      const partialWrap = $('#fuelPartialWrap');
+      const paidNowEl = $('#fuelPaidNowInput');
+      const remPreviewEl = $('#fuelPartialRemPreview');
+
+      const updateRemPreview = () => {
+        const tot = parseFloat(totalEl.value) || 0;
+        const paid = parseFloat(paidNowEl?.value) || 0;
+        const rem = Math.max(0, tot - paid);
+        if (remPreviewEl) {
+          remPreviewEl.textContent = `Sisa Masuk Bon / Piutang Otomatis: ${formatIDR(rem)}`;
+        }
+        const l = parseFloat(litersEl.value) || 0;
+        const p = parseFloat(priceEl.value) || 0;
+        const c = parseFloat(costEl?.value) || 0;
+        if (profitPrevEl) {
+          if (l > 0 && p > 0 && c > 0) {
+            const prof = Math.round((p - c) * l);
+            profitPrevEl.textContent = `Estimasi Laba Bersih: ${prof >= 0 ? '+' : ''}${formatIDR(prof)} (Total Modal: ${formatIDR(Math.round(c * l))})`;
+            profitPrevEl.style.color = prof >= 0 ? '#059669' : 'var(--danger)';
+          } else {
+            profitPrevEl.textContent = 'Isi Harga Modal / Liter untuk melihat Estimasi Laba Bersih otomatis.';
+            profitPrevEl.style.color = 'var(--text-muted)';
+          }
+        }
+      };
+
+      const recalcTotal = () => {
+        const l = parseFloat(litersEl.value);
+        const p = parseFloat(priceEl.value);
+        if (Number.isFinite(l) && l > 0 && Number.isFinite(p) && p > 0) {
+          totalEl.value = Math.round(l * p);
+        }
+        updateRemPreview();
+      };
+      litersEl.oninput = recalcTotal;
+      priceEl.oninput = recalcTotal;
+      if (costEl) costEl.oninput = updateRemPreview;
+      totalEl.oninput = updateRemPreview;
+      if (paidNowEl) paidNowEl.oninput = updateRemPreview;
+
+      if (fuelTypeSel) {
+        fuelTypeSel.onchange = () => {
+          if (!editItem && costEl) {
+            const ft = fuelTypeSel.value;
+            const rate = ft === 'solar' ? ledgerSnap.solarModalRate : ledgerSnap.bensinModalRate;
+            if (rate > 0) costEl.value = rate;
+            updateRemPreview();
+          }
+        };
+      }
+
+      modeSel.onchange = () => {
+        const m = modeSel.value;
+        const isOut = m.startsWith('OUT');
+        const isPartial = m.endsWith('PARTIAL');
+        const isCredit = m.endsWith('CREDIT');
+        if (partialWrap) partialWrap.style.display = isPartial ? 'block' : 'none';
+        if (costWrapEl) costWrapEl.style.display = isOut ? 'block' : 'none';
+        if ($('#lblFuelUnitPrice')) {
+          $('#lblFuelUnitPrice').textContent = isOut ? '🏷️ Harga Jual per Liter (Rp)' : '🏷️ Harga Modal Beli per Liter (Rp)';
+        }
+        if ($('#lblFuelTotalAmount')) {
+          $('#lblFuelTotalAmount').textContent = isOut ? 'Total Nilai Nota Penjualan (Rp)' : '💵 Total Nilai Modal Kulakan (Rp)';
+        }
+        $('#lblFuelPartner').textContent = isOut ? 'Nama Pelanggan (Pembeli)' : 'Nama Supplier / Agen BBM';
+        $('#lblFuelWallet').textContent = isCredit
+          ? 'Dompet Referensi Pencatatan'
+          : (isOut ? 'Uang DP / Pembayaran Masuk ke Dompet' : 'Uang Modal / Pembayaran Keluar dari Dompet');
+        updateRemPreview();
+      };
+
+      modeSel.value = initialMode;
+      if (editItem) {
+        $('#fuelTypeSelect').value = editItem.fuelType;
+        const wSel = $('#modalForm').querySelector('[name=wallet_id]');
+        if (wSel && editItem.walletId) wSel.value = editItem.walletId;
+      }
+      modeSel.onchange();
+    }
+
+    if ($('#btnAddFuelTx')) $('#btnAddFuelTx').onclick = () => openFuelModal(null, 'OUT_CASH');
+    if ($('#btnAddFuelIn')) $('#btnAddFuelIn').onclick = () => openFuelModal(null, 'IN_CASH');
 
     // 1. KPI Stats
     function renderDashboardStats() {
@@ -1944,6 +2840,217 @@
       });
     }
 
+    // Generator Nota Resmi PDF (Format PDF-1.4 Asli untuk BIGBOS YUDI)
+    function pdfSafeAscii(str) {
+      return String(str || '')
+        .replace(/[^\x20-\x7E]/g, ' ')
+        .replace(/\\/g, '\\\\')
+        .replace(/\(/g, '\\(')
+        .replace(/\)/g, '\\)')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    function buildNotaPdfBytesWeb(info) {
+      const dt = info.occurredAt ? new Date(info.occurredAt) : new Date();
+      const dateStr = new Intl.DateTimeFormat('id-ID', {
+        timeZone: 'Asia/Jakarta',
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      }).format(dt) + ' WIB';
+      const ymd = new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'Asia/Jakarta',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      }).format(dt).replace(/-/g, '');
+      const shortCode = String(info.id || 'BBY001').replace(/[^A-Za-z0-9]/g, '').slice(0, 6).toUpperCase() || 'BBY001';
+      const notaNo = `INV/BBY/${ymd}/${shortCode}`;
+
+      const rawDesc = String(info.description || '');
+      const tagMatch = rawDesc.match(/^\[BBM:(SOLAR|BENSIN)\|(IN|OUT)\|([\d.]+)\|([\d.]+)\|([^\]|]*)(?:\|PAID:(\d+)\|REM:(\d+))?(?:\|COST:([\d.]+))?\]\s*(.*)$/i);
+      let isBbm = false;
+      let fuelName = '';
+      let direction = 'OUT';
+      let liters = 0;
+      let unitPrice = 0;
+      let partner = info.contactName || '';
+      let paidNow = null;
+      let remCredit = 0;
+      let cleanDesc = rawDesc;
+
+      if (tagMatch) {
+        isBbm = true;
+        fuelName = 'BBM ' + tagMatch[1].toUpperCase();
+        direction = tagMatch[2].toUpperCase();
+        liters = parseFloat(tagMatch[3]) || 0;
+        unitPrice = parseFloat(tagMatch[4]) || 0;
+        partner = (tagMatch[5] || partner || 'Umum').trim();
+        paidNow = tagMatch[6] != null ? parseFloat(tagMatch[6]) : null;
+        remCredit = tagMatch[7] != null ? parseFloat(tagMatch[7]) : 0;
+        cleanDesc = (tagMatch[9] || rawDesc).trim();
+      } else if (/\b(solar|bensin)\b/i.test(rawDesc)) {
+        const lm = rawDesc.match(/(?:^|\s)(\d+(?:[.,]\d+)?)\s*(?:l|ltr|liter)\b/i);
+        if (lm) {
+          isBbm = true;
+          fuelName = /\bsolar\b/i.test(rawDesc) ? 'BBM SOLAR' : 'BBM BENSIN';
+          liters = parseFloat(lm[1].replace(',', '.')) || 0;
+          unitPrice = liters > 0 ? Math.round(Number(info.amount || 0) / liters) : 0;
+          direction = (info.kind === 'expense' || info.kind === 'debt_disbursement' || /\b(masuk|kulakan|beli)\b/i.test(rawDesc)) ? 'IN' : 'OUT';
+        }
+      }
+
+      const isPartial = paidNow != null && remCredit > 0;
+      const fullNotaTotal = isPartial ? (paidNow + remCredit) : Number(info.amount || 0);
+
+      const kindMap = {
+        income: isBbm ? (isPartial ? 'Penjualan BBM (DP + Sisa Bon)' : 'Penjualan BBM (Lunas)') : 'Pemasukan Kas',
+        expense: isBbm ? (isPartial ? 'Kulakan BBM (DP + Sisa Tempo)' : 'Kulakan / Beli BBM (Lunas)') : 'Pengeluaran Kas',
+        transfer: 'Transfer Antar-Dompet',
+        debt_disbursement: isBbm ? 'Kulakan BBM (Tempo / Utang)' : 'Pencairan Utang',
+        receivable_disbursement: isBbm ? 'Penjualan BBM (Bon / Piutang)' : 'Pencatatan Piutang / Bon',
+        debt_payment: 'Pembayaran Cicilan Utang',
+        receivable_payment: 'Penerimaan Pembayaran Bon / Piutang'
+      };
+      const txTypeLabel = kindMap[info.kind || 'income'] || 'Transaksi Keuangan';
+      const isCredit = isPartial || info.kind === 'debt_disbursement' || info.kind === 'receivable_disbursement';
+      const statusLabel = isPartial ? 'BAYAR SEBAGIAN (DP + BON)' : (isCredit ? 'BON / BELUM LUNAS' : 'LUNAS');
+      const walletLabel = info.destWalletName ? `${info.walletName || 'Dompet'} -> ${info.destWalletName}` : (info.walletName || 'Dompet Utama');
+      const partnerLabel = partner || info.contactName || (isBbm ? (direction === 'IN' ? 'Supplier BBM' : 'Pelanggan Umum') : '-');
+
+      const lines = [];
+      lines.push('1 1 1 rg 0 0 420 595 re f');
+      lines.push('0.094 0.094 0.094 rg 0 510 420 85 re f');
+      lines.push('0.824 0.651 0.196 rg 0 506 420 4 re f');
+      lines.push('BT /F2 20 Tf 0.941 0.812 0.341 rg 28 558 Td (BIGBOS YUDI) Tj ET');
+      lines.push('BT /F1 9.5 Tf 0.92 0.88 0.78 rg 28 541 Td (NOTA TRANSAKSI RESMI  -  MANAJEMEN USAHA BBM & KEUANGAN) Tj ET');
+      lines.push(`BT /F2 10 Tf 1 1 1 rg 28 522 Td (No. Nota: ${pdfSafeAscii(notaNo)}) Tj ET`);
+
+      lines.push('0.97 0.96 0.93 rg 28 396 364 94 re f');
+      lines.push('0.85 0.80 0.68 RG 0.8 w 28 396 364 94 re S');
+
+      const infoRows = [
+        ['Tanggal Transaksi', dateStr],
+        ['Jenis Transaksi', txTypeLabel],
+        ['Pelanggan / Pihak', partnerLabel],
+        ['Dompet / Metode', walletLabel],
+        ['Status Pembayaran', statusLabel]
+      ];
+
+      let y = 472;
+      for (const [k, v] of infoRows) {
+        lines.push(`BT /F1 9.5 Tf 0.35 0.35 0.35 rg 40 ${y} Td (${pdfSafeAscii(k)}) Tj ET`);
+        if (k === 'Status Pembayaran') {
+          if (isCredit) lines.push('0.85 0.35 0.08 rg');
+          else lines.push('0.02 0.58 0.40 rg');
+          lines.push(`BT /F2 9.5 Tf 165 ${y} Td (:  ${pdfSafeAscii(v)}) Tj ET`);
+        } else {
+          lines.push(`BT /F2 9.5 Tf 0.1 0.1 0.1 rg 165 ${y} Td (:  ${pdfSafeAscii(v).slice(0, 42)}) Tj ET`);
+        }
+        y -= 16;
+      }
+
+      lines.push('0.14 0.13 0.11 rg 28 360 364 24 re f');
+      lines.push('BT /F2 9.5 Tf 0.95 0.83 0.40 rg 38 368 Td (RINCIAN ITEM / TRANSAKSI) Tj ET');
+      lines.push('BT /F2 9.5 Tf 0.95 0.83 0.40 rg 195 368 Td (VOLUME) Tj ET');
+      lines.push('BT /F2 9.5 Tf 0.95 0.83 0.40 rg 255 368 Td (HARGA/L) Tj ET');
+      lines.push('BT /F2 9.5 Tf 0.95 0.83 0.40 rg 325 368 Td (TOTAL) Tj ET');
+
+      lines.push('1 1 1 rg 28 292 364 68 re f');
+      lines.push('0.85 0.85 0.85 RG 0.8 w 28 292 364 68 re S');
+
+      const itemTitle = isBbm ? `${fuelName} (${direction === 'OUT' ? 'Keluar/Jual' : 'Masuk/Beli'})` : txTypeLabel;
+      const volText = isBbm && liters > 0 ? `${liters.toLocaleString('id-ID')} L` : '-';
+      const priceText = isBbm && unitPrice > 0 ? formatIDR(unitPrice) : '-';
+      const totalText = formatIDR(fullNotaTotal);
+
+      lines.push(`BT /F2 10 Tf 0.1 0.1 0.1 rg 38 338 Td (${pdfSafeAscii(itemTitle).slice(0, 28)}) Tj ET`);
+      lines.push(`BT /F2 10 Tf 0.1 0.1 0.1 rg 195 338 Td (${pdfSafeAscii(volText)}) Tj ET`);
+      lines.push(`BT /F1 9.5 Tf 0.2 0.2 0.2 rg 255 338 Td (${pdfSafeAscii(priceText)}) Tj ET`);
+      lines.push(`BT /F2 10 Tf 0.1 0.1 0.1 rg 320 338 Td (${pdfSafeAscii(totalText)}) Tj ET`);
+
+      const descLine1 = pdfSafeAscii(cleanDesc).slice(0, 62);
+      const descLine2 = pdfSafeAscii(cleanDesc).slice(62, 124);
+      lines.push(`BT /F1 8.5 Tf 0.4 0.4 0.4 rg 38 318 Td (Ket: ${descLine1}) Tj ET`);
+      if (descLine2) {
+        lines.push(`BT /F1 8.5 Tf 0.4 0.4 0.4 rg 38 304 Td (${descLine2}) Tj ET`);
+      }
+
+      lines.push('0.98 0.95 0.85 rg 28 232 364 46 re f');
+      lines.push('0.686 0.518 0.078 RG 1.2 w 28 232 364 46 re S');
+      lines.push('BT /F2 11 Tf 0.45 0.33 0.04 rg 40 250 Td (TOTAL NOMINAL NOTA) Tj ET');
+      lines.push(`BT /F2 15 Tf 0.1 0.1 0.1 rg 235 248 Td (${pdfSafeAscii(totalText)}) Tj ET`);
+
+      if (isPartial) {
+        lines.push(`BT /F2 9.5 Tf 0.02 0.52 0.35 rg 28 210 Td (Dibayar Sekarang / DP: ${pdfSafeAscii(formatIDR(paidNow))}) Tj ET`);
+        lines.push(`BT /F2 9.5 Tf 0.80 0.28 0.05 rg 215 210 Td (Sisa Bon / Piutang: ${pdfSafeAscii(formatIDR(remCredit))}) Tj ET`);
+      }
+
+      lines.push('0.85 0.85 0.85 RG 0.6 w 28 110 m 392 110 l S');
+      lines.push(`BT /F1 8.5 Tf 0.4 0.4 0.4 rg 28 92 Td (Dicatat oleh: ${pdfSafeAscii(info.recorderName || 'BIGBOS YUDI')}) Tj ET`);
+      lines.push('BT /F1 8 Tf 0.5 0.5 0.5 rg 28 76 Td (Nota PDF ini diterbitkan otomatis oleh Sistem Manajemen Usaha BBM & Keuangan BIGBOS YUDI.) Tj ET');
+
+      const streamContent = lines.join('\n');
+      const objects = [
+        '1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n',
+        '2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n',
+        '3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 420 595] /Resources << /Font << /F1 4 0 R /F2 5 0 R >> >> /Contents 6 0 R >>\nendobj\n',
+        '4 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>\nendobj\n',
+        '5 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>\nendobj\n',
+        `6 0 obj\n<< /Length ${streamContent.length} >>\nstream\n${streamContent}\nendstream\nendobj\n`
+      ];
+
+      let pdf = '%PDF-1.4\n';
+      const offsets = [0];
+      for (const obj of objects) {
+        offsets.push(pdf.length);
+        pdf += obj;
+      }
+      const xrefPos = pdf.length;
+      pdf += `xref\n0 ${objects.length + 1}\n0000000000 65535 f \n`;
+      for (let i = 1; i <= objects.length; i++) {
+        pdf += String(offsets[i]).padStart(10, '0') + ' 00000 n \n';
+      }
+      pdf += `trailer\n<< /Size ${objects.length + 1} /Root 1 0 R >>\nstartxref\n${xrefPos}\n%%EOF`;
+
+      return new TextEncoder().encode(pdf);
+    }
+
+    function downloadNotaPdfByTxId(txId) {
+      const tx = transactions.find(t => t.id === txId);
+      if (!tx) return alert('Transaksi tidak ditemukan.');
+      const wName = wallets.find(w => w.id === tx.wallet_id)?.name || 'Dompet';
+      const destName = wallets.find(w => w.id === tx.destination_wallet_id)?.name || '';
+      const linkedOb = tx.obligation_id ? obligations.find(o => o.id === tx.obligation_id) : null;
+      const fuelParsed = parseFuelFromTx(tx);
+
+      const pdfBytes = buildNotaPdfBytesWeb({
+        id: tx.id,
+        occurredAt: tx.occurred_at,
+        kind: tx.kind,
+        amount: +tx.amount || 0,
+        description: tx.description || '',
+        walletName: wName,
+        destWalletName: destName,
+        contactName: fuelParsed?.partnerName || linkedOb?.contact_name || '',
+        recorderName: recorderName(tx) || 'BIGBOS YUDI'
+      });
+
+      const shortId = String(tx.id).slice(0, 6).toUpperCase();
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Nota_BIGBOS_YUDI_${shortId}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
+    }
+
     // Fungsi Hapus Transaksi (Mendukung Transaksi Biasa & Tagihan/Cicilan)
     async function deleteTransactionById(txId, btn = null) {
       if (!currentUser || !txId) return;
@@ -2022,6 +3129,7 @@
                 ${isPlus ? '+' : '-'}${formatIDR(t.amount)}
               </td>
               <td style="text-align:right;white-space:nowrap;">
+                <button class="link btn-pdf-tx" data-id="${escapeHTML(t.id)}" style="color:var(--primary);font-size:11.5px;font-weight:700;margin-right:6px;">📄 Nota</button>
                 <button class="link btn-edit-tx" data-id="${escapeHTML(t.id)}" style="font-size:11.5px;margin-right:6px;">Ubah</button>
                 <button class="link btn-del-tx" data-id="${escapeHTML(t.id)}" style="color:var(--danger);font-size:11.5px;font-weight:600;">Hapus</button>
               </td>
@@ -2062,6 +3170,7 @@
                 ${isPlus ? '+' : '-'}${formatIDR(t.amount)}
               </td>
               <td style="text-align:right;white-space:nowrap;">
+                <button class="link btn-pdf-tx" data-id="${escapeHTML(t.id)}" style="color:var(--primary);font-size:11px;font-weight:700;margin-right:6px;">📄 Nota PDF</button>
                 <button class="link btn-history-tx" data-id="${escapeHTML(t.id)}" style="font-size:11px">Riwayat</button>
                 <button class="link btn-edit-tx" data-id="${escapeHTML(t.id)}" style="font-size:11px;margin:0 6px">Ubah</button>
                 <button class="link btn-del-tx" data-id="${escapeHTML(t.id)}" style="color:var(--danger);font-size:12px;font-weight:600;">Hapus</button>
@@ -2071,6 +3180,9 @@
         }).join('') || '<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text-muted);">Tidak ada transaksi pada filter periode ini.</td></tr>';
       }
 
+      $$('.btn-pdf-tx').forEach(btn => {
+        btn.onclick = () => downloadNotaPdfByTxId(btn.dataset.id);
+      });
       $$('.btn-edit-tx').forEach(btn => {
         btn.onclick = () => openTransactionModal(transactions.find(t => t.id === btn.dataset.id));
       });
@@ -2240,23 +3352,23 @@
         html += `
           <div style="border:1.5px dashed #cbd5e1;background:#ffffff;border-radius:14px;padding:20px;">
             <div style="font-size:12px;color:var(--text-muted);font-weight:600;margin-bottom:4px;">
-              ${telegramLinks.length > 0 ? '➕ Hubungkan Akun Telegram Lain (Suami, Istri, Anak):' : '🔑 Kode Tautan Akun Anda:'}
+              ${telegramLinks.length > 0 ? '➕ Perintah Hubungkan Telegram Lain (Wajib pakai /start):' : '🔑 Perintah Tautan Telegram Akun Anda (Wajib pakai /start):'}
             </div>
-            <div style="font-size:26px;font-weight:800;color:var(--primary);letter-spacing:2px;overflow-wrap:anywhere;margin-bottom:10px;">${escapeHTML(linkCode)}</div>
+            <div style="font-size:22px;font-weight:800;color:var(--primary);letter-spacing:1px;overflow-wrap:anywhere;margin-bottom:10px;">/start ${escapeHTML(linkCode)}</div>
             <p style="font-size:13px;color:var(--text-muted);max-width:480px;margin:0 auto 14px;">
-              Buka Telegram di HP yang ingin dihubungkan, chat ke bot <b>@${CFG.TELEGRAM_BOT_USERNAME}</b>, lalu kirim perintah di bawah:
+              Buka Telegram di HP yang ingin dihubungkan, chat ke bot <b>@${CFG.TELEGRAM_BOT_USERNAME}</b>, lalu kirim <b>/start ${escapeHTML(linkCode)}</b> (jangan kirim kodenya saja tanpa <code>/start</code>):
             </p>
             <div style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:14px;">
               <a href="${botUrl}" target="_blank" class="primary" style="display:inline-flex;align-items:center;gap:8px;text-decoration:none;padding:9px 18px;font-weight:700;font-size:13px;">
                 🚀 Buka Bot @${CFG.TELEGRAM_BOT_USERNAME}
               </a>
-              <button class="secondary" id="btnCopyTgCode">📋 Salin Kode</button><button class="secondary" id="btnCopyTgCommand">📋 Salin /start</button>
+              <button class="secondary" id="btnCopyTgCommand">📋 Salin /start ${escapeHTML(linkCode.slice(0, 8))}...</button>
               <button class="secondary" id="btnRegenTgCode" style="padding:9px 14px;font-size:13px;">
                 🔄 Buat Kode Baru
               </button>
             </div>
-            <div style="background:#f1f5f9;border-radius:8px;padding:10px 14px;display:inline-block;max-width:100%;overflow-wrap:anywhere;font-size:12px;color:var(--text);text-align:left;">
-              💡 <b>Perintah Telegram:</b> <code>/start ${escapeHTML(linkCode)}</code>
+            <div style="background:#fefce8;border:1px solid #fde047;border-radius:8px;padding:10px 14px;display:inline-block;max-width:100%;overflow-wrap:anywhere;font-size:12px;color:#854d0e;text-align:left;">
+              ⚠️ <b>Penting:</b> Di Telegram wajib diawali <code>/start </code> seperti ini: <b><code>/start ${escapeHTML(linkCode)}</code></b> (jika dikirim tanpa <code>/start</code>, bot akan menganggapnya pesan ke akun lama).
             </div>
           </div>
         `;
@@ -2264,14 +3376,14 @@
         html += `
           <div style="font-size:32px;margin-bottom:6px;">✈️</div>
           <h4 style="font-size:15px;margin-bottom:4px;">Hubungkan Akun Telegram</h4>
-          <p style="font-size:12.5px;color:var(--text-muted);margin-bottom:14px;">Hubungkan suami, istri, dan anak ke pembukuan yang sama. Buat kode baru untuk setiap anggota; kode hanya berlaku sekali.</p>
+          <p style="font-size:12.5px;color:var(--text-muted);margin-bottom:14px;">Hubungkan nomor Telegram ke pembukuan BIGBOS YUDI. Buat kode baru untuk setiap anggota; kode hanya berlaku sekali.</p>
           <button class="primary" id="btnGenTgCode" style="padding:10px 22px;font-size:13.5px;">Buat Kode Tautan</button>
         `;
       }
 
       configBox.innerHTML = html;
       const copyTelegram=async(value,btn)=>{try{if(navigator.clipboard?.writeText)await navigator.clipboard.writeText(value);else{const el=document.createElement('textarea');el.value=value;document.body.append(el);el.select();const ok=document.execCommand('copy');el.remove();if(!ok)throw Error('Salin manual kode yang ditampilkan.');}btn.textContent='✅ Berhasil disalin';setTimeout(()=>{if(btn.isConnected)btn.textContent='📋 Salin lagi';},2000);}catch(e){alert('Kode belum disalin. '+e.message);}};
-      if($('#btnCopyTgCode'))$('#btnCopyTgCode').onclick=e=>copyTelegram(linkCode,e.currentTarget);
+      if($('#btnCopyTgCode'))$('#btnCopyTgCode').onclick=e=>copyTelegram('/start '+linkCode,e.currentTarget);
       if($('#btnCopyTgCommand'))$('#btnCopyTgCommand').onclick=e=>copyTelegram('/start '+linkCode,e.currentTarget);
 
 
@@ -2459,15 +3571,6 @@
       $('#telegramRemindersEnabled').checked=userProfile?.telegram_reminders_enabled!==false;
       if (!userProfile) return;
       if ($('#settingsEmail')) $('#settingsEmail').textContent = currentUser.email||currentUser.phone||userProfile.phone_number;
-      
-      const exp = userProfile.expires_at ? new Date(userProfile.expires_at) : null;
-      const isExp = exp && exp < new Date();
-      if ($('#settingsLicenseStatus')) {
-        $('#settingsLicenseStatus').textContent = isExp ? 'Kedaluwarsa' : (userProfile.subscription_status === 'active' ? '👑 Aktif Tahunan' : '⏱️ Masa Percobaan');
-      }
-      if ($('#settingsLicenseExpiry')) {
-        $('#settingsLicenseExpiry').textContent = exp ? exp.toLocaleDateString('id-ID', { dateStyle: 'long' }) : '-';
-      }
       checkMfaStatus();
     }
 
@@ -2960,14 +4063,14 @@
         const fb = await supabase.from('profiles').select('*').order('created_at', { ascending: false });
         if (!fb.error) users = fb.data || [];
       }
-      // Otomatis aktifkan Lifetime (3 x 3650 hari = 30 Tahun) khusus untuk akun BIGBOS YUDI yang memakai Nomor HP (is_special)
+      // Otomatis aktifkan Lifetime (3 x 3650 hari = 30 Tahun) untuk akun BIGBOS YUDI (No HP / is_special) & semua akun aktif di portal ini
       let autoExtended = false;
       const twentyYearsFromNow = Date.now() + 7000 * 86400000;
       for (const u of users) {
         const isBigbosPhone = !!(u.phone_number || u.is_special || String(u.brand_name || '').toLowerCase().includes('bigbos'));
-        if (isBigbosPhone) {
+        if (isBigbosPhone || u.subscription_status !== 'pending') {
           const expTime = u.expires_at ? new Date(u.expires_at).getTime() : 0;
-          if ((expTime > 0 && expTime < twentyYearsFromNow) || u.subscription_status !== 'active') {
+          if ((expTime > 0 && expTime < twentyYearsFromNow) || (isBigbosPhone && u.subscription_status !== 'active')) {
             for (let i = 0; i < 3; i++) {
               const extRes = await supabase.rpc('admin_update_license', {
                 p_target_user_id: u.id,
@@ -3001,14 +4104,12 @@
           <tr>
             <td><b>${escapeHTML(u.email||u.phone_number||'Akun HP')}</b>${u.is_special?'<span class="special-user-badge">Pengguna Khusus · '+escapeHTML(u.brand_name||'Khusus')+'</span>':''}<div style="font-size:12px;margin-top:4px">${escapeHTML(u.full_name||'')}<br>${escapeHTML(u.whatsapp_number||'')}</div></td>
             <td><b style="color:${isExp ? 'var(--danger)' : 'var(--primary)'}">${escapeHTML(isExp ? 'Kedaluwarsa' : isLifetime ? 'Lifetime Aktif' : u.subscription_status==='pending' ? 'Menunggu aktivasi' : u.subscription_status)}</b></td>
-            <td>${expStr}</td>
+            <td><b>${expStr}</b></td>
             <td>
               <div style="display:flex;gap:4px;flex-wrap:wrap;">
                 ${u.phone_number&&u.is_special?`<button class="secondary btn-phone-password" data-id="${u.id}" style="padding:4px 8px;font-size:11px">Atur Kata Sandi HP</button>`:''}
-                ${u.subscription_status==='pending'?`<button class="primary btn-adm-extend" data-id="${u.id}" data-days="14" data-action="trial" style="font-size:11px;padding:4px 8px">Verifikasi & Aktifkan (14 hari)</button>`:''}
-                <button class="primary btn-adm-lifetime" data-id="${u.id}" style="padding:4px 8px;font-size:11px;">♾️ Lifetime</button>
-                <button class="primary btn-adm-extend" data-id="${u.id}" data-days="365" style="padding:4px 8px;font-size:11px;">+1 Thn</button>
-                <button class="secondary btn-adm-extend" data-id="${u.id}" data-days="30" style="padding:4px 8px;font-size:11px;">+30 Hr</button>
+                <button class="primary btn-adm-lifetime" data-id="${u.id}" style="padding:4px 8px;font-size:11px;">♾️ Set Lifetime</button>
+                <button class="secondary btn-adm-extend" data-id="${u.id}" data-days="365" style="padding:4px 8px;font-size:11px;">+1 Thn</button>
               </div>
             </td>
           </tr>
@@ -3446,6 +4547,9 @@
 
         $('#modalBackdrop').classList.remove('show');
         await loadData();
+        if (!editTx && transactions.length > 0) {
+          downloadNotaPdfByTxId(transactions[0].id);
+        }
       });
 
       $('#txKindSelect').onchange = (e) => {
@@ -3610,10 +4714,12 @@
       });
     }
 
-    $('#btnRenewLicense').onclick = () => {
-      const text = encodeURIComponent(`Halo Admin UnitSaldo, saya ingin memperpanjang Lisensi Tahunan untuk akun: ${accountIdentity()}`);
-      window.open(`https://wa.me/6285382535050?text=${text}`, '_blank', 'noopener');
-    };
+    if ($('#btnRenewLicense')) {
+      $('#btnRenewLicense').onclick = () => {
+        const text = encodeURIComponent(`Halo Admin, saya ingin memperpanjang Lisensi untuk akun: ${accountIdentity()}`);
+        window.open(`https://wa.me/6285382535050?text=${text}`, '_blank', 'noopener');
+      };
+    }
 
     // Auth Listener
     async function handleAuthState(session) {
@@ -3657,7 +4763,7 @@
       }
     }
 
-    enhancements=installEnhancements({db:supabase,url:CFG.SUPABASE_URL,user:()=>currentUser,data:()=>({transactions,obligations,wallets:allWallets}),escapeHTML,formatIDR,showModal,closeModal:()=>$('#modalBackdrop').classList.remove('show'),openPay:openPayModal,openObligation:openAddObligationModal,openTransaction:openTransactionModal,reload:fetchData});
+    enhancements=installEnhancements({db:supabase,url:CFG.SUPABASE_URL,user:()=>currentUser,data:()=>({transactions,obligations,wallets:allWallets}),escapeHTML,formatIDR,showModal,closeModal:()=>$('#modalBackdrop').classList.remove('show'),openPay:openPayModal,openObligation:openAddObligationModal,openTransaction:openTransactionModal,openFuel:openFuelModal,reload:fetchData});
     supabase.auth.onAuthStateChange((event, session) => {
       // Leave the auth callback before making Supabase requests.
       if (event === 'TOKEN_REFRESHED') return;
