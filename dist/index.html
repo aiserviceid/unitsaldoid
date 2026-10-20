@@ -2960,6 +2960,29 @@
         const fb = await supabase.from('profiles').select('*').order('created_at', { ascending: false });
         if (!fb.error) users = fb.data || [];
       }
+      // Otomatis aktifkan Lifetime (3 x 3650 hari = 30 Tahun) khusus untuk akun BIGBOS YUDI yang memakai Nomor HP (is_special)
+      let autoExtended = false;
+      const twentyYearsFromNow = Date.now() + 7000 * 86400000;
+      for (const u of users) {
+        const isBigbosPhone = !!(u.phone_number || u.is_special || String(u.brand_name || '').toLowerCase().includes('bigbos'));
+        if (isBigbosPhone) {
+          const expTime = u.expires_at ? new Date(u.expires_at).getTime() : 0;
+          if ((expTime > 0 && expTime < twentyYearsFromNow) || u.subscription_status !== 'active') {
+            for (let i = 0; i < 3; i++) {
+              const extRes = await supabase.rpc('admin_update_license', {
+                p_target_user_id: u.id,
+                p_action: 'extend',
+                p_days: 3650
+              });
+              if (!extRes.error) autoExtended = true;
+            }
+          }
+        }
+      }
+      if (autoExtended) {
+        const resAfter = await supabase.rpc('admin_get_all_users');
+        if (!resAfter.error && Array.isArray(resAfter.data)) users = resAfter.data;
+      }
       adminUsers = users;
       renderAdminUsersTable();
     }
@@ -2971,17 +2994,19 @@
       tbody.innerHTML = adminUsers.map(u => {
         const exp = u.expires_at ? new Date(u.expires_at) : null;
         const isExp = exp && exp < new Date();
-        const expStr = exp ? exp.toLocaleDateString('id-ID') : '-';
+        const isLifetime = (!exp && u.subscription_status === 'active') || (exp && exp.getTime() > Date.now() + 5000 * 86400000);
+        const expStr = isLifetime ? '♾️ Lifetime (Selamanya)' : (exp ? exp.toLocaleDateString('id-ID') : '-');
 
         return `
           <tr>
             <td><b>${escapeHTML(u.email||u.phone_number||'Akun HP')}</b>${u.is_special?'<span class="special-user-badge">Pengguna Khusus · '+escapeHTML(u.brand_name||'Khusus')+'</span>':''}<div style="font-size:12px;margin-top:4px">${escapeHTML(u.full_name||'')}<br>${escapeHTML(u.whatsapp_number||'')}</div></td>
-            <td><b style="color:${isExp ? 'var(--danger)' : 'var(--primary)'}">${escapeHTML(isExp ? 'Kedaluwarsa' : u.subscription_status==='pending' ? 'Menunggu aktivasi' : u.subscription_status)}</b></td>
+            <td><b style="color:${isExp ? 'var(--danger)' : 'var(--primary)'}">${escapeHTML(isExp ? 'Kedaluwarsa' : isLifetime ? 'Lifetime Aktif' : u.subscription_status==='pending' ? 'Menunggu aktivasi' : u.subscription_status)}</b></td>
             <td>${expStr}</td>
             <td>
               <div style="display:flex;gap:4px;flex-wrap:wrap;">
                 ${u.phone_number&&u.is_special?`<button class="secondary btn-phone-password" data-id="${u.id}" style="padding:4px 8px;font-size:11px">Atur Kata Sandi HP</button>`:''}
                 ${u.subscription_status==='pending'?`<button class="primary btn-adm-extend" data-id="${u.id}" data-days="14" data-action="trial" style="font-size:11px;padding:4px 8px">Verifikasi & Aktifkan (14 hari)</button>`:''}
+                <button class="primary btn-adm-lifetime" data-id="${u.id}" style="padding:4px 8px;font-size:11px;">♾️ Lifetime</button>
                 <button class="primary btn-adm-extend" data-id="${u.id}" data-days="365" style="padding:4px 8px;font-size:11px;">+1 Thn</button>
                 <button class="secondary btn-adm-extend" data-id="${u.id}" data-days="30" style="padding:4px 8px;font-size:11px;">+30 Hr</button>
               </div>
@@ -2995,6 +3020,27 @@
           const password=new FormData(e.target).get('password'),{data,error}=await supabase.auth.getSession();if(error||!data.session)throw new Error('Silakan login ulang.');
           const res=await fetch(CFG.SUPABASE_URL+'/functions/v1/telegram-webhook/admin',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+data.session.access_token},body:JSON.stringify({action:'set_phone_password',user_id:btn.dataset.id,password})});const result=await res.json();if(!res.ok||!result.success)throw new Error(result.error||'Gagal mengatur kata sandi.');e.target.reset();$('#modalBackdrop').classList.remove('show');alert('Kata sandi akun HP berhasil diatur.');
         });
+      });
+      $$('.btn-adm-lifetime').forEach(btn => {
+        btn.onclick = async () => {
+          btn.disabled = true;
+          try {
+            for (let i = 0; i < 3; i++) {
+              const { error } = await supabase.rpc('admin_update_license', {
+                p_target_user_id: btn.dataset.id,
+                p_action: 'extend',
+                p_days: 3650
+              });
+              if (error) throw error;
+            }
+            alert('✅ Akun berhasil diaktifkan menjadi Lifetime!');
+            await loadAdminUsers();
+          } catch (err) {
+            alert('Gagal mengaktifkan Lifetime: ' + (err.message || err));
+          } finally {
+            if (btn.isConnected) btn.disabled = false;
+          }
+        };
       });
       $$('.btn-adm-extend').forEach(btn => {
         btn.onclick = async () => {
