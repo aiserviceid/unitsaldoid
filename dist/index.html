@@ -1554,7 +1554,7 @@
     let telegramLink = null;
     let adminUsers = [];
 
-    const isBigbosPortal = window.location.hostname === 'bigbossyudi.vercel.app';
+    const isBigbosPortal = false;
     function applyAccountBrand(profile){
       const special=isBigbosPortal||(profile?.is_special===true&&profile.brand_theme==='bigbos-gold');
       const name=special?'BIGBOS YUDI':'UnitSaldo';
