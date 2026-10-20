@@ -3353,7 +3353,7 @@
         if (editTx) {
           // 1. Utamakan RPC update_user_transaction (menyinkronkan transaksi + utang/piutang/cicilan)
           const rpcUpd = await supabase.rpc('update_user_transaction', {
-            p_tx_id: editTx.id,
+            p_transaction_id: editTx.id,
             p_kind: payload.kind,
             p_amount: payload.amount,
             p_occurred_at: payload.occurred_at,
