@@ -1023,6 +1023,7 @@
                     <th>Keterangan</th>
                     <th>Dompet</th>
                     <th style="text-align:right;">Nominal</th>
+                    <th style="text-align:right;width:90px;">Aksi</th>
                   </tr>
                 </thead>
                 <tbody id="homeTxTableBody"></tbody>
@@ -1943,6 +1944,53 @@
       });
     }
 
+    // Fungsi Hapus Transaksi (Mendukung Transaksi Biasa & Tagihan/Cicilan)
+    async function deleteTransactionById(txId, btn = null) {
+      if (!currentUser || !txId) return;
+      const targetTx = transactions.find(t => t.id === txId);
+      const isLinked = ['debt_disbursement', 'debt_payment', 'receivable_disbursement', 'receivable_payment'].includes(targetTx?.kind);
+      const msg = isLinked
+        ? 'Hapus transaksi ini? Saldo dompet dan sisa utang/piutang terkait akan disesuaikan secara otomatis.'
+        : 'Hapus transaksi ini? Saldo rekening/dompet akan dikembalikan secara otomatis.';
+      if (!confirm(msg)) return;
+
+      if (btn) btn.disabled = true;
+      try {
+        // 1. Coba RPC delete_user_transaction jika tersedia
+        const rpcDel = await supabase.rpc('delete_user_transaction', { p_transaction_id: txId });
+        if (!rpcDel.error && rpcDel.data?.success) {
+          await loadData();
+          return;
+        }
+
+        // 2. Gunakan RPC cancel_saved_transaction (SECURITY DEFINER yang sudah aktif di Supabase)
+        const rpcCancel = await supabase.rpc('cancel_saved_transaction', {
+          p_transaction_id: txId,
+          p_confirm: true
+        });
+        if (!rpcCancel.error && (rpcCancel.data?.cancelled || rpcCancel.data?.already_cancelled || rpcCancel.data?.success)) {
+          await loadData();
+          return;
+        }
+
+        // 3. Fallback hapus langsung dari tabel transactions (dan obligation_id terkait bila perlu)
+        if (targetTx?.kind === 'debt_disbursement' || targetTx?.kind === 'receivable_disbursement') {
+          if (targetTx.obligation_id) {
+            await supabase.from('obligations').delete().eq('id', targetTx.obligation_id).eq('owner_id', currentUser.id);
+          }
+        }
+        const { error } = await supabase.from('transactions').delete().eq('id', txId).eq('owner_id', currentUser.id);
+        if (error) {
+          throw new Error(rpcCancel.data?.message || error.message);
+        }
+        await loadData();
+      } catch (err) {
+        alert('Gagal menghapus transaksi: ' + (err.message || err));
+      } finally {
+        if (btn && btn.isConnected) btn.disabled = false;
+      }
+    }
+
     // 4. Transaksi Terbaru
     function renderRecentTransactions() {
       const tbody = $('#homeTxTableBody');
@@ -1973,9 +2021,13 @@
               <td style="text-align:right;font-weight:700;color:${isPlus ? 'var(--primary)' : 'var(--danger)'};">
                 ${isPlus ? '+' : '-'}${formatIDR(t.amount)}
               </td>
+              <td style="text-align:right;white-space:nowrap;">
+                <button class="link btn-edit-tx" data-id="${escapeHTML(t.id)}" style="font-size:11.5px;margin-right:6px;">Ubah</button>
+                <button class="link btn-del-tx" data-id="${escapeHTML(t.id)}" style="color:var(--danger);font-size:11.5px;font-weight:600;">Hapus</button>
+              </td>
             </tr>
           `;
-        }).join('') || '<tr><td colspan="4" style="text-align:center;padding:16px;color:var(--text-muted);">Belum ada transaksi.</td></tr>';
+        }).join('') || '<tr><td colspan="5" style="text-align:center;padding:16px;color:var(--text-muted);">Belum ada transaksi.</td></tr>';
       }
 
       const fullTbody = $('#txFullTableBody');
@@ -2009,28 +2061,25 @@
               <td style="text-align:right;font-weight:700;color:${isPlus ? 'var(--primary)' : 'var(--danger)'}">
                 ${isPlus ? '+' : '-'}${formatIDR(t.amount)}
               </td>
-              <td style="text-align:right;">
+              <td style="text-align:right;white-space:nowrap;">
                 <button class="link btn-history-tx" data-id="${escapeHTML(t.id)}" style="font-size:11px">Riwayat</button>
-                ${['income','expense','transfer'].includes(t.kind)?`<button class="link btn-edit-tx" data-id="${escapeHTML(t.id)}" style="font-size:11px;margin:0 6px">Ubah</button>`:''}
-                <button ${['debt_disbursement','debt_payment','receivable_disbursement','receivable_payment'].includes(t.kind) ? 'disabled title="Mutasi terhubung dengan utang/piutang"' : ''} class="link btn-del-tx" data-id="${t.id}" style="color:var(--danger);font-size:12px;font-weight:600;">Hapus</button>
+                <button class="link btn-edit-tx" data-id="${escapeHTML(t.id)}" style="font-size:11px;margin:0 6px">Ubah</button>
+                <button class="link btn-del-tx" data-id="${escapeHTML(t.id)}" style="color:var(--danger);font-size:12px;font-weight:600;">Hapus</button>
               </td>
             </tr>
           `;
         }).join('') || '<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text-muted);">Tidak ada transaksi pada filter periode ini.</td></tr>';
-
-        $$('.btn-edit-tx').forEach(btn=>btn.onclick=()=>openTransactionModal(transactions.find(t=>t.id===btn.dataset.id)));
-        $$('.btn-history-tx').forEach(btn=>btn.onclick=()=>openTransactionHistory(btn.dataset.id));
-        $$('.btn-del-tx').forEach(btn => {
-          btn.onclick = async () => {
-            const linked = transactions.find(t => t.id === btn.dataset.id);
-            if (['debt_disbursement','debt_payment','receivable_disbursement','receivable_payment'].includes(linked?.kind)) return;
-            if (!confirm('Hapus transaksi ini? Saldo rekening/dompet akan dikembalikan secara otomatis.')) return;
-            const { error } = await supabase.from('transactions').delete().eq('id', btn.dataset.id);
-            if (error) alert('Gagal menghapus transaksi: ' + error.message);
-            else loadData();
-          };
-        });
       }
+
+      $$('.btn-edit-tx').forEach(btn => {
+        btn.onclick = () => openTransactionModal(transactions.find(t => t.id === btn.dataset.id));
+      });
+      $$('.btn-history-tx').forEach(btn => {
+        btn.onclick = () => openTransactionHistory(btn.dataset.id);
+      });
+      $$('.btn-del-tx').forEach(btn => {
+        btn.onclick = () => deleteTransactionById(btn.dataset.id, btn);
+      });
     }
     $('#txSearch').oninput=renderRecentTransactions;
     $('#btnAllHistory').onclick=()=>openTransactionHistory();
@@ -2707,37 +2756,109 @@
       if (!currentUser) throw new Error('Pengguna belum login.');
       const uid = currentUser.id;
 
+      // 1. Utamakan RPC SECURITY DEFINER (jika PERBAIKAN_HAPUS_EDIT_RESET.sql sudah dijalankan)
+      const rpcRes = await supabase.rpc('reset_user_financial_data', { p_scope: scope });
+      if (!rpcRes.error && rpcRes.data && rpcRes.data.success !== false) {
+        return rpcRes.data;
+      }
+
+      // 2. Fallback otomatis menggunakan cancel_saved_transaction (SECURITY DEFINER)
+      //    agar tidak terkena blokir RLS & foreign key obligation_payments_transaction_id_fkey
+      const { data: allTxs, error: fetchErr } = await supabase
+        .from('transactions')
+        .select('id, kind')
+        .eq('owner_id', uid);
+      if (fetchErr) throw fetchErr;
+      const txList = allTxs || [];
+
+      const paymentTxs = txList.filter(t => t.kind === 'debt_payment' || t.kind === 'receivable_payment');
+      const disbursementTxs = txList.filter(t => t.kind === 'debt_disbursement' || t.kind === 'receivable_disbursement');
+      const ordinaryTxs = txList.filter(t => ['income', 'expense', 'transfer'].includes(t.kind));
+
       if (scope === 'obligations') {
-        // Hapus cicilan/pembayaran utang piutang
+        // Batalkan pembayaran cicilan terlebih dahulu agar FK obligation_payments bersih
+        for (const tx of paymentTxs) {
+          await supabase.rpc('cancel_saved_transaction', {
+            p_transaction_id: tx.id,
+            p_reason: 'Reset data utang/piutang',
+            p_confirm: true
+          });
+        }
+        // Batalkan pencatatan awal utang/piutang (otomatis menghapus obligations terkait)
+        for (const tx of disbursementTxs) {
+          await supabase.rpc('cancel_saved_transaction', {
+            p_transaction_id: tx.id,
+            p_reason: 'Reset data utang/piutang',
+            p_confirm: true
+          });
+        }
         try { await supabase.from('obligation_payments').delete().eq('owner_id', uid); } catch(e){}
-        // Hapus tagihan utang piutang
         const { error: errOb } = await supabase.from('obligations').delete().eq('owner_id', uid);
         if (errOb) throw errOb;
-        // Hapus juga transaksi kas yang bersumber dari pencatatan utang/piutang
-        await supabase.from('transactions').delete().eq('owner_id', uid).in('kind', [
-          'debt_disbursement', 'debt_payment', 'receivable_disbursement', 'receivable_payment'
-        ]);
       } else if (scope === 'transactions') {
-        // Hapus data riwayat & mutasi
+        // Batalkan transaksi pembayaran cicilan terlebih dahulu agar tidak melanggar FK
+        for (const tx of paymentTxs) {
+          await supabase.rpc('cancel_saved_transaction', {
+            p_transaction_id: tx.id,
+            p_reason: 'Reset data transaksi',
+            p_confirm: true
+          });
+        }
+        // Hapus transaksi biasa (income, expense, transfer)
+        const { error: errTx } = await supabase
+          .from('transactions')
+          .delete()
+          .eq('owner_id', uid)
+          .in('kind', ['income', 'expense', 'transfer']);
+        if (errTx) {
+          for (const tx of ordinaryTxs) {
+            await supabase.rpc('cancel_saved_transaction', {
+              p_transaction_id: tx.id,
+              p_reason: 'Reset data transaksi',
+              p_confirm: true
+            });
+          }
+        }
         try { await supabase.from('transaction_cancellations').delete().eq('owner_id', uid); } catch(e){}
         try { await supabase.from('transaction_history').delete().eq('owner_id', uid); } catch(e){}
-        try { await supabase.from('obligation_payments').delete().eq('owner_id', uid); } catch(e){}
-        try { await supabase.from('obligations').update({ status: 'active' }).eq('owner_id', uid); } catch(e){}
-        const { error: errTx } = await supabase.from('transactions').delete().eq('owner_id', uid);
-        if (errTx) throw errTx;
       } else if (scope === 'all') {
-        // Reset Total: hapus seluruh transaksi, utang piutang, dan agenda
-        try { await supabase.from('transaction_cancellations').delete().eq('owner_id', uid); } catch(e){}
-        try { await supabase.from('transaction_history').delete().eq('owner_id', uid); } catch(e){}
+        // 1. Batalkan semua pembayaran cicilan dulu (melepas FK obligation_payments -> transactions)
+        for (const tx of paymentTxs) {
+          await supabase.rpc('cancel_saved_transaction', {
+            p_transaction_id: tx.id,
+            p_reason: 'Reset total pembukuan',
+            p_confirm: true
+          });
+        }
+        // 2. Batalkan semua pencairan utang/piutang (melepas obligations & transaksi utang/piutang)
+        for (const tx of disbursementTxs) {
+          await supabase.rpc('cancel_saved_transaction', {
+            p_transaction_id: tx.id,
+            p_reason: 'Reset total pembukuan',
+            p_confirm: true
+          });
+        }
+        // 3. Hapus sisa utang/piutang, agenda, draft, dan transaksi biasa
+        try { await supabase.from('obligation_payments').delete().eq('owner_id', uid); } catch(e){}
+        try { await supabase.from('obligations').delete().eq('owner_id', uid); } catch(e){}
         try { await supabase.from('calendar_events').delete().eq('owner_id', uid); } catch(e){}
         try { await supabase.from('telegram_drafts').delete().eq('owner_id', uid); } catch(e){}
-        try { await supabase.from('obligation_payments').delete().eq('owner_id', uid); } catch(e){}
-        
-        const { error: errTx } = await supabase.from('transactions').delete().eq('owner_id', uid);
-        if (errTx) throw errTx;
 
-        const { error: errOb } = await supabase.from('obligations').delete().eq('owner_id', uid);
-        if (errOb) throw errOb;
+        const { error: errTx } = await supabase
+          .from('transactions')
+          .delete()
+          .eq('owner_id', uid);
+        if (errTx) {
+          for (const tx of ordinaryTxs) {
+            await supabase.rpc('cancel_saved_transaction', {
+              p_transaction_id: tx.id,
+              p_reason: 'Reset total pembukuan',
+              p_confirm: true
+            });
+          }
+        }
+        try { await supabase.from('transaction_cancellations').delete().eq('owner_id', uid); } catch(e){}
+        try { await supabase.from('transaction_history').delete().eq('owner_id', uid); } catch(e){}
       }
     }
 
@@ -3096,21 +3217,30 @@
         groups[g].push(c);
       });
 
-      return Object.entries(groups).map(([g, items]) => `
+      const groupHtml = Object.entries(groups).map(([g, items]) => `
         <optgroup label="${escapeHTML(g)}">
           ${items.map(i => `<option value="${i.id}">${escapeHTML(i.name)}</option>`).join('')}
         </optgroup>
-      `).join('') || '<option value="">(Belum ada kategori)</option>';
+      `).join('');
+
+      return '<option value="">— Tanpa Kategori / Umum —</option>' + groupHtml;
     }
 
-    // Modal Catat Transaksi Baru
+    // Modal Catat / Ubah Transaksi
     function openTransactionModal(editTx=null) {
-      if(editTx&&!['income','expense','transfer'].includes(editTx.kind))return alert('Ubah tagihan melalui menu Utang & Piutang.');
       if (wallets.length === 0) return alert('Buat minimal satu dompet terlebih dahulu.');
 
+      const isObligationKind = editTx && ['debt_disbursement', 'debt_payment', 'receivable_disbursement', 'receivable_payment'].includes(editTx.kind);
       const walletOptions = wallets.map(w => `<option value="${w.id}">${escapeHTML(w.name)}</option>`).join('');
       const expCatOpts = buildCategoryOptions('expense');
       const incCatOpts = buildCategoryOptions('income');
+
+      const obligationKindOptions = isObligationKind ? `
+        <option value="debt_disbursement">Pencairan Utang (Uang Masuk)</option>
+        <option value="debt_payment">Bayar Utang / Cicilan (Uang Keluar)</option>
+        <option value="receivable_disbursement">Beri Piutang / Pinjaman (Uang Keluar)</option>
+        <option value="receivable_payment">Terima Piutang / Cicilan (Uang Masuk)</option>
+      ` : '';
 
       const formHtml = `
         <div>
@@ -3119,11 +3249,12 @@
             <option value="expense">Pengeluaran</option>
             <option value="income">Pemasukan</option>
             <option value="transfer">Transfer Antar-Dompet</option>
+            ${obligationKindOptions}
           </select>
         </div>
         <div>
           <label style="display:block;margin-bottom:6px;font-size:12px;color:var(--text-muted);font-weight:600;">Nominal (Rp)</label>
-          <input required type="number" min="1" name="amount" placeholder="Contoh: 25000" style="width:100%;">
+          <input required type="number" min="1" step="any" name="amount" placeholder="Contoh: 25000" style="width:100%;">
         </div>
         <div><label>Tanggal Transaksi</label><input type="date" required name="occurred_at" value="${new Date().toLocaleDateString('en-CA', {timeZone:'Asia/Jakarta'})}" style="width:100%"></div>
         <div id="sourceWalletWrap">
@@ -3148,40 +3279,127 @@
         </div>
       `;
 
-      showModal(editTx?'Ubah Transaksi':'Catat Transaksi Baru', formHtml, async (e) => {
+      showModal(editTx ? 'Ubah Transaksi' : 'Catat Transaksi Baru', formHtml, async (e) => {
         e.preventDefault();
         const v = Object.fromEntries(new FormData(e.target));
         if ('amount' in v && (!Number.isFinite(+v.amount) || +v.amount <= 0)) return alert('Nominal harus lebih dari nol.');
         if ('principal' in v && (!Number.isFinite(+v.principal) || +v.principal <= 0)) return alert('Nominal harus lebih dari nol.');
+
+        const occurredIso = new Date(v.occurred_at + 'T12:00:00+07:00').toISOString();
         const payload = {
           owner_id: currentUser.id,
-          occurred_at: new Date(v.occurred_at + 'T12:00:00+07:00').toISOString(),
+          occurred_at: occurredIso,
           kind: v.kind,
-          amount: +v.amount,
-          description: v.description,
+          amount: Math.round(+v.amount),
+          description: v.description.trim(),
           wallet_id: v.wallet_id,
-          source: 'web'
+          destination_wallet_id: null,
+          category_id: null,
+          source: editTx?.source || 'web'
         };
 
         if (v.kind === 'transfer') {
           if (v.wallet_id === v.destination_wallet_id) return alert('Dompet asal dan tujuan harus berbeda.');
           payload.destination_wallet_id = v.destination_wallet_id;
+          payload.category_id = null;
         } else {
-          payload.category_id = v.category_id || null;
-          if (v.category_id?.startsWith('master-')) {
-            const c = categories.find(c => c.id === v.category_id);
-            const { data, error } = await supabase.from('categories').insert({owner_id:currentUser.id,
-              name:c.name, type:c.type, group_name:c.group_name, rule_50_30_20:c.rule_50_30_20}).select('id').single();
-            if (error) return alert('Kategori gagal tersimpan: ' + error.message);
-            payload.category_id = data.id;
+          let resolvedCategoryId = v.category_id || null;
+          if (resolvedCategoryId && resolvedCategoryId.startsWith('master-')) {
+            const c = categories.find(cat => cat.id === resolvedCategoryId);
+            if (c) {
+              // Cek apakah kategori dengan nama & jenis yang sama sudah ada di DB
+              const { data: existingCat } = await supabase
+                .from('categories')
+                .select('id')
+                .eq('owner_id', currentUser.id)
+                .eq('name', c.name)
+                .eq('type', c.type)
+                .maybeSingle();
+
+              if (existingCat?.id) {
+                resolvedCategoryId = existingCat.id;
+              } else {
+                let catPayload = {
+                  owner_id: currentUser.id,
+                  name: c.name,
+                  type: c.type,
+                  group_name: c.group_name || 'Umum',
+                  rule_50_30_20: c.rule_50_30_20 || (c.type === 'income' ? 'Tabungan' : 'Kebutuhan')
+                };
+                let { data: insertedCat, error: catErr } = await supabase
+                  .from('categories')
+                  .insert(catPayload)
+                  .select('id')
+                  .single();
+                if (catErr && (catErr.message.includes('group_name') || catErr.message.includes('rule_50_30_20'))) {
+                  const retryMin = await supabase
+                    .from('categories')
+                    .insert({ owner_id: currentUser.id, name: c.name, type: c.type })
+                    .select('id')
+                    .single();
+                  insertedCat = retryMin.data;
+                  catErr = retryMin.error;
+                }
+                if (catErr) return alert('Kategori gagal tersimpan: ' + catErr.message);
+                resolvedCategoryId = insertedCat.id;
+              }
+            } else {
+              resolvedCategoryId = null;
+            }
           }
+          payload.category_id = resolvedCategoryId;
         }
 
-        const { error } = editTx ? await supabase.from('transactions').update(payload).eq('id',editTx.id).eq('owner_id',currentUser.id) : await supabase.from('transactions').insert(payload);
-        if (error) return alert('Error: ' + error.message);
+        if (editTx) {
+          // 1. Utamakan RPC update_user_transaction (menyinkronkan transaksi + utang/piutang/cicilan)
+          const rpcUpd = await supabase.rpc('update_user_transaction', {
+            p_tx_id: editTx.id,
+            p_kind: payload.kind,
+            p_amount: payload.amount,
+            p_occurred_at: payload.occurred_at,
+            p_wallet_id: payload.wallet_id,
+            p_destination_wallet_id: payload.destination_wallet_id,
+            p_category_id: payload.category_id,
+            p_description: payload.description
+          });
+
+          if (rpcUpd.error) {
+            // 2. Fallback update langsung ke tabel transactions
+            const { data: updatedRows, error: updErr } = await supabase
+              .from('transactions')
+              .update(payload)
+              .eq('id', editTx.id)
+              .eq('owner_id', currentUser.id)
+              .select('id');
+
+            if (updErr) return alert('Gagal mengubah transaksi: ' + updErr.message);
+            if (!updatedRows || updatedRows.length === 0) {
+              return alert('Transaksi ini terhubung dengan Utang/Piutang yang dikunci RLS. Silakan jalankan file PERBAIKAN_HAPUS_EDIT_RESET.sql di Supabase SQL Editor agar fitur Ubah transaksi Utang/Piutang aktif sepenuhnya.');
+            }
+
+            // Sinkronkan obligations jika transaksi terkait dengan utang/piutang awal
+            if (editTx.obligation_id && ['debt_disbursement', 'receivable_disbursement'].includes(payload.kind)) {
+              const ob = obligations.find(o => o.id === editTx.obligation_id);
+              if (ob) {
+                const paidSoFar = Math.max((+ob.principal || 0) - (+ob.remaining_amount || 0), 0);
+                const newRem = Math.max(payload.amount - paidSoFar, 0);
+                try {
+                  await supabase.from('obligations').update({
+                    principal: payload.amount,
+                    remaining_amount: newRem,
+                    status: newRem <= 0 ? 'paid_off' : 'active'
+                  }).eq('id', ob.id).eq('owner_id', currentUser.id);
+                } catch(e){}
+              }
+            }
+          }
+        } else {
+          const { error: insErr } = await supabase.from('transactions').insert(payload);
+          if (insErr) return alert('Gagal menyimpan transaksi: ' + insErr.message);
+        }
 
         $('#modalBackdrop').classList.remove('show');
-        loadData();
+        await loadData();
       });
 
       $('#txKindSelect').onchange = (e) => {
@@ -3194,13 +3412,25 @@
           $('#destWalletWrap').style.display = 'none';
           $('#categoryWrap').style.display = 'block';
           $('#lblWallet').textContent = 'Dompet';
-          $('#categorySelect').innerHTML = val === 'income' ? incCatOpts : expCatOpts;
+          const isIncomeLike = ['income', 'debt_disbursement', 'receivable_payment'].includes(val);
+          $('#categorySelect').innerHTML = isIncomeLike ? incCatOpts : expCatOpts;
         }
       };
-      if(editTx){
-        const form=$('#modalForm');form.querySelector('[name=kind]').value=editTx.kind;$('#txKindSelect').onchange({target:{value:editTx.kind}});
-        ['amount','description','wallet_id','destination_wallet_id','category_id'].forEach(k=>{const el=form.querySelector(`[name=${k}]`);if(el)el.value=editTx[k]||'';});
-        form.querySelector('[name=occurred_at]').value=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Jakarta',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(editTx.occurred_at));
+
+      if (editTx) {
+        const form = $('#modalForm');
+        form.querySelector('[name=kind]').value = editTx.kind;
+        $('#txKindSelect').onchange({ target: { value: editTx.kind } });
+        ['amount', 'description', 'wallet_id', 'destination_wallet_id', 'category_id'].forEach(k => {
+          const el = form.querySelector(`[name=${k}]`);
+          if (el) el.value = editTx[k] ?? '';
+        });
+        form.querySelector('[name=occurred_at]').value = new Intl.DateTimeFormat('en-CA', {
+          timeZone: 'Asia/Jakarta',
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit'
+        }).format(new Date(editTx.occurred_at));
       }
     }
     $('#btnQuickAddTx').onclick=()=>openTransactionModal();
